@@ -1,5 +1,10 @@
 package org.teapotech.taskforce.expert;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -14,16 +19,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ResourceFetcherMainLoader implements CommandLineRunner {
+public class FileScannerMainLoader implements CommandLineRunner {
 
-	private static Logger LOG = LoggerFactory.getLogger(ResourceFetcherMainLoader.class);
+	private static Logger LOG = LoggerFactory.getLogger(FileScannerMainLoader.class);
 
 	@Autowired
-	ResourceFetcher resourceFetcher;
+	FileScanner fileScanner;
 
 	public static void main(String[] args) {
 		// LOG.info("Hello world");
-		System.exit(SpringApplication.exit(SpringApplication.run(ResourceFetcherMainLoader.class,
+		System.exit(SpringApplication.exit(SpringApplication.run(FileScannerMainLoader.class,
 				args)));
 	}
 
@@ -37,11 +42,27 @@ public class ResourceFetcherMainLoader implements CommandLineRunner {
 			if (line.getArgs().length == 0) {
 				throw new ParseException("Invalid argument");
 			}
-			String output = resourceFetcher.getResourceAsText(line.getArgs()[0]);
-			System.out.println(output);
+			File[] files = fileScanner.getFiles(args[0]);
+			printFiles(files);
 		} catch (ParseException exp) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("resource-loader <URL>", options);
+			formatter.printHelp("file-scanner <directory>", options);
+		} catch (FileNotFoundException e) {
+			System.out.println("");
+		}
+	}
+
+	private void printFiles(File[] files) {
+		System.out.println("total " + files.length);
+		for (File f : files) {
+			String name = f.getName();
+			if (f.isDirectory()) {
+				name = "/" + name;
+			}
+			String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(f.lastModified()));
+			String line = String.format("%-20s\t%12d\t%s", name, f.length(), timestamp);
+
+			System.out.println(line);
 		}
 	}
 
