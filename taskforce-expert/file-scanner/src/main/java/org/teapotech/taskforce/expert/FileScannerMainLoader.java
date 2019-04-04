@@ -28,8 +28,7 @@ public class FileScannerMainLoader implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		// LOG.info("Hello world");
-		System.exit(SpringApplication.exit(SpringApplication.run(FileScannerMainLoader.class,
-				args)));
+		System.exit(SpringApplication.exit(SpringApplication.run(FileScannerMainLoader.class, args)));
 	}
 
 	@Override
@@ -42,13 +41,15 @@ public class FileScannerMainLoader implements CommandLineRunner {
 			if (line.getArgs().length == 0) {
 				throw new ParseException("Invalid argument");
 			}
-			File[] files = fileScanner.getFiles(args[0]);
-			printFiles(files);
+			for (String path : args) {
+				File[] files = fileScanner.getFiles(path);
+				printFiles(files);
+			}
 		} catch (ParseException exp) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("file-scanner <directory>", options);
 		} catch (FileNotFoundException e) {
-			System.out.println("");
+			System.out.println(args[0] + " does not exist.");
 		}
 	}
 

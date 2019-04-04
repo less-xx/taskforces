@@ -29,6 +29,12 @@ public class FileScanner {
 		if (!parent.exists()) {
 			throw new FileNotFoundException(path + " does not exist.");
 		}
+		if (!parent.isDirectory()) {
+			throw new FileNotFoundException(path + " is not a directory.");
+		}
+		if (!parent.canRead()) {
+			throw new FileNotFoundException(path + " is not readable.");
+		}
 		return parent.listFiles();
 	}
 }
