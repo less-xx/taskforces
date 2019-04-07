@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.teapotech.taskforce.context.TaskforceContext;
 
 @SpringBootApplication
 public class ResourceFetcherMainLoader implements CommandLineRunner {
@@ -21,10 +22,12 @@ public class ResourceFetcherMainLoader implements CommandLineRunner {
 	@Autowired
 	ResourceFetcher resourceFetcher;
 
+	@Autowired(required = false)
+	TaskforceContext taskForceContext;
+
 	public static void main(String[] args) {
 		// LOG.info("Hello world");
-		System.exit(SpringApplication.exit(SpringApplication.run(ResourceFetcherMainLoader.class,
-				args)));
+		System.exit(SpringApplication.exit(SpringApplication.run(ResourceFetcherMainLoader.class, args)));
 	}
 
 	@Override
