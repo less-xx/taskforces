@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.teapotech.taskforce.leader.config.TaskExecutionDriverAutoConfig
