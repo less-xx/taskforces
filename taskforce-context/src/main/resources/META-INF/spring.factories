@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.teapotech.taskforce.config.TaskforceStorageAutoConfig,\
-org.teapotech.taskforce.config.TaskForceContextAutoConfig

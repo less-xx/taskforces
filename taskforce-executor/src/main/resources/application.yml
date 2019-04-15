@@ -1,0 +1,11 @@
+spring:
+  application:
+    version: ^project.version^
+    name: ^project.name^
+  banner.location: classpath:/banner.txt
+  
+taskforce:
+  id: ${TASKFORCE_ID:}
+  storage-provider: ${TASKFORCE_RESULT_STORAGE_PROVIDER:org.teapotech.taskforce.provider.InMemoryTaskforceResultStorageProvider}
+  
+taskforce.execution.driver: docker
