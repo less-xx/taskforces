@@ -35,7 +35,7 @@ public class JoinTextBlockExecutor extends AbstractBlockExecutor {
 			Block b = bv.getBlock();
 			if (b != null) {
 				BlockExecutor be = fac.createBlockExecutor(b);
-				String s = (String) be.execute(context);
+				Object s = be.execute(context);
 				result.append(s);
 			}
 		}

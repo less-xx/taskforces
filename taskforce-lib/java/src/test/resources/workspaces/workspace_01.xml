@@ -3,7 +3,7 @@
 		<variable type="" id="@hKq$P$ULILT*GZlHVL6">b</variable>
 		<variable type="" id="c]]s@Uh=,rEDogWSFO@6">a</variable>
 	</variables>
-	<block type="variables_set" id="KJ*pjS^UY(wk;%}z4c1=" x="112" y="38">
+	<block type="variables_set" id="KJ*pjS^UY(wk;%}z4c1=" x="338" y="-87">
 		<field name="VAR" id="@hKq$P$ULILT*GZlHVL6" variabletype="">b</field>
 		<value name="VALUE">
 			<block type="text_join" id="Mv016ajo~CKlo0{uHS+#">
@@ -11,7 +11,6 @@
 				<value name="ADD0">
 					<block type="text" id="R`U9RnATamb2T_qVleFV">
 						<field name="TEXT">aaa</field>
-
 					</block>
 				</value>
 				<value name="ADD1">
@@ -141,8 +140,8 @@
 											<shadow type="text" id="[:!^7G^i8bzDTEOu4%Ah">
 												<field name="TEXT">abc</field>
 											</shadow>
-											<block type="text" id="H%A:.y?7[a-`~]!]HA.x">
-												<field name="TEXT">abc</field>
+											<block type="variables_get" id="^xObwcnSoP35XCTj5Ytl">
+												<field name="VAR" id="@hKq$P$ULILT*GZlHVL6" variabletype="">b</field>
 											</block>
 										</value>
 										<next>

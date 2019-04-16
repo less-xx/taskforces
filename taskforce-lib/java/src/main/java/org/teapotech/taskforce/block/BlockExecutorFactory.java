@@ -50,7 +50,7 @@ public class BlockExecutorFactory {
 	}
 
 	public BlockExecutor createBlockExecutor(Block block)
-			throws BlockExecutorNotFoundException, InstantiationException, InvalidBlockExecutorException {
+			throws BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		Class<BlockExecutor> c = registry.get(block.getType());
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + block.getType());
