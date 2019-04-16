@@ -4,4 +4,4 @@ ADD resource-fetcher.jar /
 
 ENTRYPOINT ["java","-jar", "/resource-fetcher.jar"]
 
-LABEL taskforce.expert.name="resource-fetcher"
+LABEL taskforce.task.name="resource-fetcher"

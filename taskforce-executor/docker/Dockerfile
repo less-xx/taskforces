@@ -1,5 +1,5 @@
 FROM openjdk:8-jre-alpine
 
-ADD taskforce-leader.jar /
+ADD taskforce-executor.jar /
 
-ENTRYPOINT ["java","-jar", "/taskforce-leader.jar"]
+ENTRYPOINT ["java","-jar", "/taskforce-executor.jar"]

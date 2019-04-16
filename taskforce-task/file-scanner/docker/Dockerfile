@@ -4,4 +4,4 @@ ADD file-scanner.jar /
 
 ENTRYPOINT ["java","-jar", "/file-scanner.jar"]
 
-LABEL taskforce.expert.name="file-scanner"
+LABEL taskforce.task.name="file-scanner"

@@ -1,0 +1,46 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+	<block type="text_print" id="4XhreI}b}{cUk@U+.+`G" x="188" y="-62">
+		<value name="TEXT">
+			<shadow type="text" id="EH,~~6$T8PBN7)!E+p%S">
+				<field name="TEXT">abc</field>
+			</shadow>
+			<block type="text" id=",kfUR=oWKxC(EL)VDvY5">
+				<field name="TEXT">a</field>
+			</block>
+		</value>
+		<next>
+			<block type="text_print" id="r`Q4{6Em$yx@:hx|]r8E">
+				<value name="TEXT">
+					<shadow type="text" id="EH,~~6$T8PBN7)!E+p%S">
+						<field name="TEXT">abc</field>
+					</shadow>
+					<block type="text" id="hfs!JULq88Zui)j()DF!">
+						<field name="TEXT">b</field>
+					</block>
+				</value>
+				<next>
+					<block type="text_print" id=",umQE(4b}X?19+Bzk]=7">
+						<value name="TEXT">
+							<shadow type="text" id="EH,~~6$T8PBN7)!E+p%S">
+								<field name="TEXT">abc</field>
+							</shadow>
+							<block type="text_join" id="U#.lKFl~6qg,Bf[EHd!.">
+								<mutation items="2"></mutation>
+								<value name="ADD0">
+									<block type="text" id="-y`g+RY7^z?F,H#-o`f*">
+										<field name="TEXT">c</field>
+									</block>
+								</value>
+								<value name="ADD1">
+									<block type="math_number" id="D)@7NN!.VGYOzo$K5:5Q">
+										<field name="NUM">123</field>
+									</block>
+								</value>
+							</block>
+						</value>
+					</block>
+				</next>
+			</block>
+		</next>
+	</block>
+</xml>

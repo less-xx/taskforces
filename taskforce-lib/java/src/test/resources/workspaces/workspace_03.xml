@@ -1,0 +1,18 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+	<variables>
+		<variable type="" id=",L?hn,r+5QK4~R(Aj|,A">output0</variable>
+	</variables>
+	<block type="variables_set" id="@6rZm}3!`EQZgcK5@Qbf" x="12" y="87">
+		<field name="VAR" id=",L?hn,r+5QK4~R(Aj|,A" variabletype="">output0</field>
+		<value name="VALUE">
+			<block type="resource_fetcher" id="+ToQ6AUz;8y(X(_@|OUm">
+				<field name="defined_output_type">String</field>
+				<value name="path">
+					<block type="text" id="vyd_.?uTxHQ)?D)xx/f/">
+						<field name="TEXT">http://google.com</field>
+					</block>
+				</value>
+			</block>
+		</value>
+	</block>
+</xml>

@@ -1,0 +1,169 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+	<variables>
+		<variable type="" id="@hKq$P$ULILT*GZlHVL6">b</variable>
+		<variable type="" id="c]]s@Uh=,rEDogWSFO@6">a</variable>
+	</variables>
+	<block type="variables_set" id="KJ*pjS^UY(wk;%}z4c1=" x="112" y="38">
+		<field name="VAR" id="@hKq$P$ULILT*GZlHVL6" variabletype="">b</field>
+		<value name="VALUE">
+			<block type="text_join" id="Mv016ajo~CKlo0{uHS+#">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="text" id="R`U9RnATamb2T_qVleFV">
+						<field name="TEXT">aaa</field>
+
+					</block>
+				</value>
+				<value name="ADD1">
+					<block type="text" id="vyUj8`)DL{Z|3Ormj=}m">
+						<field name="TEXT">bbb</field>
+					</block>
+				</value>
+			</block>
+		</value>
+		<next>
+			<block type="variables_set" id="m,ZAQ9+4L$5d=JJM.8DK">
+				<field name="VAR" id="c]]s@Uh=,rEDogWSFO@6" variabletype="">a</field>
+				<value name="VALUE">
+					<block type="text" id="fI]HAg,D[(wx`oyYX$VT">
+						<field name="TEXT">0</field>
+					</block>
+				</value>
+				<next>
+					<block type="controls_if" id="D/u(d/N{@n$I$pf5JX5b">
+						<mutation elseif="2" else="1"></mutation>
+						<value name="IF0">
+							<block type="logic_compare" id="iqKP`=k^NjvsMKhoB]K0">
+								<field name="OP">EQ</field>
+								<value name="A">
+									<block type="variables_get" id="p,YV{ag@{^IEGV]D~Q}.">
+										<field name="VAR" id="c]]s@Uh=,rEDogWSFO@6" variabletype="">a</field>
+									</block>
+								</value>
+								<value name="B">
+									<block type="math_number" id="K#bj/|S2G-:RE3vL}D)h">
+										<field name="NUM">0</field>
+									</block>
+								</value>
+							</block>
+						</value>
+						<statement name="DO0">
+							<block type="text_print" id="r5${_]VIE~GzoIHGVI:G">
+								<value name="TEXT">
+									<shadow type="text" id="Gzr.DBFmu}+1od_o1-Vs">
+										<field name="TEXT">a</field>
+									</shadow>
+									<block type="text" id=";ojTPnkVq,fmZk3?7v)9">
+										<field name="TEXT">a=0</field>
+									</block>
+								</value>
+							</block>
+						</statement>
+						<value name="IF1">
+							<block type="logic_compare" id="WTGbaY1a4:OWM4fPX%#l">
+								<field name="OP">LT</field>
+								<value name="A">
+									<block type="variables_get" id="VgLQ52PL7=Xcj]({I=s!">
+										<field name="VAR" id="c]]s@Uh=,rEDogWSFO@6" variabletype="">a</field>
+									</block>
+								</value>
+								<value name="B">
+									<block type="math_number" id="xzxIp.FN6O-DA;trs=E8">
+										<field name="NUM">10</field>
+									</block>
+								</value>
+							</block>
+						</value>
+						<statement name="DO1">
+							<block type="text_print" id="gbe/v|z4k6/dg.}})QzO">
+								<value name="TEXT">
+									<shadow type="text" id="Gzr.DBFmu}+1od_o1-Vs">
+										<field name="TEXT">a</field>
+									</shadow>
+									<block type="text" id="}S%6x~/?==^v(]+,Z3@#">
+										<field name="TEXT">a&lt;10</field>
+									</block>
+								</value>
+							</block>
+						</statement>
+						<value name="IF2">
+							<block type="logic_compare" id="nZ._FmF9~.1bkn)R.O=8">
+								<field name="OP">LT</field>
+								<value name="A">
+									<block type="variables_get" id=":S+#[2N3ByVZtnKYKS3#">
+										<field name="VAR" id="c]]s@Uh=,rEDogWSFO@6" variabletype="">a</field>
+									</block>
+								</value>
+								<value name="B">
+									<block type="math_number" id=".*z+WcA9U@qI1RGX4Okh">
+										<field name="NUM">0</field>
+									</block>
+								</value>
+							</block>
+						</value>
+						<statement name="DO2">
+							<block type="text_print" id="%Lxk+D?]B`+u)RwAvh3k">
+								<value name="TEXT">
+									<shadow type="text" id="Gzr.DBFmu}+1od_o1-Vs">
+										<field name="TEXT">a</field>
+									</shadow>
+									<block type="text" id="wghm_#NED.#aQ=u*^Wt8">
+										<field name="TEXT">a&lt;0</field>
+									</block>
+								</value>
+							</block>
+						</statement>
+						<statement name="ELSE">
+							<block type="text_print" id="RH8kI;VCd(Fp2@ohar]h">
+								<value name="TEXT">
+									<shadow type="text" id="Gzr.DBFmu}+1od_o1-Vs">
+										<field name="TEXT">a</field>
+									</shadow>
+									<block type="text" id="RArfR]f~um6!F3Z%nGkX">
+										<field name="TEXT">a&gt;0</field>
+									</block>
+								</value>
+							</block>
+						</statement>
+						<next>
+							<block type="controls_repeat_ext" id="sdv;#)!M.i/:fQzh92LU">
+								<value name="TIMES">
+									<shadow type="math_number" id="9y2?4COZ0R,WD[xKN79A">
+										<field name="NUM">10</field>
+									</shadow>
+									<block type="math_number" id="hu$OTV5[U~T]BUq;V+Z(">
+										<field name="NUM">1</field>
+									</block>
+								</value>
+								<statement name="DO">
+									<block type="text_print" id="y,sdC!2V`Q{D]!0+3YUk">
+										<value name="TEXT">
+											<shadow type="text" id="[:!^7G^i8bzDTEOu4%Ah">
+												<field name="TEXT">abc</field>
+											</shadow>
+											<block type="text" id="H%A:.y?7[a-`~]!]HA.x">
+												<field name="TEXT">abc</field>
+											</block>
+										</value>
+										<next>
+											<block type="text_print" id="6m12*La+?U}%A8-Ix6ZP">
+												<value name="TEXT">
+													<shadow type="text" id="[:!^7G^i8bzDTEOu4%Ah">
+														<field name="TEXT">abc</field>
+													</shadow>
+													<block type="text" id="uqP|,g/imp5Al3GMA5ke">
+														<field name="TEXT">def</field>
+													</block>
+												</value>
+											</block>
+										</next>
+									</block>
+								</statement>
+							</block>
+						</next>
+					</block>
+				</next>
+			</block>
+		</next>
+	</block>
+</xml>

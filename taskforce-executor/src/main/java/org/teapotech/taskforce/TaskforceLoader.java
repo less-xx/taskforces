@@ -37,6 +37,10 @@ public class TaskforceLoader implements CommandLineRunner {
 
 		LOG.info("Taskforce context initialized. {}", taskforceContext);
 
+		taskforceLeader.getAllTaskDescriptors().forEach(td -> {
+			System.out.println(td.getId() + ", " + td.getName() + ", " + td.getVersion());
+		});
+
 		LOG.info("Taskforce leader initialized. {}", taskforceLeader);
 	}
 

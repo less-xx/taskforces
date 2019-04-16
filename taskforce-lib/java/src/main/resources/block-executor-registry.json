@@ -1,0 +1,42 @@
+[
+	{
+		"type": "variables_set",
+		"category": "Variables",
+		"executorClass": "org.teapotech.taskforce.block.executor.variable.VariableSetBlockExecutor"
+	},
+	{
+		"type": "variables_get",
+		"category": "Variables",
+		"executorClass": "org.teapotech.taskforce.block.executor.variable.VariableGetBlockExecutor"
+	},
+	{
+		"type": "controls_if",
+		"category": "Logic",
+		"executorClass": "org.teapotech.taskforce.block.executor.logic.ControlsIfBlockExecutor"
+	},
+	{
+		"type": "logic_compare",
+		"category": "Logic",
+		"executorClass": "org.teapotech.taskforce.block.executor.logic.LogicCompareBlockExecutor"
+	},
+	{
+		"type": "text",
+		"category": "Text",
+		"executorClass": "org.teapotech.taskforce.block.executor.text.TextBlockExecutor"
+	},
+	{
+		"type": "text_join",
+		"category": "Text",
+		"executorClass": "org.teapotech.taskforce.block.executor.text.JoinTextBlockExecutor"
+	},
+	{
+		"type": "text_print",
+		"category": "Text",
+		"executorClass": "org.teapotech.taskforce.block.executor.text.PrintTextBlockExecutor"
+	},
+	{
+		"type": "math_number",
+		"category": "Math",
+		"executorClass": "org.teapotech.taskforce.block.executor.math.MathNumberBlockExecutor"
+	}
+]

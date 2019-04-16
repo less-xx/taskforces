@@ -15,6 +15,8 @@ public class TaskDescriptor {
 	private String description;
 	private boolean active;
 	private String createdTime;
+	private final InputDescriptor inputDescriptor = new InputDescriptor();
+	private final OutputDescriptor outputDescriptor = new OutputDescriptor();
 
 	public String getId() {
 		return id;
@@ -62,5 +64,37 @@ public class TaskDescriptor {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public InputDescriptor getInputDescriptor() {
+		return inputDescriptor;
+	}
+
+	public OutputDescriptor getOutputDescriptor() {
+		return outputDescriptor;
+	}
+
+	public static class InputDescriptor {
+		private String type;
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+	}
+
+	public static class OutputDescriptor {
+		private String type;
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
 	}
 }
