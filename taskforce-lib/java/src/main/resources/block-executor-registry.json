@@ -20,6 +20,11 @@
 		"executorClass": "org.teapotech.taskforce.block.executor.logic.LogicCompareBlockExecutor"
 	},
 	{
+		"type": "controls_repeat_ext",
+		"category": "Loop",
+		"executorClass": "org.teapotech.taskforce.block.executor.loop.ControlsRepeatExtBlockExecutor"
+	},
+	{
 		"type": "text",
 		"category": "Text",
 		"executorClass": "org.teapotech.taskforce.block.executor.text.TextBlockExecutor"

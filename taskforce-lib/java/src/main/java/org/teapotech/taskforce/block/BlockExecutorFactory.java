@@ -12,9 +12,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.taskforce.block.exception.BlockExecutorNotFoundException;
+import org.teapotech.taskforce.block.exception.InvalidBlockException;
 import org.teapotech.taskforce.block.exception.InvalidBlockExecutorException;
 import org.teapotech.taskforce.block.executor.BlockExecutor;
 import org.teapotech.taskforce.block.model.Block;
+import org.teapotech.taskforce.block.model.BlockValue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +52,7 @@ public class BlockExecutorFactory {
 	}
 
 	public BlockExecutor createBlockExecutor(Block block)
-			throws BlockExecutorNotFoundException, InvalidBlockExecutorException {
+			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		Class<BlockExecutor> c = registry.get(block.getType());
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + block.getType());
@@ -58,6 +60,35 @@ public class BlockExecutorFactory {
 		try {
 			Constructor<BlockExecutor> cons = c.getConstructor(Block.class);
 			return cons.newInstance(block);
+		} catch (Exception e) {
+			throw new InvalidBlockExecutorException(e.getMessage(), e);
+		}
+	}
+
+	public BlockExecutor createBlockExecutor(BlockValue blockValue)
+			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
+		String blockType = null;
+		if (blockValue.getBlock() != null) {
+			blockType = blockValue.getBlock().getType();
+		} else if (blockValue.getShadow() != null) {
+			blockType = blockValue.getShadow().getType();
+		} else {
+			throw new InvalidBlockException(
+					"Block value should have either block or shadow, name: " + blockValue.getName());
+		}
+		Class<BlockExecutor> c = registry.get(blockType);
+		if (c == null) {
+			throw new BlockExecutorNotFoundException("Block executor not register for type " + blockType);
+		}
+		try {
+			Constructor<BlockExecutor> cons = null;
+			if (blockValue.getBlock() != null) {
+				cons = c.getConstructor(Block.class);
+				return cons.newInstance(blockValue.getBlock());
+			} else {
+				cons = c.getConstructor(BlockValue.class);
+				return cons.newInstance(blockValue);
+			}
 		} catch (Exception e) {
 			throw new InvalidBlockExecutorException(e.getMessage(), e);
 		}

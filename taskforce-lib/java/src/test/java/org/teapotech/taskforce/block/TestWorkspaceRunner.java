@@ -20,6 +20,17 @@ public class TestWorkspaceRunner {
 
 	@Test
 	public void testRunWorkspace_01() throws Exception {
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
+			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			BlockExecutionContext context = new DefaultBlockExecutionContext();
+			BlockExecutorFactory factory = BlockExecutorFactory.build();
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context, factory);
+			wExecutor.execute(w);
+		}
+	}
+
+	@Test
+	public void testRunWorkspace_02() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			BlockExecutionContext context = new DefaultBlockExecutionContext();

@@ -41,4 +41,8 @@ public class Variable {
 		this.value = value;
 	}
 
+	@Override
+	public String toString() {
+		return "{" + id + ": " + this.id + ", var: " + this.value + "}";
+	}
 }

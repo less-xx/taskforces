@@ -50,7 +50,14 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 	private Boolean compare(Object v1, Object v2, String operator) throws Exception {
 
 		if (operator.equalsIgnoreCase("eq")) {
-			return Objects.equals(v1, v2);
+			if (v1 instanceof String) {
+				return Objects.equals(v1, v2.toString());
+			} else if (v2 instanceof String) {
+				return Objects.equals(v1.toString(), v2);
+			} else {
+				return Objects.equals(v1, v2);
+			}
+
 		} else if (!operator.equalsIgnoreCase("eq")) {
 			return !Objects.equals(v1, v2);
 		} else {
