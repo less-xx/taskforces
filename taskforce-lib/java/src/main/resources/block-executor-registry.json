@@ -2,46 +2,45 @@
 	{
 		"type": "variables_set",
 		"category": "Variables",
-		"executorClass": "org.teapotech.taskforce.block.executor.variable.VariableSetBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.variable.VariableSetBlockExecutor"
 	},
 	{
 		"type": "variables_get",
 		"category": "Variables",
-		"executorClass": "org.teapotech.taskforce.block.executor.variable.VariableGetBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.variable.VariableGetBlockExecutor"
 	},
 	{
 		"type": "controls_if",
 		"category": "Logic",
-		"executorClass": "org.teapotech.taskforce.block.executor.logic.ControlsIfBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.logic.ControlsIfBlockExecutor"
 	},
 	{
 		"type": "logic_compare",
 		"category": "Logic",
-		"executorClass": "org.teapotech.taskforce.block.executor.logic.LogicCompareBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.logic.LogicCompareBlockExecutor"
 	},
 	{
 		"type": "controls_repeat_ext",
 		"category": "Loop",
-		"executorClass": "org.teapotech.taskforce.block.executor.loop.ControlsRepeatExtBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.loop.ControlsRepeatExtBlockExecutor"
 	},
 	{
 		"type": "text",
 		"category": "Text",
-		"executorClass": "org.teapotech.taskforce.block.executor.text.TextBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.text.TextBlockExecutor"
 	},
 	{
 		"type": "text_join",
 		"category": "Text",
-		"executorClass": "org.teapotech.taskforce.block.executor.text.JoinTextBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.text.JoinTextBlockExecutor"
 	},
 	{
 		"type": "text_print",
 		"category": "Text",
-		"executorClass": "org.teapotech.taskforce.block.executor.text.PrintTextBlockExecutor"
+		"executorClass": "org.teapotech.block.executor.text.PrintTextBlockExecutor"
 	},
 	{
 		"type": "math_number",
 		"category": "Math",
-		"executorClass": "org.teapotech.taskforce.block.executor.math.MathNumberBlockExecutor"
-	}
+		"executorClass": "org.teapotech.block.executor.math.MathNumberBlockExecutor"}
 ]

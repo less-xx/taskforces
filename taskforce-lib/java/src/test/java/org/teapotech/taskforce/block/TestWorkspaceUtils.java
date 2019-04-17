@@ -12,8 +12,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
-import org.teapotech.taskforce.block.model.Workspace;
-import org.teapotech.taskforce.block.util.WorkspaceUtils;
+import org.teapotech.block.model.Workspace;
+import org.teapotech.block.util.WorkspaceUtils;
 
 /**
  * @author jiangl
