@@ -10,6 +10,11 @@
 		"executorClass": "org.teapotech.block.executor.variable.VariableGetBlockExecutor"
 	},
 	{
+		"type": "math_change",
+		"category": "Variables",
+		"executorClass": "org.teapotech.block.executor.variable.MathChangeBlockExecutor"
+	},
+	{
 		"type": "controls_if",
 		"category": "Logic",
 		"executorClass": "org.teapotech.block.executor.logic.ControlsIfBlockExecutor"
@@ -23,6 +28,16 @@
 		"type": "controls_repeat_ext",
 		"category": "Loop",
 		"executorClass": "org.teapotech.block.executor.loop.ControlsRepeatExtBlockExecutor"
+	},
+	{
+		"type": "controls_whileUntil",
+		"category": "Loop",
+		"executorClass": "org.teapotech.block.executor.loop.ControlsWhileUntilBlockExecutor"
+	},
+	{
+		"type": "controls_flow_statements",
+		"category": "Loop",
+		"executorClass": "org.teapotech.block.executor.loop.ControlsFlowStatementsBlockExecutor"
 	},
 	{
 		"type": "text",
@@ -42,5 +57,21 @@
 	{
 		"type": "math_number",
 		"category": "Math",
-		"executorClass": "org.teapotech.block.executor.math.MathNumberBlockExecutor"}
+		"executorClass": "org.teapotech.block.executor.math.MathNumberBlockExecutor"
+	},
+	{
+		"type": "math_random_int",
+		"category": "Math",
+		"executorClass": "org.teapotech.block.executor.math.MathRandomIntBlockExecutor"
+	},
+	{
+		"type": "math_round",
+		"category": "Math",
+		"executorClass": "org.teapotech.block.executor.math.MathRoundBlockExecutor"
+	},
+	{
+		"type": "math_arithmetic",
+		"category": "Math",
+		"executorClass": "org.teapotech.block.executor.math.MathArithmeticBlockExecutor"
+	}
 ]

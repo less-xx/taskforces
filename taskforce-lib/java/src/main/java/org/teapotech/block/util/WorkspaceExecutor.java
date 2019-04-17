@@ -26,11 +26,9 @@ public class WorkspaceExecutor {
 	private static final Logger LOG = LoggerFactory.getLogger(WorkspaceExecutor.class);
 
 	private final BlockExecutionContext context;
-	private final BlockExecutorFactory factory;
 
-	public WorkspaceExecutor(BlockExecutionContext context, BlockExecutorFactory factory) {
+	public WorkspaceExecutor(BlockExecutionContext context) {
 		this.context = context;
-		this.factory = factory;
 	}
 
 	public BlockExecutionContext getBlockExecutionContext() {
@@ -38,7 +36,7 @@ public class WorkspaceExecutor {
 	}
 
 	public BlockExecutorFactory getBlockExecutorFactory() {
-		return factory;
+		return context.getBlockExecutorFactory();
 	}
 
 	public void execute(Workspace workspace)
@@ -48,8 +46,8 @@ public class WorkspaceExecutor {
 		List<Variable> variables = workspace.getVariables();
 		if (variables != null) {
 			variables.stream().forEach(v -> {
-				context.getVariables().put(v.getId(), v);
-				LOG.debug("Added variable {}", v);
+				context.setVariable(v.getValue(), "");
+				LOG.debug("Added variable: {}", v.getValue());
 			});
 		}
 

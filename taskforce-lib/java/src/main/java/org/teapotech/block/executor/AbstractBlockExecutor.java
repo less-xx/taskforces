@@ -34,9 +34,17 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 	@Override
 	public final Object execute(BlockExecutionContext context) throws BlockExecutionException {
 		try {
-			LOG.debug("Executing block, type: {}, id: {}", block.getType(), block.getId());
+			if (this.block != null) {
+				LOG.debug("Executing block, type: {}, id: {}", block.getType(), block.getId());
+			} else {
+				LOG.debug("Executing shadow, type: {}, id: {}", shadow.getType(), shadow.getId());
+			}
 			Object result = doExecute(context);
-			LOG.debug("Block executed, type: {}, id: {}", block.getType(), block.getId());
+			if (this.block != null) {
+				LOG.debug("Block executed, type: {}, id: {}", block.getType(), block.getId());
+			} else {
+				LOG.debug("Shadow executed, type: {}, id: {}", shadow.getType(), shadow.getId());
+			}
 			return result;
 		} catch (Exception e) {
 			if (e instanceof BlockExecutionException) {

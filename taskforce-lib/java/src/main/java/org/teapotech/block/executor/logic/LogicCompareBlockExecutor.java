@@ -14,6 +14,7 @@ import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Field;
+import org.teapotech.block.util.BlockExecutorUtils;
 
 /**
  * @author jiangl
@@ -30,7 +31,7 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
-		Field opField = this.block.getField();
+		Field opField = this.block.getFieldByName("OP", this.block.getFields().get(0));
 		if (opField == null) {
 			throw new InvalidBlockExecutorException("Missing operator field");
 		}
@@ -41,8 +42,8 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 		}
 		BlockValue valueB0 = values.get(0);
 		BlockValue valueB1 = values.get(1);
-		Object value0 = context.getBlockExecutorFactory().createBlockExecutor(valueB0).execute(context);
-		Object value1 = context.getBlockExecutorFactory().createBlockExecutor(valueB1).execute(context);
+		Object value0 = BlockExecutorUtils.execute(valueB0, context);
+		Object value1 = BlockExecutorUtils.execute(valueB1, context);
 		return compare(value0, value1, operator);
 	}
 
@@ -61,7 +62,22 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 		} else if (operator.equalsIgnoreCase("ne")) {
 			return !Objects.equals(v1, v2);
 		} else {
-			if (!v1.getClass().equals(v2.getClass())) {
+			if (ClassUtils.isAssignable(v1.getClass(), Number.class)
+					&& ClassUtils.isAssignable(v2.getClass(), Number.class)) {
+				Number n1 = (Number) v1;
+				Number n2 = (Number) v2;
+				if (operator.equalsIgnoreCase("gt")) {
+					return n1.doubleValue() > n2.doubleValue();
+				} else if (operator.equalsIgnoreCase("gte")) {
+					return n1.doubleValue() >= n2.doubleValue();
+				} else if (operator.equalsIgnoreCase("lt")) {
+					return n1.doubleValue() < n2.doubleValue();
+				} else if (operator.equalsIgnoreCase("lte")) {
+					return n1.doubleValue() <= n2.doubleValue();
+				}
+				throw new InvalidBlockExecutorException("Unknown comparision operator " + operator);
+
+			} else if (!v1.getClass().equals(v2.getClass())) {
 				throw new BlockExecutionException(
 						"Types of the inputs are not identical. " + v1.getClass() + " vs " + v2.getClass());
 			}
@@ -71,11 +87,11 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 				Comparable c2 = (Comparable) v2;
 				if (operator.equalsIgnoreCase("gt")) {
 					return c1.compareTo(c2) > 0;
-				} else if (operator.equalsIgnoreCase("ge")) {
+				} else if (operator.equalsIgnoreCase("gte")) {
 					return c1.compareTo(c2) >= 0;
 				} else if (operator.equalsIgnoreCase("lt")) {
 					return c1.compareTo(c2) < 0;
-				} else if (operator.equalsIgnoreCase("le")) {
+				} else if (operator.equalsIgnoreCase("lte")) {
 					return c1.compareTo(c2) <= 0;
 				}
 				throw new InvalidBlockExecutorException("Unknown comparision operator " + operator);
@@ -83,7 +99,6 @@ public class LogicCompareBlockExecutor extends AbstractBlockExecutor {
 			throw new BlockExecutionException(
 					"Type of the inputs are not comparable. " + v1.getClass());
 		}
-
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.teapotech.block.BlockExecutorFactory;
-import org.teapotech.block.model.Variable;
 
 /**
  * @author jiangl
@@ -15,8 +14,16 @@ import org.teapotech.block.model.Variable;
  */
 public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
-	private final BlockExecutorFactory blockExecutorFactory = BlockExecutorFactory.build();
-	private final Map<String, Variable> variables = new HashMap<>();
+	private final BlockExecutorFactory blockExecutorFactory;
+	private final Map<String, Object> variables = new HashMap<>();
+
+	public DefaultBlockExecutionContext(BlockExecutorFactory blockExecutorFactory) {
+		this.blockExecutorFactory = blockExecutorFactory;
+	}
+
+	public DefaultBlockExecutionContext() {
+		this.blockExecutorFactory = BlockExecutorFactory.build();
+	}
 
 	@Override
 	public BlockExecutorFactory getBlockExecutorFactory() {
@@ -24,8 +31,12 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	}
 
 	@Override
-	public Map<String, Variable> getVariables() {
-		return variables;
+	public Object getVariable(String id) {
+		return variables.get(id);
 	}
 
+	@Override
+	public void setVariable(String id, Object value) {
+		variables.put(id, value);
+	}
 }

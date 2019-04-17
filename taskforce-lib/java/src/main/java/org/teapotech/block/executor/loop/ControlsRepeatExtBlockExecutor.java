@@ -29,7 +29,7 @@ public class ControlsRepeatExtBlockExecutor extends AbstractBlockExecutor {
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 		BlockValue timesBv = this.block.getValues().get(0);
 
-		Object times = context.getBlockExecutorFactory().createBlockExecutor(timesBv).execute(context);
+		Object times = BlockExecutorUtils.execute(timesBv, context);
 		if (!(times instanceof Integer)) {
 			throw new BlockExecutionException(
 					"The value should be integer. Block type: " + this.block.getType() + ", id: " + this.block.getId());

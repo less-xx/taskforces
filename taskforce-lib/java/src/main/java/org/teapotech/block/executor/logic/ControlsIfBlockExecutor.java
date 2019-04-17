@@ -10,6 +10,7 @@ import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockMutation;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.block.util.BlockExecutorUtils;
 
 /**
  * @author jiangl
@@ -30,30 +31,28 @@ public class ControlsIfBlockExecutor extends AbstractBlockExecutor {
 		List<BlockValue> values = this.block.getValues();
 		int idx = 0;
 		Block ifCondBlock = values.get(idx).getBlock();
-		Boolean ifCondition = (Boolean) context.getBlockExecutorFactory().createBlockExecutor(ifCondBlock)
-				.execute(context);
+		Boolean ifCondition = (Boolean) BlockExecutorUtils.execute(ifCondBlock, context);
 		if (ifCondition) {
 			Block statBlock = this.block.getStatements().get(idx).getBlock();
-			return context.getBlockExecutorFactory().createBlockExecutor(statBlock)
-					.execute(context);
-		} else if (mut.getElseif() != null) {
+			return BlockExecutorUtils.execute(statBlock, context);
+		}
+
+		if (mut.getElseif() != null) {
 			idx += 1;
 			while (idx <= mut.getElseif()) {
 				ifCondBlock = values.get(idx).getBlock();
-				ifCondition = (Boolean) context.getBlockExecutorFactory().createBlockExecutor(ifCondBlock)
-						.execute(context);
+				ifCondition = (Boolean) BlockExecutorUtils.execute(ifCondBlock, context);
 				if (ifCondition) {
 					Block statBlock = this.block.getStatements().get(idx).getBlock();
-					return context.getBlockExecutorFactory().createBlockExecutor(statBlock)
-							.execute(context);
+					return BlockExecutorUtils.execute(statBlock, context);
 				}
 				idx += 1;
 			}
-		} else if (mut.getElse() != null) {
-			idx += 1;
+		}
+
+		if (mut.getElse() != null) {
 			Block statBlock = this.block.getStatements().get(idx).getBlock();
-			return context.getBlockExecutorFactory().createBlockExecutor(statBlock)
-					.execute(context);
+			return BlockExecutorUtils.execute(statBlock, context);
 		}
 		return null;
 	}

@@ -27,7 +27,7 @@ public class TextBlockExecutor extends AbstractBlockExecutor {
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 		Field field = null;
 		if (this.block != null) {
-			field = this.block.getField();
+			field = this.block.getFieldByName("TEXT", this.block.getFields().get(0));
 		} else {
 			field = this.shadow.getField();
 		}

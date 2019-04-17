@@ -31,16 +31,17 @@ public class TestWorkspaceUtils {
 			assertNotNull(w.getVariables().get(0));
 			assertEquals("b", w.getVariables().get(0).getValue());
 			assertNotNull(w.getBlock());
-			assertNotNull(w.getBlock().getField());
-			assertEquals("b", w.getBlock().getField().getValue());
+			assertNotNull(w.getBlock().getFields());
+			assertEquals("b", w.getBlock().getFields().get(0).getValue());
 			assertNotNull(w.getBlock().getValues());
 			assertNotNull(w.getBlock().getValues().get(0));
 			assertNotNull(w.getBlock().getNext());
 			assertNotNull(w.getBlock().getNext().getBlock());
 			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0));
 			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getField());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getField().getValue());
+			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getFields());
+			assertNotNull(
+					w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getFields().get(0).getValue());
 			assertNotNull(w.getBlock().getNext().getBlock().getNext().getBlock().getStatements());
 			assertEquals(4, w.getBlock().getNext().getBlock().getNext().getBlock().getStatements().size());
 		}

@@ -8,6 +8,7 @@ import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.block.util.BlockExecutorUtils;
 
 /**
  * @author jiangl
@@ -29,7 +30,7 @@ public class PrintTextBlockExecutor extends AbstractBlockExecutor {
 			throw new InvalidBlockException(
 					"Missing value. Block type: " + this.block.getType() + ", id: " + this.block.getId());
 		}
-		Object value = context.getBlockExecutorFactory().createBlockExecutor(valueBlock).execute(context);
+		Object value = BlockExecutorUtils.execute(valueBlock, context);
 		System.out.println(value);
 		return null;
 	}

@@ -1,11 +1,9 @@
 package org.teapotech.block.executor.variable;
 
-import java.util.Map;
-
+import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
-import org.teapotech.block.model.Variable;
 
 /**
  * 
@@ -21,10 +19,12 @@ public class VariableGetBlockExecutor extends AbstractBlockExecutor {
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 
-		Map<String, Variable> variables = context.getVariables();
-		String fieldId = this.block.getField().getId();
-		Variable var = variables.get(fieldId);
-		return var.getValue();
+		String var = this.block.getFieldByName("VAR", this.block.getFields().get(0)).getValue();
+		Object value = context.getVariable(var);
+		if (value == null) {
+			throw new InvalidBlockException("Cannot find variable: " + var);
+		}
+		return value;
 	}
 
 }

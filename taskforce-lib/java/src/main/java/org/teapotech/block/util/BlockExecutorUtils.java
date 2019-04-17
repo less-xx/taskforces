@@ -25,6 +25,11 @@ public class BlockExecutorUtils {
 		Next next = block.getNext();
 		while (next != null) {
 			result = context.getBlockExecutorFactory().createBlockExecutor(next.getBlock()).execute(context);
+			if ("BREAK".equals(result)) {
+				break;
+			} else if ("CONTINUE".equals(result)) {
+				continue;
+			}
 			next = next.getBlock().getNext();
 		}
 		return result;
