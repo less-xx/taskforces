@@ -9,17 +9,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.exception.BlockExecutorNotFoundException;
 import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.exception.InvalidBlockExecutorException;
 import org.teapotech.block.executor.BlockExecutor;
+import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spotify.docker.client.DockerClient;
 
 /**
  * @author jiangl
@@ -30,10 +33,15 @@ public class BlockExecutorFactory {
 	private static Logger LOG = LoggerFactory.getLogger(BlockExecutorFactory.class);
 
 	private final Map<String, Class<BlockExecutor>> registry = new HashMap<>();
+	private final DockerClient dockerClient;
 
 	public static BlockExecutorFactory build() {
+		return build(null);
+	}
+
+	public static BlockExecutorFactory build(DockerClient client) {
 		ObjectMapper mapper = new ObjectMapper();
-		BlockExecutorFactory fac = new BlockExecutorFactory();
+		BlockExecutorFactory fac = new BlockExecutorFactory(client);
 		try (InputStream in = BlockExecutorFactory.class.getClassLoader()
 				.getResourceAsStream("block-executor-registry.json");) {
 			List<BlockRegistry> regs = mapper.readValue(in, new TypeReference<List<BlockRegistry>>() {
@@ -51,6 +59,14 @@ public class BlockExecutorFactory {
 		return fac;
 	}
 
+	private BlockExecutorFactory() {
+		this(null);
+	}
+
+	private BlockExecutorFactory(DockerClient dockerClient) {
+		this.dockerClient = dockerClient;
+	}
+
 	public BlockExecutor createBlockExecutor(Block block)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		Class<BlockExecutor> c = registry.get(block.getType());
@@ -58,8 +74,14 @@ public class BlockExecutorFactory {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + block.getType());
 		}
 		try {
-			Constructor<BlockExecutor> cons = c.getConstructor(Block.class);
-			return cons.newInstance(block);
+			if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
+				Constructor<BlockExecutor> cons = c.getConstructor(Block.class, DockerClient.class);
+				return cons.newInstance(block, this.dockerClient);
+			} else {
+				Constructor<BlockExecutor> cons = c.getConstructor(Block.class);
+				return cons.newInstance(block);
+			}
+
 		} catch (Exception e) {
 			throw new InvalidBlockExecutorException(e.getMessage(), e);
 		}
@@ -83,11 +105,22 @@ public class BlockExecutorFactory {
 		try {
 			Constructor<BlockExecutor> cons = null;
 			if (blockValue.getBlock() != null) {
-				cons = c.getConstructor(Block.class);
-				return cons.newInstance(blockValue.getBlock());
+				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
+					cons = c.getConstructor(Block.class, DockerClient.class);
+					return cons.newInstance(blockValue.getBlock(), this.dockerClient);
+				} else {
+					cons = c.getConstructor(Block.class);
+					return cons.newInstance(blockValue.getBlock());
+				}
 			} else {
-				cons = c.getConstructor(BlockValue.class);
-				return cons.newInstance(blockValue);
+				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
+					cons = c.getConstructor(BlockValue.class, DockerClient.class);
+					return cons.newInstance(blockValue, this.dockerClient);
+				} else {
+					cons = c.getConstructor(BlockValue.class);
+					return cons.newInstance(blockValue);
+				}
+
 			}
 		} catch (Exception e) {
 			throw new InvalidBlockExecutorException(e.getMessage(), e);

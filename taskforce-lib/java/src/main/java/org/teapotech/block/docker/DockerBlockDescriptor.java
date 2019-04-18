@@ -1,13 +1,13 @@
 /**
  * 
  */
-package org.teapotech.taskforce.dto;
+package org.teapotech.block.docker;
 
 /**
  * @author jiangl
  *
  */
-public class TaskDescriptor {
+public class DockerBlockDescriptor {
 
 	private String id;
 	private String name;

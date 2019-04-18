@@ -3,6 +3,9 @@
  */
 package org.teapotech.taskforce.provider;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -33,4 +36,9 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 		this.taskforceId = taskforceId;
 	}
 
+	@Override
+	public Collection<String> getAllKeys() {
+		return redisTemplate.boundHashOps(taskforceId).keys().stream()
+				.map(k -> (String) k).collect(Collectors.toSet());
+	}
 }

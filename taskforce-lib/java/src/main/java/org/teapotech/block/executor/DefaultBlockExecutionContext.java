@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.executor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,5 +39,10 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public void setVariable(String id, Object value) {
 		variables.put(id, value);
+	}
+
+	@Override
+	public Collection<String> getAllVariableNames() {
+		return variables.keySet();
 	}
 }

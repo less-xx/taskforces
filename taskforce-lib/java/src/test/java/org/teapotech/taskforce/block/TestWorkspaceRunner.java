@@ -54,6 +54,11 @@ public class TestWorkspaceRunner {
 			BlockExecutionContext context = new DefaultBlockExecutionContext(factory);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
+
+			for (String name : context.getAllVariableNames()) {
+				Object value = context.getVariable(name);
+				System.out.println(name + "=" + value);
+			}
 		}
 	}
 

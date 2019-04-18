@@ -3,6 +3,8 @@
  */
 package org.teapotech.block.executor;
 
+import java.util.Collection;
+
 import org.teapotech.block.BlockExecutorFactory;
 
 /**
@@ -16,5 +18,7 @@ public interface BlockExecutionContext {
 	Object getVariable(String id);
 
 	void setVariable(String id, Object value);
+
+	Collection<String> getAllVariableNames();
 
 }

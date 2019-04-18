@@ -3,6 +3,7 @@
  */
 package org.teapotech.taskforce.provider;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -29,4 +30,8 @@ public class InMemoryTaskforceStorageProvider implements TaskforceStorageProvide
 		valueMap.put(key, value);
 	}
 
+	@Override
+	public Collection<String> getAllKeys() {
+		return valueMap.keySet();
+	}
 }
