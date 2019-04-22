@@ -32,7 +32,7 @@ public class BlockExecutorFactory {
 
 	private static Logger LOG = LoggerFactory.getLogger(BlockExecutorFactory.class);
 
-	private final Map<String, Class<BlockExecutor>> registry = new HashMap<>();
+	private final Map<String, Class<? extends BlockExecutor>> registry = new HashMap<>();
 	private final DockerClient dockerClient;
 
 	public static BlockExecutorFactory build() {
@@ -67,18 +67,23 @@ public class BlockExecutorFactory {
 		this.dockerClient = dockerClient;
 	}
 
+	public void registerExecutor(String blockType, Class<? extends BlockExecutor> executorClass) {
+		this.registry.put(blockType, executorClass);
+		LOG.info("Registered block executor {} = {}", blockType, executorClass);
+	}
+
 	public BlockExecutor createBlockExecutor(Block block)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
-		Class<BlockExecutor> c = registry.get(block.getType());
+		Class<? extends BlockExecutor> c = registry.get(block.getType());
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + block.getType());
 		}
 		try {
 			if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
-				Constructor<BlockExecutor> cons = c.getConstructor(Block.class, DockerClient.class);
+				Constructor<? extends BlockExecutor> cons = c.getConstructor(Block.class, DockerClient.class);
 				return cons.newInstance(block, this.dockerClient);
 			} else {
-				Constructor<BlockExecutor> cons = c.getConstructor(Block.class);
+				Constructor<? extends BlockExecutor> cons = c.getConstructor(Block.class);
 				return cons.newInstance(block);
 			}
 
@@ -98,12 +103,12 @@ public class BlockExecutorFactory {
 			throw new InvalidBlockException(
 					"Block value should have either block or shadow, name: " + blockValue.getName());
 		}
-		Class<BlockExecutor> c = registry.get(blockType);
+		Class<? extends BlockExecutor> c = registry.get(blockType);
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + blockType);
 		}
 		try {
-			Constructor<BlockExecutor> cons = null;
+			Constructor<? extends BlockExecutor> cons = null;
 			if (blockValue.getBlock() != null) {
 				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 					cons = c.getConstructor(Block.class, DockerClient.class);

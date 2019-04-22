@@ -17,5 +17,7 @@ public interface TaskforceStorageProvider {
 
 	void put(String key, Object value);
 
+	void remove(String key);
+
 	Collection<String> getAllKeys();
 }

@@ -31,6 +31,11 @@ public class InMemoryTaskforceStorageProvider implements TaskforceStorageProvide
 	}
 
 	@Override
+	public void remove(String key) {
+		valueMap.remove(key);
+	}
+
+	@Override
 	public Collection<String> getAllKeys() {
 		return valueMap.keySet();
 	}

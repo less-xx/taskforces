@@ -1,34 +1,15 @@
 {
 	"type": "resource_fetcher",
-	"message0": "fetch resource from path %1 output type %2",
+	"message0": "fetch content from %1",
 	"args0": [
 		{
 			"type": "input_value",
 			"name": "path",
 			"check": "String"
-		},
-		{
-			"type": "field_dropdown",
-			"name": "defined_output_type",
-			"options": [
-				[
-					"String",
-					"String"
-				],
-				[
-					"List",
-					"List"
-				],
-				[
-					"Object",
-					"Object"
-				]
-			]
 		}
 	],
-	"inputsInline": true,
 	"output": null,
 	"colour": 230,
-	"tooltip": "To fetch resource content from given path",
-	"helpUrl": "http://somewhere.com"
+	"tooltip": "",
+	"helpUrl": ""
 }

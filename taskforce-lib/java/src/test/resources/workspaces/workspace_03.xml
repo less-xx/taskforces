@@ -1,15 +1,14 @@
 <xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
 	<variables>
-		<variable type="" id=",L?hn,r+5QK4~R(Aj|,A">output0</variable>
+		<variable type="" id="SSQq%~url%p:*XHtbVY@">result</variable>
 	</variables>
-	<block type="variables_set" id="@6rZm}3!`EQZgcK5@Qbf" x="12" y="87">
-		<field name="VAR" id=",L?hn,r+5QK4~R(Aj|,A" variabletype="">output0</field>
+	<block type="variables_set" id="0aX)p|60X~+7OhSh~ERU" x="12" y="38">
+		<field name="VAR" id="SSQq%~url%p:*XHtbVY@" variabletype="">result</field>
 		<value name="VALUE">
-			<block type="resource_fetcher" id="+ToQ6AUz;8y(X(_@|OUm">
-				<field name="defined_output_type">String</field>
+			<block type="resource_fetcher" id="BZA~CV2SRdDKO4Y;?gf7">
 				<value name="path">
-					<block type="text" id="vyd_.?uTxHQ)?D)xx/f/">
-						<field name="TEXT">http://google.com</field>
+					<block type="text" id="?#4023bZ.#|~Z9|)e)$X">
+						<field name="TEXT">http://bing.com</field>
 					</block>
 				</value>
 			</block>

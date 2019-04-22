@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.teapotech.taskforce.context.TaskforceContext;
-import org.teapotech.taskforce.leader.TaskForceLeader;
 
 /**
  * @author jiangl
@@ -24,9 +23,6 @@ public class TaskforceLoader implements CommandLineRunner {
 	@Autowired
 	TaskforceContext taskforceContext;
 
-	@Autowired
-	TaskForceLeader taskforceLeader;
-
 	public static void main(String[] args) {
 		// LOG.info("Hello world");
 		System.exit(SpringApplication.exit(SpringApplication.run(TaskforceLoader.class, args)));
@@ -37,11 +33,6 @@ public class TaskforceLoader implements CommandLineRunner {
 
 		LOG.info("Taskforce context initialized. {}", taskforceContext);
 
-		taskforceLeader.getAllTaskDescriptors().forEach(td -> {
-			System.out.println(td.getId() + ", " + td.getName() + ", " + td.getVersion());
-		});
-
-		LOG.info("Taskforce leader initialized. {}", taskforceLeader);
 	}
 
 }

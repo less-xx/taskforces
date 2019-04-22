@@ -3,4 +3,7 @@ spring:
     version: ^project.version^
     name: ^project.name^
   banner.location: classpath:/banner.txt
-    
+
+logging:
+  pattern.console:
+  file: ${LOG_FILE_PATH:/task/logs/output.log}

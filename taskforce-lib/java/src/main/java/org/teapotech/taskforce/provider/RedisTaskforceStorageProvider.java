@@ -37,6 +37,11 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 	}
 
 	@Override
+	public void remove(String key) {
+		redisTemplate.boundHashOps(taskforceId).delete(key);
+	}
+
+	@Override
 	public Collection<String> getAllKeys() {
 		return redisTemplate.boundHashOps(taskforceId).keys().stream()
 				.map(k -> (String) k).collect(Collectors.toSet());

@@ -3,6 +3,8 @@
  */
 package org.teapotech.block.docker;
 
+import org.teapotech.block.executor.docker.DockerBlockValueType;
+
 /**
  * @author jiangl
  *
@@ -15,8 +17,8 @@ public class DockerBlockDescriptor {
 	private String description;
 	private boolean active;
 	private String createdTime;
-	private final InputDescriptor inputDescriptor = new InputDescriptor();
-	private final OutputDescriptor outputDescriptor = new OutputDescriptor();
+	private DockerBlockValueType inputValueType = DockerBlockValueType.TextPlain;
+	private DockerBlockValueType outputValueType = DockerBlockValueType.TextPlain;
 
 	public String getId() {
 		return id;
@@ -66,35 +68,20 @@ public class DockerBlockDescriptor {
 		this.active = active;
 	}
 
-	public InputDescriptor getInputDescriptor() {
-		return inputDescriptor;
+	public DockerBlockValueType getInputValueType() {
+		return inputValueType;
 	}
 
-	public OutputDescriptor getOutputDescriptor() {
-		return outputDescriptor;
+	public void setInputValueType(DockerBlockValueType inputValueType) {
+		this.inputValueType = inputValueType;
 	}
 
-	public static class InputDescriptor {
-		private String type;
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
+	public DockerBlockValueType getOutputValueType() {
+		return outputValueType;
 	}
 
-	public static class OutputDescriptor {
-		private String type;
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
+	public void setOutputValueType(DockerBlockValueType outputValueType) {
+		this.outputValueType = outputValueType;
 	}
+
 }

@@ -15,12 +15,6 @@
 
 		<dependency>
 			<groupId>org.teapotech.taskforce</groupId>
-			<artifactId>taskforce-context</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.teapotech.taskforce</groupId>
 			<artifactId>taskforce-lib</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -38,13 +32,6 @@
 			<version>1.4</version>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/com.spotify/docker-client -->
-		<dependency>
-			<groupId>com.spotify</groupId>
-			<artifactId>docker-client</artifactId>
-			<version>8.15.2</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

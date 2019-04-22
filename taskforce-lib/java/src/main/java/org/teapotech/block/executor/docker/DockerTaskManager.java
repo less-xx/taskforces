@@ -1,18 +1,15 @@
 /**
  * 
  */
-package org.teapotech.taskforce.leader.docker;
+package org.teapotech.block.executor.docker;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.teapotech.taskforce.context.TaskforceContext;
-import org.teapotech.taskforce.dto.TaskDescriptor;
-import org.teapotech.taskforce.exception.TaskDescriptorException;
-import org.teapotech.taskforce.exception.TaskExecutionException;
-import org.teapotech.taskforce.leader.TaskForceLeader;
+import org.teapotech.block.docker.DockerBlockDescriptor;
+import org.teapotech.block.exception.InvalidBlockException;
 
 import com.google.common.collect.ImmutableList;
 import com.spotify.docker.client.DockerClient;
@@ -23,30 +20,22 @@ import com.spotify.docker.client.messages.Image;
  * @author jiangl
  *
  */
-public class TaskforceLeaderDockerImpl implements TaskForceLeader {
+public class DockerTaskManager {
 
 	public static String LABEL_TASK_NAME = "taskforce.task.name";
 
-	final TaskforceContext taskforceContext;
 	final DockerClient dockerClient;
 
-	public TaskforceLeaderDockerImpl(TaskforceContext context, DockerClient dockerClient) {
-		this.taskforceContext = context;
+	public DockerTaskManager(DockerClient dockerClient) {
 		this.dockerClient = dockerClient;
 	}
 
-	@Override
-	public TaskforceContext getContext() {
-		return this.taskforceContext;
-	}
-
-	@Override
-	public Collection<TaskDescriptor> getAllTaskDescriptors() throws TaskDescriptorException {
+	public Collection<DockerBlockDescriptor> getAllTaskDescriptors() throws InvalidBlockException {
 		List<Image> images;
 		try {
 			images = dockerClient.listImages(DockerClient.ListImagesParam.withLabel(LABEL_TASK_NAME));
 
-			Map<String, TaskDescriptor> results = new HashMap<>();
+			Map<String, DockerBlockDescriptor> results = new HashMap<>();
 			for (Image image : images) {
 				ImmutableList<String> tags = image.repoTags();
 				if (tags == null) {
@@ -64,9 +53,9 @@ public class TaskforceLeaderDockerImpl implements TaskForceLeader {
 							version = tagArray[1];
 						}
 					}
-					TaskDescriptor td = results.get(image.id());
+					DockerBlockDescriptor td = results.get(image.id());
 					if (td == null) {
-						td = new TaskDescriptor();
+						td = new DockerBlockDescriptor();
 						td.setId(image.id());
 						td.setCreatedTime(image.created());
 						td.setName(tagArray[0]);
@@ -82,19 +71,18 @@ public class TaskforceLeaderDockerImpl implements TaskForceLeader {
 			}
 			return results.values();
 		} catch (DockerException | InterruptedException e) {
-			throw new TaskDescriptorException(e.getMessage(), e);
+			throw new InvalidBlockException(e.getMessage(), e);
 		}
 	}
 
-	@Override
-	public TaskDescriptor getTaskDescriptorByName(String name) throws TaskDescriptorException {
+	public DockerBlockDescriptor getTaskDescriptorByName(String name) throws InvalidBlockException {
 		try {
 			List<Image> images = dockerClient.listImages(DockerClient.ListImagesParam.byName(name));
 			if (images == null || images.isEmpty()) {
-				return null;
+				throw new InvalidBlockException("Docker task image does not exist. Name: " + name);
 			}
 			Image img = images.get(0);
-			TaskDescriptor td = new TaskDescriptor();
+			DockerBlockDescriptor td = new DockerBlockDescriptor();
 			td.setId(img.id());
 			td.setCreatedTime(img.created());
 			for (String tag : img.repoTags()) {
@@ -118,14 +106,8 @@ public class TaskforceLeaderDockerImpl implements TaskForceLeader {
 			}
 			return td;
 		} catch (DockerException | InterruptedException e) {
-			throw new TaskDescriptorException(e.getMessage(), e);
+			throw new InvalidBlockException(e.getMessage(), e);
 		}
-	}
-
-	@Override
-	public void execute(TaskDescriptor taskDescriptor) throws TaskExecutionException {
-		// TODO Auto-generated method stub
-
 	}
 
 }

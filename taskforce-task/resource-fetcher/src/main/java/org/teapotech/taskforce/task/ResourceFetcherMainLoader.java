@@ -1,4 +1,4 @@
-package org.teapotech.taskforce.expert;
+package org.teapotech.taskforce.task;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,10 +9,10 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.teapotech.taskforce.context.TaskforceContext;
 
 @SpringBootApplication
 public class ResourceFetcherMainLoader implements CommandLineRunner {
@@ -22,12 +22,11 @@ public class ResourceFetcherMainLoader implements CommandLineRunner {
 	@Autowired
 	ResourceFetcher resourceFetcher;
 
-	@Autowired(required = false)
-	TaskforceContext taskForceContext;
-
 	public static void main(String[] args) {
-		// LOG.info("Hello world");
-		System.exit(SpringApplication.exit(SpringApplication.run(ResourceFetcherMainLoader.class, args)));
+
+		SpringApplication app = new SpringApplication(ResourceFetcherMainLoader.class);
+		app.setBannerMode(Banner.Mode.OFF);
+		System.exit(SpringApplication.exit(app.run(args)));
 	}
 
 	@Override
@@ -44,7 +43,8 @@ public class ResourceFetcherMainLoader implements CommandLineRunner {
 			System.out.println(output);
 		} catch (ParseException exp) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("resource-loader <URL>", options);
+			formatter.printHelp("fetch-resource <URL>", options);
+			System.exit(1);
 		}
 	}
 
