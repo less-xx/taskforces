@@ -4,10 +4,9 @@
 package org.teapotech.block.executor;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.taskforce.provider.TaskforceStorageProvider;
 
 /**
  * @author jiangl
@@ -16,14 +15,21 @@ import org.teapotech.block.BlockExecutorFactory;
 public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	private final BlockExecutorFactory blockExecutorFactory;
-	private final Map<String, Object> variables = new HashMap<>();
+	private final String workspaceId;
+	private TaskforceStorageProvider storageProvider;
 
-	public DefaultBlockExecutionContext(BlockExecutorFactory blockExecutorFactory) {
+	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory) {
 		this.blockExecutorFactory = blockExecutorFactory;
+		this.workspaceId = workspaceId;
 	}
 
-	public DefaultBlockExecutionContext() {
+	public DefaultBlockExecutionContext(String workspaceId) {
 		this.blockExecutorFactory = BlockExecutorFactory.build();
+		this.workspaceId = workspaceId;
+	}
+
+	public void setStorageProvider(TaskforceStorageProvider storageProvider) {
+		this.storageProvider = storageProvider;
 	}
 
 	@Override
@@ -33,16 +39,21 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public Object getVariable(String id) {
-		return variables.get(id);
+		return storageProvider.get(id);
 	}
 
 	@Override
 	public void setVariable(String id, Object value) {
-		variables.put(id, value);
+		storageProvider.put(id, value);
 	}
 
 	@Override
 	public Collection<String> getAllVariableNames() {
-		return variables.keySet();
+		return storageProvider.getAllKeys();
+	}
+
+	@Override
+	public String getWorkspaceId() {
+		return workspaceId;
 	}
 }

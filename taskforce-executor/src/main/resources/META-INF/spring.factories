@@ -2,5 +2,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.teapotech.taskforce.config.TaskForceContextAutoConfig,\
 org.teapotech.taskforce.config.TaskforceStorageAutoConfig,\
 org.teapotech.taskforce.config.docker.TaskExecutionDockerDriverAutoConfig,\
-org.teapotech.taskforce.config.docker.TaskforceLeaderDockerAutoConfig
+org.teapotech.taskforce.config.docker.TaskDockerExecutorAutoConfig
 

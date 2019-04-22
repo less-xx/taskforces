@@ -6,6 +6,6 @@ spring:
   
 taskforce:
   id: ${TASKFORCE_ID:}
-  storage-provider: ${TASK_STORAGE_PROVIDER:org.teapotech.taskforce.provider.InMemoryTaskforceResultStorageProvider}
+  storage-provider: ${TASK_STORAGE_PROVIDER:org.teapotech.taskforce.provider.InMemoryTaskforceStorageProvider}
   
 taskforce.execution.driver: docker

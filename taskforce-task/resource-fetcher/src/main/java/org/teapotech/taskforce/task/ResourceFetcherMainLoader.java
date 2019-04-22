@@ -12,9 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.teapotech.taskforce.task.TaskExecutionUtil.TaskExecutionMode;
 
 @SpringBootApplication
+@EnableAutoConfiguration
+@ComponentScan(basePackages = { "org.teapotech.taskforce", "org.teapotech.taskforce.task" })
 public class ResourceFetcherMainLoader implements CommandLineRunner {
 
 	private static Logger LOG = LoggerFactory.getLogger(ResourceFetcherMainLoader.class);
@@ -25,12 +30,22 @@ public class ResourceFetcherMainLoader implements CommandLineRunner {
 	public static void main(String[] args) {
 
 		SpringApplication app = new SpringApplication(ResourceFetcherMainLoader.class);
+
 		app.setBannerMode(Banner.Mode.OFF);
 		System.exit(SpringApplication.exit(app.run(args)));
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
+		TaskExecutionMode execMode = TaskExecutionUtil.getTaskExecutionMode();
+		if (execMode == TaskExecutionMode.DOCKER) {
+
+		} else {
+			runFromCommandLine(args);
+		}
+	}
+
+	private void runFromCommandLine(String... args) throws Exception {
 		Options options = new Options();
 
 		CommandLineParser parser = new DefaultParser();

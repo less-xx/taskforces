@@ -14,7 +14,7 @@ import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
-import org.teapotech.block.executor.docker.DockerTaskManager;
+import org.teapotech.block.executor.docker.DockerBlockManager;
 import org.teapotech.taskforce.provider.TaskforceStorageProvider;
 
 import com.spotify.docker.client.DockerClient;
@@ -60,7 +60,7 @@ public class TaskDockerExecutorAutoConfig {
 	}
 
 	@Bean
-	DockerTaskManager dockerTaskManager() {
-		return new DockerTaskManager(dockerClient);
+	DockerBlockManager dockerTaskManager() {
+		return new DockerBlockManager(dockerClient);
 	}
 }

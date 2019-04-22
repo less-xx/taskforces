@@ -13,6 +13,8 @@ import org.teapotech.block.BlockExecutorFactory;
  */
 public interface BlockExecutionContext {
 
+	String getWorkspaceId();
+
 	BlockExecutorFactory getBlockExecutorFactory();
 
 	Object getVariable(String id);

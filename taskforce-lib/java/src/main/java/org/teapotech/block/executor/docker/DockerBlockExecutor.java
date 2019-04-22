@@ -11,7 +11,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.teapotech.block.docker.DockerBlockDescriptor;
-import org.teapotech.block.docker.DockerBlockUtil;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
@@ -19,6 +18,7 @@ import org.teapotech.block.executor.docker.DockerBlockExecutionContext.Container
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext.ExecutionConfig;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.LogsParam;
@@ -33,10 +33,10 @@ import com.spotify.docker.client.messages.HostConfig;
  * @author jiangl
  *
  */
-public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
+public class DockerBlockExecutor extends AbstractBlockExecutor {
 
 	private ExecutorService executorService;
-	private final DockerBlockUtil dockerBlockUtil;
+	private final DockerBlockManager dockerBlockManager;
 	protected final DockerClient dockerClient;
 
 	/**
@@ -44,7 +44,7 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 	 */
 	public DockerBlockExecutor(Block block, DockerClient dockerClient) {
 		super(block);
-		this.dockerBlockUtil = new DockerBlockUtil(dockerClient);
+		this.dockerBlockManager = new DockerBlockManager(dockerClient);
 		this.dockerClient = dockerClient;
 	}
 
@@ -53,7 +53,7 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 	 */
 	public DockerBlockExecutor(BlockValue blockValue, DockerClient dockerClient) {
 		super(blockValue);
-		this.dockerBlockUtil = new DockerBlockUtil(dockerClient);
+		this.dockerBlockManager = new DockerBlockManager(dockerClient);
 		this.dockerClient = dockerClient;
 	}
 
@@ -66,7 +66,7 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 		}
 		String blockType = this.block.getType();
 
-		DockerBlockDescriptor td = this.dockerBlockUtil.getTaskDescriptorByName(blockType + ":active");
+		DockerBlockDescriptor td = this.dockerBlockManager.getTaskDescriptorByName(blockType + ":active");
 		if (td == null) {
 			throw new BlockExecutionException("Cannot find task " + blockType);
 		}
@@ -80,7 +80,7 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 
 		ExecutionConfig execConf = context.getExecutionConfig();
 		executorService = Executors.newFixedThreadPool(execConf.getTaskWorkerNumber());
-		LOG.info("Initialized task works, count={}", execConf.getTaskWorkerNumber());
+		LOG.info("Initialized task workers, count={}", execConf.getTaskWorkerNumber());
 		DockerTaskExecutionResult result = new DockerTaskExecutionResult();
 		result.setCreatedTime(new Date());
 		result.setOutputValueType(descriptor.getOutputValueType());
@@ -88,46 +88,57 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 				.submit(new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						String img = descriptor.getName() + ":" + descriptor.getVersion();
-						context.getContainerSettings().setImage(img);
-						ContainerConfig cconf = createContainerConfig(context);
+						try {
+							String img = descriptor.getName() + ":" + descriptor.getVersion();
+							context.getContainerSettings().setImage(img);
+							ContainerConfig cconf = createContainerConfig(context);
 
-						result.setStartedAt(new Date());
-						final ContainerCreation creation = dockerClient.createContainer(cconf);
-						final String containerId = creation.id();
-						context.setVariable("task.id", containerId);
+							result.setStartedAt(new Date());
+							final ContainerCreation creation = dockerClient.createContainer(cconf);
+							final String containerId = creation.id();
+							result.setContainerId(containerId);
+							context.setVariable("task.id", containerId);
 
-						dockerClient.startContainer(containerId);
-						LOG.info("Task container started, ID: {}", containerId);
-						ContainerExit exit = dockerClient.waitContainer(containerId);
-						LOG.info("Container exit with code {}, ID: {}", exit.statusCode(), containerId);
+							dockerClient.startContainer(containerId);
+							LOG.info("Task container started, ID: {}", containerId);
+							ContainerExit exit = dockerClient.waitContainer(containerId);
+							LOG.info("Container exit with code {}, ID: {}", exit.statusCode(), containerId);
 
-						final String output;
-						try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(),
-								LogsParam.stderr())) {
-							output = stream.readFully();
-							LOG.info(output);
+							final String output;
+							try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(),
+									LogsParam.stderr())) {
+								output = stream.readFully();
+								LOG.info(output);
+							}
+							result.setExitCode(new Long(exit.statusCode()));
+							if (result.getExitCode() == 0) {
+								result.setOutputValue(output);
+							} else {
+								result.setErrorText(output);
+							}
+							ContainerInfo container = dockerClient.inspectContainer(containerId);
+							result.setEndAt(container.state().finishedAt());
+							result.setStartedAt(container.state().startedAt());
+							result.setStatus(container.state().status());
+							return containerId;
+						} catch (Exception e) {
+							LOG.error(e.getMessage(), e);
+							result.setErrorText(e.getMessage());
+							result.setExitCode(999L);
+							return null;
 						}
-						result.setExitCode(new Long(exit.statusCode()));
-						if (result.getExitCode() == 0) {
-							result.setOutputValue(output);
-						} else {
-							result.setErrorText(output);
-						}
-						ContainerInfo container = dockerClient.inspectContainer(containerId);
-						result.setEndAt(container.state().finishedAt());
-						result.setStartedAt(container.state().startedAt());
-						result.setStatus(container.state().status());
-						return containerId;
 					}
 				});
 
 		try {
 			String containerId = runContainerTask.get(execConf.getTaskExecutionTimeoutMinutes() * 60, TimeUnit.SECONDS);
-			LOG.info("Container exited, ID: {}", containerId);
-
-			dockerClient.removeContainer(containerId);
-			LOG.info("Container removed, ID: {}", containerId);
+			if (containerId == null) {
+				LOG.error("Container was not created successfully.");
+			} else {
+				LOG.info("Container exited, ID: {}", containerId);
+				dockerClient.removeContainer(containerId);
+				LOG.info("Container removed, ID: {}", containerId);
+			}
 		} catch (Exception e) {
 			result.setErrorText(e.getClass().getSimpleName());
 			result.setErrorDescription(e.getMessage());
@@ -159,6 +170,9 @@ public abstract class DockerBlockExecutor extends AbstractBlockExecutor {
 
 		ContainerSettings csetting = context.getContainerSettings();
 		csetting.getLabels().put("taskforce.id", context.getWorkspaceId());
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASKFORICE_ID, context.getWorkspaceId());
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASK_EXEC_MODE,
+				TaskExecutionUtil.TaskExecutionMode.DOCKER.name());
 		String networkMode = csetting.getNetworkMode().name().toLowerCase();
 		final HostConfig hostConfig = HostConfig.builder().networkMode(networkMode)
 				.binds(csetting.getBinds()).build();

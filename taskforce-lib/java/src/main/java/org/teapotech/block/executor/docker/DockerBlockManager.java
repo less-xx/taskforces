@@ -20,13 +20,13 @@ import com.spotify.docker.client.messages.Image;
  * @author jiangl
  *
  */
-public class DockerTaskManager {
+public class DockerBlockManager {
 
 	public static String LABEL_TASK_NAME = "taskforce.task.name";
 
 	final DockerClient dockerClient;
 
-	public DockerTaskManager(DockerClient dockerClient) {
+	public DockerBlockManager(DockerClient dockerClient) {
 		this.dockerClient = dockerClient;
 	}
 
@@ -92,6 +92,7 @@ public class DockerTaskManager {
 				if (tagArray.length > 1) {
 					if ("active".equalsIgnoreCase(tagArray[1])) {
 						active = true;
+						version = "active";
 					} else {
 						version = tagArray[1];
 					}

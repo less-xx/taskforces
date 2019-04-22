@@ -3,13 +3,9 @@ spring:
     version: ^project.version^
     name: ^project.name^
   banner.location: classpath:/banner.txt
-
-logging:
-  pattern.console:
-  file: ${LOG_FILE_PATH:/task/logs/output.log}
   
 taskforce:
-  id: ${TASKFORCE_ID:}
+  id: test-taskforce-id
   storage-provider: org.teapotech.taskforce.provider.RedisTaskforceStorageProvider
-  task:
-    executionMode: ${TASK_EXEC_MODE:host}
+  
+taskforce.execution.driver: docker

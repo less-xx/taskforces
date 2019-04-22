@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.teapotech.taskforce.context.TaskforceContext;
+import org.teapotech.block.executor.BlockExecutionContext;
 
 /**
  * @author jiangl
@@ -21,7 +21,7 @@ public class TaskforceLoader implements CommandLineRunner {
 	private static Logger LOG = LoggerFactory.getLogger(TaskforceLoader.class);
 
 	@Autowired
-	TaskforceContext taskforceContext;
+	BlockExecutionContext blockExecutionContextn;
 
 	public static void main(String[] args) {
 		// LOG.info("Hello world");
@@ -31,7 +31,7 @@ public class TaskforceLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		LOG.info("Taskforce context initialized. {}", taskforceContext);
+		LOG.info("Taskforce context initialized. {}", blockExecutionContextn);
 
 	}
 

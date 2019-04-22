@@ -43,6 +43,6 @@ public class Variable {
 
 	@Override
 	public String toString() {
-		return "{" + id + ": " + this.id + ", var: " + this.value + "}";
+		return "{id: " + this.id + ", var: " + this.value + "}";
 	}
 }

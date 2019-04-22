@@ -1,0 +1,17 @@
+<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+	<variables>
+		<variable type="" id="SSQq%~url%p:*XHtbVY@">result</variable>
+	</variables>
+	<block type="variables_set" id="0aX)p|60X~+7OhSh~ERU" x="12" y="38">
+		<field name="VAR" id="SSQq%~url%p:*XHtbVY@" variabletype="">result</field>
+		<value name="VALUE">
+			<block type="resource-fetcher" id="BZA~CV2SRdDKO4Y;?gf7">
+				<value name="path">
+					<block type="text" id="?#4023bZ.#|~Z9|)e)$X">
+						<field name="TEXT">http://bing.com</field>
+					</block>
+				</value>
+			</block>
+		</value>
+	</block>
+</xml>
