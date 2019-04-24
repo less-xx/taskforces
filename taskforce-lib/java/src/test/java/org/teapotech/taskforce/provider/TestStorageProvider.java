@@ -17,13 +17,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.WorkspaceUtils;
+import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 public class TestStorageProvider {
 
 	@Test
 	public void testRedisStorageProvider() throws Exception {
 
-		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration("localhost", 6379);
+		String host = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_HOST);
+		String port = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PORT);
+		String password = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PASSWORD);
+		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host,
+				Integer.parseInt(port));
+		redisStandaloneConfiguration.setPassword(password);
 		JedisClientConfigurationBuilder jedisClientConfiguration = JedisClientConfiguration.builder();
 		JedisConnectionFactory jedisConFactory = new JedisConnectionFactory(redisStandaloneConfiguration,
 				jedisClientConfiguration.build());
@@ -57,4 +63,5 @@ public class TestStorageProvider {
 			assertNull(value);
 		}
 	}
+
 }

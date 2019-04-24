@@ -22,25 +22,24 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 	private final BlockExecutorFactory blockExecutorFactory;
 	private final String workspaceId;
-	private TaskforceStorageProvider storageProvider;
+	private final TaskforceStorageProvider storageProvider;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
 
-	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory) {
+	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
+			TaskforceStorageProvider storageProvider) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
+		this.storageProvider = storageProvider;
 	}
 
+	@Override
 	public String getWorkspaceId() {
 		return workspaceId;
 	}
 
 	public TaskforceStorageProvider getTaskforceResultStorageProvider() {
 		return storageProvider;
-	}
-
-	public void setTaskforceResultStorageProvider(TaskforceStorageProvider storageProvider) {
-		this.storageProvider = storageProvider;
 	}
 
 	@Override

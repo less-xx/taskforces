@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,7 @@ import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.executor.docker.DockerBlockManager;
 import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 import com.spotify.docker.client.DockerClient;
 
@@ -26,9 +26,6 @@ public class TaskDockerExecutorAutoConfig {
 	private static final Logger LOG = LoggerFactory.getLogger(TaskDockerExecutorAutoConfig.class);
 	public static final String CONF_TASKFORCE_ID = "${taskforce.id}";
 
-	@Value(CONF_TASKFORCE_ID)
-	String taskforceId;
-
 	@Autowired
 	DockerClient dockerClient;
 
@@ -37,12 +34,12 @@ public class TaskDockerExecutorAutoConfig {
 
 	@Bean
 	BlockExecutionContext taskForceContext() throws Exception {
+		String taskforceId = TaskExecutionUtil.getTaskforceId();
 		BlockExecutorFactory fac = blockExecutorFactory();
-		DockerBlockExecutionContext ctx = new DockerBlockExecutionContext(taskforceId, fac);
+		DockerBlockExecutionContext ctx = new DockerBlockExecutionContext(taskforceId, fac, storageProvider);
 		LOG.info("Taskforce id: {}", taskforceId);
 
 		storageProvider.setTaskforceId(taskforceId);
-		ctx.setTaskforceResultStorageProvider(storageProvider);
 		LOG.info("Taskforce storage provider: {}", storageProvider.getClass());
 
 		Collection<DockerBlockDescriptor> blockDescriptors = dockerTaskManager().getAllTaskDescriptors();

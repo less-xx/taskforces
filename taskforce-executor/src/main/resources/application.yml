@@ -3,7 +3,13 @@ spring:
     version: ^project.version^
     name: ^project.name^
   banner.location: classpath:/banner.txt
-  
+  redis:
+    host: ${CONFIG_REDIS_HOST:dummy}
+    port: ${CONFIG_REDIS_PORT:6379}
+    password: ${CONFIG_REDIS_PASSWORD:dummy}
+    timeout: ${CONFIG_REDIS_TIMEOUT:3000}
+    database: ${CONFIG_REDIS_DATABASE:1}
+
 taskforce:
   id: ${TASKFORCE_ID:}
   storage-provider: ${TASK_STORAGE_PROVIDER:org.teapotech.taskforce.provider.InMemoryTaskforceStorageProvider}

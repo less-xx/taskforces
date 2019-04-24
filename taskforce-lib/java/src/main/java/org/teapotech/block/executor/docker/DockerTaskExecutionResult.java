@@ -12,7 +12,6 @@ import java.util.Date;
 public class DockerTaskExecutionResult {
 	private Date createdTime;
 	private String errorText;
-	private String errorDescription;
 	private Date startedAt;
 	private Long exitCode;
 	private String status;
@@ -21,6 +20,7 @@ public class DockerTaskExecutionResult {
 	private String containerId;
 	private DockerBlockValueType outputValueType;
 	private Object outputValue;
+	private String storageKey;
 
 	public Date getCreatedTime() {
 		return createdTime;
@@ -36,14 +36,6 @@ public class DockerTaskExecutionResult {
 
 	public void setErrorText(String errorText) {
 		this.errorText = errorText;
-	}
-
-	public String getErrorDescription() {
-		return errorDescription;
-	}
-
-	public void setErrorDescription(String errorDescription) {
-		this.errorDescription = errorDescription;
 	}
 
 	public Date getStartedAt() {
@@ -108,6 +100,28 @@ public class DockerTaskExecutionResult {
 
 	public DockerBlockValueType getOutputValueType() {
 		return outputValueType;
+	}
+
+	public String getStorageKey() {
+		return storageKey;
+	}
+
+	public void setStorageKey(String storageKey) {
+		this.storageKey = storageKey;
+	}
+
+	@Override
+	public String toString() {
+		return "{\n\tContainer ID: " + this.containerId +
+				",\n\tCreated at: " + this.createdTime +
+				",\n\tStarted at: " + this.startedAt +
+				",\n\tEnded at: " + this.endAt +
+				",\n\tStatus: " + this.status +
+				",\n\tExit Code: " + this.exitCode +
+				",\n\tError: " + this.errorText +
+				"\n\tOutput Type: " + this.outputValueType +
+				"\n\tStorage Key: " + this.storageKey +
+				"\n}";
 	}
 
 }

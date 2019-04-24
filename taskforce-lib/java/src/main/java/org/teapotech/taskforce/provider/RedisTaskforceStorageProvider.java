@@ -6,6 +6,8 @@ package org.teapotech.taskforce.provider;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -13,6 +15,8 @@ import org.springframework.data.redis.core.RedisTemplate;
  *
  */
 public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
+
+	private static final Logger LOG = LoggerFactory.getLogger(RedisTaskforceStorageProvider.class);
 
 	private final RedisTemplate<String, Object> redisTemplate;
 	private String taskforceId;
@@ -23,12 +27,15 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 
 	@Override
 	public Object get(String key) {
-		return redisTemplate.boundHashOps(taskforceId).get(key);
+		Object value = redisTemplate.boundHashOps(taskforceId).get(key);
+		LOG.info("get value, key={}, taskforceId: {}", key, taskforceId);
+		return value;
 	}
 
 	@Override
 	public void put(String key, Object value) {
 		redisTemplate.boundHashOps(taskforceId).put(key, value);
+		LOG.info("set value, key={}, taskforceId: {}", key, taskforceId);
 	}
 
 	@Override
@@ -39,6 +46,7 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 	@Override
 	public void remove(String key) {
 		redisTemplate.boundHashOps(taskforceId).delete(key);
+		LOG.info("delete value, key={}, taskforceId: {}", key, taskforceId);
 	}
 
 	@Override

@@ -13,6 +13,8 @@ import org.teapotech.block.BlockExecutorFactory;
  */
 public interface BlockExecutionContext {
 
+	public final static String KEY_CURRENT_BLOCK = "taskforce._currentBlock";
+
 	String getWorkspaceId();
 
 	BlockExecutorFactory getBlockExecutorFactory();

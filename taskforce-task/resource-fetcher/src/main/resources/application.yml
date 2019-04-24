@@ -3,13 +3,20 @@ spring:
     version: ^project.version^
     name: ^project.name^
   banner.location: classpath:/banner.txt
-
+  redis:
+    host: ${CONFIG_REDIS_HOST:dummy}
+    port: ${CONFIG_REDIS_PORT:6379}
+    password: ${CONFIG_REDIS_PASSWORD:dummy}
+    timeout: ${CONFIG_REDIS_TIMEOUT:3000}
+    database: ${CONFIG_REDIS_DATABASE:1}
 logging:
-  pattern.console:
+#  pattern.console:
   file: ${LOG_FILE_PATH:/task/logs/output.log}
   
 taskforce:
   id: ${TASKFORCE_ID:}
   storage-provider: org.teapotech.taskforce.provider.RedisTaskforceStorageProvider
-  task:
-    executionMode: ${TASK_EXEC_MODE:host}
+  execution:
+    driver: ${TASK_EXEC_DRIVER:default}
+    docker:
+      url: ${DOCKER_URL:localhost:2375}

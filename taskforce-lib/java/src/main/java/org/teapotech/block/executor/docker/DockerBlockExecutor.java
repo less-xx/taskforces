@@ -4,12 +4,15 @@
 package org.teapotech.block.executor.docker;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
@@ -70,13 +73,20 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 		if (td == null) {
 			throw new BlockExecutionException("Cannot find task " + blockType);
 		}
-		executeDockerBlock((DockerBlockExecutionContext) context, td);
+		DockerTaskExecutionResult result = executeDockerBlock((DockerBlockExecutionContext) context, td);
+		if (result.getOutputValue() != null) {
+			return result.getOutputValue();
+		}
+		if (result.getExitCode() != 0) {
+			LOG.error("Error happen when execute the block. \n{}", result);
+			Object logs = context.getVariable(result.getStorageKey() + ".log");
+			LOG.error("Block execution logs: \n{}", logs);
+		}
 		return null;
 	}
 
 	protected DockerTaskExecutionResult executeDockerBlock(DockerBlockExecutionContext context,
-			DockerBlockDescriptor descriptor)
-			throws BlockExecutionException {
+			DockerBlockDescriptor descriptor) {
 
 		ExecutionConfig execConf = context.getExecutionConfig();
 		executorService = Executors.newFixedThreadPool(execConf.getTaskWorkerNumber());
@@ -84,6 +94,8 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 		DockerTaskExecutionResult result = new DockerTaskExecutionResult();
 		result.setCreatedTime(new Date());
 		result.setOutputValueType(descriptor.getOutputValueType());
+		final String blockKey = "block_" + RandomStringUtils.randomAlphanumeric(6);
+		result.setStorageKey(blockKey);
 		Future<String> runContainerTask = executorService
 				.submit(new Callable<String>() {
 					@Override
@@ -97,25 +109,17 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 							final ContainerCreation creation = dockerClient.createContainer(cconf);
 							final String containerId = creation.id();
 							result.setContainerId(containerId);
-							context.setVariable("task.id", containerId);
+							// context.setVariable("task.id", containerId);
+							context.setVariable(blockKey, block);
+							LOG.info("set variable {}=block", blockKey);
 
 							dockerClient.startContainer(containerId);
 							LOG.info("Task container started, ID: {}", containerId);
 							ContainerExit exit = dockerClient.waitContainer(containerId);
 							LOG.info("Container exit with code {}, ID: {}", exit.statusCode(), containerId);
 
-							final String output;
-							try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(),
-									LogsParam.stderr())) {
-								output = stream.readFully();
-								LOG.info(output);
-							}
 							result.setExitCode(new Long(exit.statusCode()));
-							if (result.getExitCode() == 0) {
-								result.setOutputValue(output);
-							} else {
-								result.setErrorText(output);
-							}
+
 							ContainerInfo container = dockerClient.inspectContainer(containerId);
 							result.setEndAt(container.state().finishedAt());
 							result.setStartedAt(container.state().startedAt());
@@ -136,29 +140,35 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 				LOG.error("Container was not created successfully.");
 			} else {
 				LOG.info("Container exited, ID: {}", containerId);
+				if (result.getExitCode() != 0) {
+					final String logs;
+					try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr())) {
+						logs = stream.readFully();
+						LOG.info(logs);
+					}
+					result.setLogs(logs);
+				}
+
+				String outputKey = blockKey + ".output";
+				LOG.info("get result from variable, key={}", outputKey);
+				result.setOutputValue(context.getVariable(outputKey));
 				dockerClient.removeContainer(containerId);
 				LOG.info("Container removed, ID: {}", containerId);
 			}
 		} catch (Exception e) {
-			result.setErrorText(e.getClass().getSimpleName());
-			result.setErrorDescription(e.getMessage());
+			result.setErrorText(e.getMessage());
 			result.setEndAt(new Date());
 			if (result.getContainerId() != null) {
-				try (LogStream stream = dockerClient.logs(result.getContainerId(), LogsParam.stdout(),
-						LogsParam.stderr())) {
-					String logs = stream.readFully();
-					result.setLogs(logs);
-					LOG.warn(logs);
+				try {
+					dockerClient.killContainer(result.getContainerId());
+				} catch (Exception de) {
+					LOG.error(de.getMessage());
+				} finally {
 					try {
-						dockerClient.killContainer(result.getContainerId());
-					} catch (Exception de) {
-						LOG.error(de.getMessage());
-					} finally {
 						dockerClient.removeContainer(result.getContainerId());
+					} catch (Exception e1) {
+						LOG.error(e1.getMessage());
 					}
-
-				} catch (Exception e1) {
-					LOG.error(e1.getMessage(), e1);
 				}
 				LOG.info("Container killed, ID: {}", result.getContainerId());
 			}
@@ -171,13 +181,27 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 		ContainerSettings csetting = context.getContainerSettings();
 		csetting.getLabels().put("taskforce.id", context.getWorkspaceId());
 		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASKFORICE_ID, context.getWorkspaceId());
-		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASK_EXEC_MODE,
-				TaskExecutionUtil.TaskExecutionMode.DOCKER.name());
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASK_EXEC_DRIVER,
+				TaskExecutionUtil.TaskExecutionDriver.DOCKER.name().toLowerCase());
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_DOCKER_URL,
+				TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_DOCKER_URL));
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_REDIS_HOST,
+				TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_HOST));
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_REDIS_PORT,
+				TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PORT));
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_REDIS_PASSWORD,
+				TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PASSWORD));
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_REDIS_DATABASE,
+				TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_DATABASE));
+
+		List<String> env = csetting.getEnvironment().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue())
+				.collect(Collectors.toList());
 		String networkMode = csetting.getNetworkMode().name().toLowerCase();
 		final HostConfig hostConfig = HostConfig.builder().networkMode(networkMode)
 				.binds(csetting.getBinds()).build();
 		final ContainerConfig containerConfig = ContainerConfig.builder().image(csetting.getImage())
 				.hostConfig(hostConfig)
+				.env(env)
 				.labels(csetting.getLabels())
 				.cmd(csetting.getCommands()).build();
 		return containerConfig;
