@@ -20,4 +20,6 @@ public interface TaskforceStorageProvider {
 	void remove(String key);
 
 	Collection<String> getAllKeys();
+
+	void destroy();
 }

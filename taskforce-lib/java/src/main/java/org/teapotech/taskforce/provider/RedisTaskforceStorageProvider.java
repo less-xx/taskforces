@@ -54,4 +54,10 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 		return redisTemplate.boundHashOps(taskforceId).keys().stream()
 				.map(k -> (String) k).collect(Collectors.toSet());
 	}
+
+	@Override
+	public void destroy() {
+		redisTemplate.delete(taskforceId);
+		LOG.info("delete all values by taskforaceId: {}", taskforceId);
+	}
 }

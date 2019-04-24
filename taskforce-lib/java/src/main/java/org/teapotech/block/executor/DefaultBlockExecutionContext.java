@@ -57,4 +57,8 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 		return workspaceId;
 	}
 
+	@Override
+	public void destroy() {
+		storageProvider.destroy();
+	}
 }

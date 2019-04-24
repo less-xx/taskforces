@@ -103,7 +103,7 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 						try {
 							String img = descriptor.getName() + ":" + descriptor.getVersion();
 							context.getContainerSettings().setImage(img);
-							ContainerConfig cconf = createContainerConfig(context);
+							ContainerConfig cconf = createContainerConfig(blockKey, context);
 
 							result.setStartedAt(new Date());
 							final ContainerCreation creation = dockerClient.createContainer(cconf);
@@ -141,6 +141,7 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 			} else {
 				LOG.info("Container exited, ID: {}", containerId);
 				if (result.getExitCode() != 0) {
+					LOG.info("==== Block execution logs. Block ID: {}, storage key: {} ====", block.getId(), blockKey);
 					final String logs;
 					try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr())) {
 						logs = stream.readFully();
@@ -176,11 +177,12 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 		return result;
 	}
 
-	private ContainerConfig createContainerConfig(DockerBlockExecutionContext context) {
+	private ContainerConfig createContainerConfig(String blockKey, DockerBlockExecutionContext context) {
 
 		ContainerSettings csetting = context.getContainerSettings();
 		csetting.getLabels().put("taskforce.id", context.getWorkspaceId());
 		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASKFORICE_ID, context.getWorkspaceId());
+		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASK_BLOCK_KEY, blockKey);
 		csetting.getEnvironment().put(TaskExecutionUtil.ENV_TASK_EXEC_DRIVER,
 				TaskExecutionUtil.TaskExecutionDriver.DOCKER.name().toLowerCase());
 		csetting.getEnvironment().put(TaskExecutionUtil.ENV_DOCKER_URL,

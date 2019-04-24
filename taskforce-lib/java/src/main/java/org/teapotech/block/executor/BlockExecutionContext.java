@@ -25,4 +25,6 @@ public interface BlockExecutionContext {
 
 	Collection<String> getAllVariableNames();
 
+	void destroy();
+
 }

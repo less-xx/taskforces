@@ -54,4 +54,8 @@ public class WorkspaceExecutor {
 		Block startBlock = workspace.getBlock();
 		BlockExecutorUtils.execute(startBlock, context);
 	}
+
+	public void destroy() {
+		context.destroy();
+	}
 }

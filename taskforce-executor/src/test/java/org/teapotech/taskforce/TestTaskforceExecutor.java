@@ -52,6 +52,8 @@ public class TestTaskforceExecutor {
 			Object result = context.getVariable("result");
 			assertNotNull(result);
 			System.out.println(result);
+
+			wExecutor.destroy();
 		}
 	}
 }

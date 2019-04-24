@@ -71,6 +71,14 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		return storageProvider.get(id);
 	}
 
+	@Override
+	public void destroy() {
+		if (storageProvider == null) {
+			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
+		}
+		storageProvider.destroy();
+	}
+
 	public ContainerSettings getContainerSettings() {
 		return containerSettings;
 	}
