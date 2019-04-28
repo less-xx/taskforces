@@ -17,8 +17,10 @@ public class DockerBlockDescriptor {
 	private String description;
 	private boolean active;
 	private String createdTime;
+	private String category;
 	private DockerBlockValueType inputValueType = DockerBlockValueType.TextPlain;
 	private DockerBlockValueType outputValueType = DockerBlockValueType.TextPlain;
+	private String definition;
 
 	public String getId() {
 		return id;
@@ -84,4 +86,19 @@ public class DockerBlockDescriptor {
 		this.outputValueType = outputValueType;
 	}
 
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
 }

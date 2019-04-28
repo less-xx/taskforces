@@ -19,44 +19,38 @@ public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
 	private static final Logger LOG = LoggerFactory.getLogger(RedisTaskforceStorageProvider.class);
 
 	private final RedisTemplate<String, Object> redisTemplate;
-	private String taskforceId;
 
 	public RedisTaskforceStorageProvider(RedisTemplate<String, Object> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 
 	@Override
-	public Object get(String key) {
+	public Object get(String taskforceId, String key) {
 		Object value = redisTemplate.boundHashOps(taskforceId).get(key);
 		LOG.info("get value, key={}, taskforceId: {}", key, taskforceId);
 		return value;
 	}
 
 	@Override
-	public void put(String key, Object value) {
+	public void put(String taskforceId, String key, Object value) {
 		redisTemplate.boundHashOps(taskforceId).put(key, value);
 		LOG.info("set value, key={}, taskforceId: {}", key, taskforceId);
 	}
 
 	@Override
-	public void setTaskforceId(String taskforceId) {
-		this.taskforceId = taskforceId;
-	}
-
-	@Override
-	public void remove(String key) {
+	public void remove(String taskforceId, String key) {
 		redisTemplate.boundHashOps(taskforceId).delete(key);
 		LOG.info("delete value, key={}, taskforceId: {}", key, taskforceId);
 	}
 
 	@Override
-	public Collection<String> getAllKeys() {
+	public Collection<String> getAllKeys(String taskforceId) {
 		return redisTemplate.boundHashOps(taskforceId).keys().stream()
 				.map(k -> (String) k).collect(Collectors.toSet());
 	}
 
 	@Override
-	public void destroy() {
+	public void destroy(String taskforceId) {
 		redisTemplate.delete(taskforceId);
 		LOG.info("delete all values by taskforaceId: {}", taskforceId);
 	}

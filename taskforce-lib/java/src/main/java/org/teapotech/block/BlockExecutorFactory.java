@@ -3,12 +3,15 @@
  */
 package org.teapotech.block;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,29 +35,52 @@ public class BlockExecutorFactory {
 
 	private static Logger LOG = LoggerFactory.getLogger(BlockExecutorFactory.class);
 
-	private final Map<String, Class<? extends BlockExecutor>> registry = new HashMap<>();
+	private final Map<String, Class<? extends BlockExecutor>> blockExecutors = new HashMap<>();
 	private final DockerClient dockerClient;
+	private final List<BlockRegistry> blockRegistries = new ArrayList<>();
 
 	public static BlockExecutorFactory build() {
 		return build(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static BlockExecutorFactory build(DockerClient client) {
 		ObjectMapper mapper = new ObjectMapper();
+		List<BlockRegistry> regs = null;
 		BlockExecutorFactory fac = new BlockExecutorFactory(client);
 		try (InputStream in = BlockExecutorFactory.class.getClassLoader()
 				.getResourceAsStream("block-executor-registry.json");) {
-			List<BlockRegistry> regs = mapper.readValue(in, new TypeReference<List<BlockRegistry>>() {
+			regs = mapper.readValue(in, new TypeReference<List<BlockRegistry>>() {
 			});
-			for (BlockRegistry br : regs) {
-				@SuppressWarnings("unchecked")
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
+
+		if (regs == null) {
+			return fac;
+		}
+
+		for (BlockRegistry br : regs) {
+
+			String defFileName = br.getType() + "_def.json";
+			try (InputStream in = BlockExecutorFactory.class.getClassLoader()
+					.getResourceAsStream(defFileName);) {
+				if (in != null) {
+					String def = IOUtils.toString(in, "UTF-8");
+					br.setDefinition(def);
+				}
+
 				Class<BlockExecutor> c = (Class<BlockExecutor>) Class.forName(br.getExecutorClass());
-				fac.registry.put(br.type, c);
+				fac.blockExecutors.put(br.type, c);
 				LOG.info("Registered block executor {} = {}", br.type, c);
+
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
 			}
 
-		} catch (Exception e) {
-			LOG.error(e.getMessage(), e);
+		}
+		if (!regs.isEmpty()) {
+			fac.blockRegistries.addAll(regs);
 		}
 		return fac;
 	}
@@ -67,14 +93,21 @@ public class BlockExecutorFactory {
 		this.dockerClient = dockerClient;
 	}
 
-	public void registerExecutor(String blockType, Class<? extends BlockExecutor> executorClass) {
-		this.registry.put(blockType, executorClass);
+	public void registerExecutor(String blockType, String category, String definition,
+			Class<? extends BlockExecutor> executorClass) {
+		BlockRegistry registry = new BlockRegistry();
+		registry.setType(blockType);
+		registry.setCategory(category);
+		registry.setDefinition(definition);
+		registry.setExecutorClass(executorClass.getName());
+		this.blockRegistries.add(registry);
+		this.blockExecutors.put(blockType, executorClass);
 		LOG.info("Registered block executor {} = {}", blockType, executorClass);
 	}
 
 	public BlockExecutor createBlockExecutor(Block block)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
-		Class<? extends BlockExecutor> c = registry.get(block.getType());
+		Class<? extends BlockExecutor> c = blockExecutors.get(block.getType());
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + block.getType());
 		}
@@ -103,7 +136,7 @@ public class BlockExecutorFactory {
 			throw new InvalidBlockException(
 					"Block value should have either block or shadow, name: " + blockValue.getName());
 		}
-		Class<? extends BlockExecutor> c = registry.get(blockType);
+		Class<? extends BlockExecutor> c = blockExecutors.get(blockType);
 		if (c == null) {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + blockType);
 		}
@@ -132,11 +165,16 @@ public class BlockExecutorFactory {
 		}
 	}
 
+	public List<BlockRegistry> getBlockRegistries() {
+		return blockRegistries;
+	}
+
 	public static class BlockRegistry {
 
 		String type;
 		String category;
 		String executorClass;
+		String definition;
 
 		public String getType() {
 			return type;
@@ -162,5 +200,12 @@ public class BlockExecutorFactory {
 			this.executorClass = executorClass;
 		}
 
+		public void setDefinition(String definition) {
+			this.definition = definition;
+		}
+
+		public String getDefinition() {
+			return definition;
+		}
 	}
 }

@@ -141,7 +141,8 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 			} else {
 				LOG.info("Container exited, ID: {}", containerId);
 				if (result.getExitCode() != 0) {
-					LOG.info("==== Block execution logs. Block ID: {}, storage key: {} ====", block.getId(), blockKey);
+					LOG.info("\n==== Block execution logs. Block ID: {}, storage key: {} ====\n", block.getId(),
+							blockKey);
 					final String logs;
 					try (LogStream stream = dockerClient.logs(containerId, LogsParam.stdout(), LogsParam.stderr())) {
 						logs = stream.readFully();

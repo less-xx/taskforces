@@ -46,20 +46,20 @@ public class TestStorageProvider {
 		redisTemplate.afterPropertiesSet();
 
 		TaskforceStorageProvider storage = new RedisTaskforceStorageProvider(redisTemplate);
-		storage.setTaskforceId("testTaskforce");
+		String taskforceId = "test-taskforce-id";
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_03.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			Block block = w.getBlock();
 			String key = "testBlock";
-			storage.put(key, block);
+			storage.put(taskforceId, key, block);
 
-			Object value = storage.get(key);
+			Object value = storage.get(taskforceId, key);
 			assertNotNull(value);
 			System.out.println(value);
-			storage.remove(key);
+			storage.remove(taskforceId, key);
 
-			value = storage.get(key);
+			value = storage.get(taskforceId, key);
 			assertNull(value);
 		}
 	}

@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.teapotech.taskforce.expert</groupId>
@@ -40,7 +39,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -75,6 +73,28 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.codehaus.gmaven</groupId>
+						<artifactId>groovy-maven-plugin</artifactId>
+						<version>2.1</version>
+						<executions>
+							<execution>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<properties>
+										<block_def_file>${project.basedir}/src/main/resources/block-def.json</block_def_file>
+									</properties>
+									<source>
+										def file = new File(properties['block_def_file'])
+										project.properties['block_def'] = file.getText().replaceAll('[\n|\t]','').replaceAll('\\"','\\\\"')
+									</source>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>com.spotify</groupId>
 						<artifactId>docker-maven-plugin</artifactId>
 						<version>1.2.0</version>
@@ -87,12 +107,28 @@
 								</goals>
 								<configuration>
 									<imageName>${project.artifactId}</imageName>
-									<dockerDirectory>docker</dockerDirectory>
+									<baseImage>openjdk:8-jre-alpine</baseImage>
+									<version>${project.version}</version>
+									<entryPoint>["java","-jar", "/${project.build.finalName}.jar"]</entryPoint>
+									<imageTags>
+										<imageTag>${project.version}</imageTag>
+										<imageTag>latest</imageTag>
+									</imageTags>
+									<forceTags>true</forceTags>
+									<env>
+										<TASK_EXEC_DRIVER>docker</TASK_EXEC_DRIVER>
+									</env>
+									<labels>
+										<label>taskforce.task.def="${block_def}"</label>
+										<label>taskforce.task.name="${project.artifactId}"</label>
+										<label>taskforce.task.category="Resource"</label>
+									</labels>
+									<cmd></cmd>
 									<resources>
 										<resource>
 											<targetPath>/</targetPath>
 											<directory>${project.build.directory}</directory>
-											<include>${project.artifactId}.jar</include>
+											<include>${project.build.finalName}.jar</include>
 										</resource>
 									</resources>
 								</configuration>

@@ -52,7 +52,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		if (storageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		storageProvider.put(id, value);
+		storageProvider.put(workspaceId, id, value);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		if (storageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		return storageProvider.getAllKeys();
+		return storageProvider.getAllKeys(workspaceId);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		if (storageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		return storageProvider.get(id);
+		return storageProvider.get(workspaceId, id);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		if (storageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		storageProvider.destroy();
+		storageProvider.destroy(workspaceId);
 	}
 
 	public ContainerSettings getContainerSettings() {

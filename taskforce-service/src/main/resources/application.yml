@@ -1,0 +1,47 @@
+spring:
+  application:
+    version: ^project.version^
+    name: ^project.name^
+  banner.location: classpath:/banner.txt
+  datasource:
+    url: jdbc:postgresql://${APP_DB_HOST:localhost}:${APP_DB_PORT:5432}/${APP_DB_NAME:postgres}
+    username: ${APP_DB_USERNAME:}
+    password: ${APP_DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    testOnBorrow: true
+    validationQuery: SELECT 1
+    validationInterval: 30000
+  jpa:
+    open-in-view: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate.ddl-auto: update
+    properties:
+      hibernate.default_schema: ${APP_DB_SCHEMA:taskforce}
+      hibernate.temp.use_jdbc_metadata_defaults: false
+      hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+      hibernate.naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
+  redis:
+    host: ${CONFIG_REDIS_HOST:dummy}
+    port: ${CONFIG_REDIS_PORT:6379}
+    password: ${CONFIG_REDIS_PASSWORD:dummy}
+    timeout: ${CONFIG_REDIS_TIMEOUT:3000}
+    database: ${CONFIG_REDIS_DATABASE:1}
+
+security:
+  basic:
+    enabled: false
+server:
+  servlet:
+    context-path: /dataflex-service
+    
+logging:
+  level:
+    root: INFO
+    org.teapotech.taskforce: DEBUG
+
+taskforce:
+  storage-provider: ${TASK_STORAGE_PROVIDER:org.teapotech.taskforce.provider.RedisTaskforceStorageProvider}
+  
+taskforce.execution.driver: docker
+

@@ -39,17 +39,17 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public Object getVariable(String id) {
-		return storageProvider.get(id);
+		return storageProvider.get(workspaceId, id);
 	}
 
 	@Override
 	public void setVariable(String id, Object value) {
-		storageProvider.put(id, value);
+		storageProvider.put(workspaceId, id, value);
 	}
 
 	@Override
 	public Collection<String> getAllVariableNames() {
-		return storageProvider.getAllKeys();
+		return storageProvider.getAllKeys(workspaceId);
 	}
 
 	@Override
@@ -59,6 +59,6 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public void destroy() {
-		storageProvider.destroy();
+		storageProvider.destroy(workspaceId);
 	}
 }

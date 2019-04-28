@@ -11,15 +11,13 @@ import java.util.Collection;
  */
 public interface TaskforceStorageProvider {
 
-	void setTaskforceId(String taskforceId);
+	Object get(String taskforceId, String key);
 
-	Object get(String key);
+	void put(String taskforceId, String key, Object value);
 
-	void put(String key, Object value);
+	void remove(String taskforceId, String key);
 
-	void remove(String key);
+	Collection<String> getAllKeys(String taskforceId);
 
-	Collection<String> getAllKeys();
-
-	void destroy();
+	void destroy(String taskforceId);
 }

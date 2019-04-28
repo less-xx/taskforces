@@ -4,6 +4,8 @@
 package org.teapotech.taskforce.provider;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -13,36 +15,45 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class InMemoryTaskforceStorageProvider implements TaskforceStorageProvider {
 
-	private final ConcurrentMap<String, Object> valueMap = new ConcurrentHashMap<>();
+	private final ConcurrentMap<String, Map<String, Object>> valueMap = new ConcurrentHashMap<>();
 
 	@Override
-	public void setTaskforceId(String taskforceId) {
-
+	public Object get(String taskforceId, String key) {
+		if (!valueMap.containsKey(taskforceId)) {
+			return null;
+		}
+		return valueMap.get(taskforceId).get(key);
 	}
 
 	@Override
-	public Object get(String key) {
-		return valueMap.get(key);
+	public void put(String taskforceId, String key, Object value) {
+		if (!valueMap.containsKey(taskforceId)) {
+			valueMap.put(taskforceId, new HashMap<>());
+		}
+		valueMap.get(taskforceId).put(key, value);
 	}
 
 	@Override
-	public void put(String key, Object value) {
-		valueMap.put(key, value);
+	public void remove(String taskforceId, String key) {
+		if (!valueMap.containsKey(taskforceId)) {
+			return;
+		}
+		valueMap.get(taskforceId).remove(key);
 	}
 
 	@Override
-	public void remove(String key) {
-		valueMap.remove(key);
+	public Collection<String> getAllKeys(String taskforceId) {
+		if (!valueMap.containsKey(taskforceId)) {
+			return null;
+		}
+		return valueMap.get(taskforceId).keySet();
 	}
 
 	@Override
-	public Collection<String> getAllKeys() {
-		return valueMap.keySet();
-	}
-
-	@Override
-	public void destroy() {
-		valueMap.clear();
-
+	public void destroy(String taskforceId) {
+		if (!valueMap.containsKey(taskforceId)) {
+			return;
+		}
+		valueMap.remove(taskforceId);
 	}
 }

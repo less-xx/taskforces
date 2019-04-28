@@ -23,6 +23,8 @@ import com.spotify.docker.client.messages.Image;
 public class DockerBlockManager {
 
 	public static String LABEL_TASK_NAME = "taskforce.task.name";
+	public static String LABEL_TASK_CATEGORY = "taskforce.task.category";
+	public static String LABEL_TASK_DEFINITION = "taskforce.task.def";
 
 	final DockerClient dockerClient;
 
@@ -33,7 +35,8 @@ public class DockerBlockManager {
 	public Collection<DockerBlockDescriptor> getAllTaskDescriptors() throws InvalidBlockException {
 		List<Image> images;
 		try {
-			images = dockerClient.listImages(DockerClient.ListImagesParam.withLabel(LABEL_TASK_NAME));
+			images = dockerClient.listImages(DockerClient.ListImagesParam.withLabel(LABEL_TASK_NAME),
+					DockerClient.ListImagesParam.danglingImages(false));
 
 			Map<String, DockerBlockDescriptor> results = new HashMap<>();
 			for (Image image : images) {
@@ -67,6 +70,15 @@ public class DockerBlockManager {
 					if (version != null) {
 						td.setVersion(version);
 					}
+					String category = image.labels().get(LABEL_TASK_CATEGORY);
+					if (category != null) {
+						td.setCategory(category);
+					}
+
+					String def = image.labels().get(LABEL_TASK_DEFINITION);
+					if (def != null) {
+						td.setDefinition(def);
+					}
 				}
 			}
 			return results.values();
@@ -82,33 +94,45 @@ public class DockerBlockManager {
 				throw new InvalidBlockException("Docker task image does not exist. Name: " + name);
 			}
 			Image img = images.get(0);
-			DockerBlockDescriptor td = new DockerBlockDescriptor();
-			td.setId(img.id());
-			td.setCreatedTime(img.created());
-			for (String tag : img.repoTags()) {
-				String[] tagArray = tag.split(":");
-				Boolean active = null;
-				String version = null;
-				if (tagArray.length > 1) {
-					if ("active".equalsIgnoreCase(tagArray[1])) {
-						active = true;
-						version = "active";
-					} else {
-						version = tagArray[1];
-					}
-				}
-				td.setName(tagArray[0]);
-				if (active != null) {
-					td.setActive(active);
-				}
-				if (version != null) {
-					td.setVersion(version);
-				}
-			}
-			return td;
+			return buildDescriptor(img);
 		} catch (DockerException | InterruptedException e) {
 			throw new InvalidBlockException(e.getMessage(), e);
 		}
+	}
+
+	private DockerBlockDescriptor buildDescriptor(Image img) {
+		DockerBlockDescriptor td = new DockerBlockDescriptor();
+		td.setId(img.id());
+		td.setCreatedTime(img.created());
+		for (String tag : img.repoTags()) {
+			String[] tagArray = tag.split(":");
+			Boolean active = null;
+			String version = null;
+			if (tagArray.length > 1) {
+				if ("active".equalsIgnoreCase(tagArray[1])) {
+					active = true;
+					version = "active";
+				} else {
+					version = tagArray[1];
+				}
+			}
+			td.setName(tagArray[0]);
+			if (active != null) {
+				td.setActive(active);
+			}
+			if (version != null) {
+				td.setVersion(version);
+			}
+		}
+		String category = img.labels().get(LABEL_TASK_CATEGORY);
+		if (category != null) {
+			td.setCategory(category);
+		}
+		String def = img.labels().get(LABEL_TASK_DEFINITION);
+		if (def != null) {
+			td.setDefinition(def);
+		}
+		return td;
 	}
 
 }

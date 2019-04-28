@@ -36,7 +36,6 @@ public class TaskForceContextAutoConfig {
 		DefaultBlockExecutionContext ctx = new DefaultBlockExecutionContext(taskforceId);
 		taskforceId = ctx.getWorkspaceId();
 		LOG.info("Taskforce id: {}", taskforceId);
-		storageProvider.setTaskforceId(taskforceId);
 		ctx.setStorageProvider(storageProvider);
 		LOG.info("Taskforce storage provider: {}", storageProvider.getClass());
 		return ctx;

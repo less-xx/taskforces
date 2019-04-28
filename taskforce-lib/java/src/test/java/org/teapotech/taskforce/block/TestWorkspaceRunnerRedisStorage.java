@@ -59,7 +59,6 @@ public class TestWorkspaceRunnerRedisStorage {
 		redisTemplate.afterPropertiesSet();
 
 		storageProvider = new RedisTaskforceStorageProvider(redisTemplate);
-		storageProvider.setTaskforceId("testTaskforce");
 	}
 
 	@Test

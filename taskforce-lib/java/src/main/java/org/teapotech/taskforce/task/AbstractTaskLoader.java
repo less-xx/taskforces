@@ -42,6 +42,10 @@ public abstract class AbstractTaskLoader implements CommandLineRunner {
 				LOG.error("Cannot find block by key: " + blockKey);
 				throw new BlockExecutionException("Cannot find block by key: " + blockKey);
 			}
+			if (getTaskforceId() == null) {
+				LOG.error("Cannot find taskforce id.");
+				throw new BlockExecutionException("Cannot find taskforce id.");
+			}
 			try {
 				Object output = execute(block, getDockerBlockRunnable());
 				if (output != null) {
@@ -61,6 +65,10 @@ public abstract class AbstractTaskLoader implements CommandLineRunner {
 			execute(args);
 		}
 
+	}
+
+	protected String getTaskforceId() {
+		return TaskExecutionUtil.getTaskforceId();
 	}
 
 	/**
