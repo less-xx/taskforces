@@ -33,7 +33,7 @@ security:
     enabled: false
 server:
   servlet:
-    context-path: /dataflex-service
+    context-path: /taskforce-service
     
 logging:
   level:

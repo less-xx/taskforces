@@ -43,7 +43,12 @@ public class BlockRegistryService {
 
 		final Map<String, Set<BlockRegistryDTO>> result = new TreeMap<>();
 		blockFactory.getBlockRegistries().stream().forEach(br -> {
-			Set<BlockRegistryDTO> brs = result.get(br.getCategory());
+			String category = br.getCategory();
+			if (StringUtils.isBlank(category)) {
+				LOG.error("Missing category for block, type: {}.", br.getType());
+				category = "Unknown";
+			}
+			Set<BlockRegistryDTO> brs = result.get(category);
 			if (brs == null) {
 				brs = new TreeSet<>(new Comparator<BlockRegistryDTO>() {
 
@@ -53,7 +58,7 @@ public class BlockRegistryService {
 					}
 
 				});
-				result.put(br.getCategory(), brs);
+				result.put(category, brs);
 			}
 			if (StringUtils.isBlank(br.getDefinition())) {
 				brs.add(new BlockRegistryDTO(br));
