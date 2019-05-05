@@ -1,5 +1,4 @@
 {
-	"type": "resource_fetcher",
 	"message0": "fetch content from %1",
 	"args0": [
 		{

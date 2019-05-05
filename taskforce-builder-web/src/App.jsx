@@ -43,8 +43,9 @@ function App() {
           </Form>
         </Navbar.Collapse>
       </Navbar>
-      
-      <TaskforceBuilder/>
+      <div id="appMain" className="App-main">
+        <TaskforceBuilder />
+      </div>
     </div>
   );
 }

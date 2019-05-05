@@ -8,27 +8,108 @@ import {
 
 class TaskforceBuilder extends Component {
 
-    componentDidMount() {
-        var toolboxXml = `<xml id="toolbox" style="display: none">
-                <category name="Control">
-                    <block type="controls_if"></block>
-                    <block type="controls_whileUntil"></block>
-                </category>
-                <category name="Logic">
-                    <block type="logic_compare"></block>
-                    <block type="logic_operation"></block>
-                    <block type="logic_boolean"></block>
-                </category>
-        </xml>`;
-        var xml = Blockly.Xml.textToDom(toolboxXml);
-        console.log(xml);
-        var workspace = Blockly.inject('blocklyDiv', { toolbox: xml });
-        console.log(workspace);
-        Blockly.Xml.domToWorkspace(xml, workspace);
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            workspace: null
+        };
     }
+
+    componentDidMount() {
+        var url = process.env.REACT_APP_URL_BLOCK_REGISTRIES;
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    var toolboxXml = this.buildToolbox(result);
+                    console.log(toolboxXml);
+                    var mediaUrl = process.env.PUBLIC_URL + '/media';
+                    console.log(mediaUrl);
+                    var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
+                    Blockly.Xml.domToWorkspace(toolboxXml, workspace);
+                    this.resizeWorkspace();
+                    Blockly.svgResize(workspace);
+                    this.setState({
+                        isLoaded: true,
+                        workspace: workspace
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            );
+
+        window.addEventListener('resize', this.resizeWorkspace.bind(this), false);
+    }
+
+    buildToolbox(toolboxContent) {
+        var xmlDoc = document.implementation.createDocument(null, "xml");
+        var categories = Object.keys(toolboxContent);
+        categories.forEach(c => {
+            var blocks = toolboxContent[c];
+            var categoryNode = xmlDoc.createElement("category");
+            categoryNode.setAttribute("name", c);
+            blocks.forEach(b => {
+                var blockNode = xmlDoc.createElement("block");
+                blockNode.setAttribute("type", b["type"]);
+                categoryNode.appendChild(blockNode);
+
+                if (b["def"] != null) {
+                    this.registerBlock(b["type"], b["def"]);
+                    console.log(b);
+                }
+            });
+            xmlDoc.documentElement.appendChild(categoryNode);
+        });
+        return xmlDoc.documentElement;
+    }
+
+    registerBlock(blockType, blockDef) {
+        Blockly.Blocks[blockType] = {
+            init: function () {
+                this.jsonInit(blockDef);
+            }
+        };
+    }
+
     render() {
-        console.log("render()");
-        return <div id="blocklyDiv" style={{ height: "600px", width: "800px" }}></div>;
+
+        const { error, isLoaded, workspace } = this.state;
+        if(workspace!=null){
+            this.resizeWorkspace();
+            Blockly.svgResize(workspace);
+        }
+
+        return <div id="blocklyDiv" style={{ height: "800px", width: "600px" }}></div>;
+    }
+
+    resizeWorkspace(e) {
+        
+        if(this.state.workspace==null){
+            return;
+        }
+        var blocklyArea = document.getElementById('appMain');
+        var blocklyDiv = document.getElementById('blocklyDiv');
+        // Compute the absolute coordinates and dimensions of blocklyArea.
+        var element = blocklyArea;
+        var x = 0;
+        var y = 0;
+        do {
+            x += element.offsetLeft;
+            y += element.offsetTop;
+            element = element.offsetParent;
+        } while (element);
+        // Position blocklyDiv over blocklyArea.
+        blocklyDiv.style.left = x + 'px';
+        blocklyDiv.style.top = y + 'px';
+        blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+        blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+        Blockly.svgResize(this.state.workspace);
     }
 }
 
