@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import Blockly from 'node-blockly/browser';
-import {
-    Container,
-    Row,
-    Col
-} from 'react-bootstrap';
+import './TaskforceBuilder.css'
 
 class TaskforceBuilder extends Component {
 
@@ -25,16 +21,17 @@ class TaskforceBuilder extends Component {
                 (result) => {
                     var toolboxXml = this.buildToolbox(result);
                     console.log(toolboxXml);
-                    var mediaUrl = process.env.PUBLIC_URL + '/media';
+                    var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
                     console.log(mediaUrl);
-                    var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
+                    var workspace = Blockly.inject('blocklyDiv', {media: mediaUrl,  toolbox: toolboxXml });
                     Blockly.Xml.domToWorkspace(toolboxXml, workspace);
-                    this.resizeWorkspace();
-                    Blockly.svgResize(workspace);
+                    
                     this.setState({
                         isLoaded: true,
                         workspace: workspace
                     });
+
+                    this.resizeWorkspace();
                 },
                 (error) => {
                     this.setState({
@@ -78,14 +75,11 @@ class TaskforceBuilder extends Component {
     }
 
     render() {
-
-        const { error, isLoaded, workspace } = this.state;
-        if(workspace!=null){
-            this.resizeWorkspace();
-            Blockly.svgResize(workspace);
-        }
-
-        return <div id="blocklyDiv" style={{ height: "800px", width: "600px" }}></div>;
+        return (
+           <div id="blocklyContainer">
+                <div id="blocklyDiv" style={{ position: "absolute" }}></div>
+           </div>
+        );
     }
 
     resizeWorkspace(e) {
@@ -93,7 +87,7 @@ class TaskforceBuilder extends Component {
         if(this.state.workspace==null){
             return;
         }
-        var blocklyArea = document.getElementById('appMain');
+        var blocklyArea = document.getElementById('blocklyContainer');
         var blocklyDiv = document.getElementById('blocklyDiv');
         // Compute the absolute coordinates and dimensions of blocklyArea.
         var element = blocklyArea;
@@ -110,6 +104,8 @@ class TaskforceBuilder extends Component {
         blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
         Blockly.svgResize(this.state.workspace);
+        console.log(x+", "+y+", "+blocklyArea.offsetWidth+", "+blocklyArea.offsetHeight);
+
     }
 }
 

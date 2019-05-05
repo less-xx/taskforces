@@ -21,7 +21,7 @@ import TaskforceBuilder from './taskforce-builder/TaskforceBuilder';
 function App() {
   return (
 
-    <div>
+    <div className="App" id="appMain">
       <Navbar bg="light" expand="lg">
         <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -43,9 +43,9 @@ function App() {
           </Form>
         </Navbar.Collapse>
       </Navbar>
-      <div id="appMain" className="App-main">
-        <TaskforceBuilder />
-      </div>
+      
+      <TaskforceBuilder />
+      
     </div>
   );
 }

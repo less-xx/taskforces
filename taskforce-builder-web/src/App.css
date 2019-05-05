@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  flex-flow: column;
+  height: 100%;
+  margin: 0;
 }
 
 .App-logo {
@@ -33,8 +36,11 @@
 }
 
 .App-main {
-  display: flex;
-  flex-flow: column;
-  height: 100%;
+  flex: 1;
   border: 1px dotted grey;
+}
+
+.App-footer {
+  background: lightgreen;
+  min-height: 60px;  /* min-height has its purpose :) , unless you meant height*/
 }
