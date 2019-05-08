@@ -6,9 +6,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 1rem;
+  line-height: 1rem;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+
+.major-operation-button-bar {
+  margin: 10px 10px 0px 10px;
+  padding: 15px 0px 10px 10px;
+}
+
+h1 {
+  position: relative;
+  float: left;
+  font-size: 2rem;
+  margin: 10px 10px 0px 10px;
 }

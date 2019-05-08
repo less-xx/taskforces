@@ -22,7 +22,7 @@ import org.teapotech.taskforce.task.TaskExecutionUtil;
 public class TestStorageProvider {
 
 	@Test
-	public void testRedisStorageProvider() throws Exception {
+	public void testRedisKeyValueStorageProvider() throws Exception {
 
 		String host = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_HOST);
 		String port = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PORT);
@@ -45,7 +45,7 @@ public class TestStorageProvider {
 
 		redisTemplate.afterPropertiesSet();
 
-		TaskforceStorageProvider storage = new RedisTaskforceStorageProvider(redisTemplate);
+		KeyValueStorageProvider storage = new RedisKeyValueStorageProvider(redisTemplate);
 		String taskforceId = "test-taskforce-id";
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_03.xml");) {

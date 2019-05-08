@@ -12,8 +12,10 @@ import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.WorkspaceUtils;
-import org.teapotech.taskforce.provider.InMemoryTaskforceStorageProvider;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.DiskFileStorageProvider;
+import org.teapotech.taskforce.provider.FileStorageProvider;
+import org.teapotech.taskforce.provider.InMemoryKeyValueStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author jiangl
@@ -22,7 +24,8 @@ import org.teapotech.taskforce.provider.TaskforceStorageProvider;
 public class TestWorkspaceRunner {
 
 	private static BlockExecutorFactory factory;
-	private static TaskforceStorageProvider storageProvider = new InMemoryTaskforceStorageProvider();
+	private static KeyValueStorageProvider kvStorageProvider = new InMemoryKeyValueStorageProvider();
+	private static FileStorageProvider fileStorageProvider = new DiskFileStorageProvider("/tmp/taskforce/test");
 
 	@BeforeAll
 	static void init() {
@@ -34,7 +37,8 @@ public class TestWorkspaceRunner {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(kvStorageProvider);
+			context.setFileStorageProvider(fileStorageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 		}
@@ -45,7 +49,8 @@ public class TestWorkspaceRunner {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(kvStorageProvider);
+			context.setFileStorageProvider(fileStorageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 		}
@@ -56,7 +61,8 @@ public class TestWorkspaceRunner {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_04.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(kvStorageProvider);
+			context.setFileStorageProvider(fileStorageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 

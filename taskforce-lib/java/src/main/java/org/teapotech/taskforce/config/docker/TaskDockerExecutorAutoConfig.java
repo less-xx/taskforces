@@ -13,7 +13,7 @@ import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.executor.docker.DockerBlockManager;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 import com.spotify.docker.client.DockerClient;
 
@@ -27,7 +27,7 @@ public class TaskDockerExecutorAutoConfig {
 	DockerClient dockerClient;
 
 	@Autowired
-	TaskforceStorageProvider storageProvider;;
+	KeyValueStorageProvider storageProvider;;
 
 	@Bean
 	BlockExecutorFactory blockExecutorFactory() throws InvalidBlockException {

@@ -12,7 +12,8 @@ import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.taskforce.annotation.ConditionalOnPropertyNotEmpty;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.FileStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author jiangl
@@ -29,8 +30,10 @@ public class TaskAutoConfig {
 
 	@Bean
 	BlockExecutionContext blockExecutionContext(BlockExecutorFactory factory,
-			TaskforceStorageProvider storageProvider) {
-		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, storageProvider);
+			KeyValueStorageProvider kvStorageProvider,
+			FileStorageProvider fileStorageProvider) {
+		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
+				fileStorageProvider);
 		LOG.info("Initialized block execution context. Taskforce ID: {}", taskforceId);
 		return context;
 	}

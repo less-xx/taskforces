@@ -9,23 +9,27 @@ class TaskforceBuilder extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            workspace: null
+            workspace: null,
+            name: null,
+            id: null
         };
+        this.toSaveList = [];
+        this.xmlSerializer = new XMLSerializer();
     }
 
     componentDidMount() {
-        var url = process.env.REACT_APP_URL_BLOCK_REGISTRIES;
+        var url = process.env.REACT_APP_URL_GET_TASKFORCE_BLOCKS;
         fetch(url)
             .then(res => res.json())
             .then(
                 (result) => {
                     var toolboxXml = this.buildToolbox(result);
-                    console.log(toolboxXml);
+                    //console.log(toolboxXml);
                     var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
-                    console.log(mediaUrl);
-                    var workspace = Blockly.inject('blocklyDiv', {media: mediaUrl,  toolbox: toolboxXml });
+                    //console.log(mediaUrl);
+                    var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
                     Blockly.Xml.domToWorkspace(toolboxXml, workspace);
-                    
+                    workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                     this.setState({
                         isLoaded: true,
                         workspace: workspace
@@ -42,6 +46,15 @@ class TaskforceBuilder extends Component {
             );
 
         window.addEventListener('resize', this.resizeWorkspace.bind(this), false);
+
+        setInterval(function () {
+            if (this.toSaveList.length === 0) {
+                return;
+            }
+            var xml = this.toSaveList.pop();
+            console.log(xml);
+            //TODO save the workspace xml
+        }.bind(this), 10000);
     }
 
     buildToolbox(toolboxContent) {
@@ -76,15 +89,15 @@ class TaskforceBuilder extends Component {
 
     render() {
         return (
-           <div id="blocklyContainer">
+            <div id="blocklyContainer">
                 <div id="blocklyDiv" style={{ position: "absolute" }}></div>
-           </div>
+            </div>
         );
     }
 
     resizeWorkspace(e) {
-        
-        if(this.state.workspace==null){
+
+        if (this.state.workspace == null) {
             return;
         }
         var blocklyArea = document.getElementById('blocklyContainer');
@@ -104,8 +117,37 @@ class TaskforceBuilder extends Component {
         blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
         Blockly.svgResize(this.state.workspace);
-        console.log(x+", "+y+", "+blocklyArea.offsetWidth+", "+blocklyArea.offsetHeight);
+        //console.log(x+", "+y+", "+blocklyArea.offsetWidth+", "+blocklyArea.offsetHeight);
 
+    }
+
+    onChangeWorkspace(e) {
+
+        if (e instanceof Blockly.Events.Ui) {
+            return;
+        }
+
+        var xml = Blockly.Xml.workspaceToDom(this.state.workspace);
+        if (this.toSaveList.length === 0) {
+            this.toSaveList.push(xml);
+        } else {
+            this.toSaveList[0] = xml;
+        }
+    }
+
+    saveWorksace(xml) {
+        var url = process.env.REACT_APP_URL_CREATE_TASKFORCE;
+        var xmlStr = JSON.stringify({
+
+        });
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: xmlStr
+        })
     }
 }
 

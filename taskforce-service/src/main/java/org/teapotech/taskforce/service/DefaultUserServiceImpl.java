@@ -1,0 +1,37 @@
+/**
+ * 
+ */
+package org.teapotech.taskforce.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.teapotech.taskforce.repo.UserRepo;
+import org.teapotech.user.User;
+import org.teapotech.user.UserService;
+
+/**
+ * @author jiangl
+ *
+ */
+@Service
+public class DefaultUserServiceImpl implements UserService {
+
+	@Autowired
+	private UserRepo userRepo;
+
+	@Override
+	public User findById(String userId) {
+		return userRepo.findById(userId).orElseGet(null);
+	}
+
+	@Override
+	public User findByName(String userName) {
+		return userRepo.findByName(userName);
+	}
+
+	@Override
+	public void userDidLogon(User user) {
+
+	}
+
+}

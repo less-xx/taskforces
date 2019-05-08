@@ -20,8 +20,8 @@ import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.WorkspaceUtils;
-import org.teapotech.taskforce.provider.RedisTaskforceStorageProvider;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.provider.RedisKeyValueStorageProvider;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 /**
@@ -31,7 +31,7 @@ import org.teapotech.taskforce.task.TaskExecutionUtil;
 public class TestWorkspaceRunnerRedisStorage {
 
 	private static BlockExecutorFactory factory;
-	private static TaskforceStorageProvider storageProvider;
+	private static KeyValueStorageProvider storageProvider;
 
 	@BeforeAll
 	static void init() {
@@ -58,7 +58,7 @@ public class TestWorkspaceRunnerRedisStorage {
 
 		redisTemplate.afterPropertiesSet();
 
-		storageProvider = new RedisTaskforceStorageProvider(redisTemplate);
+		storageProvider = new RedisKeyValueStorageProvider(redisTemplate);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class TestWorkspaceRunnerRedisStorage {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 		}
@@ -77,7 +77,7 @@ public class TestWorkspaceRunnerRedisStorage {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 		}
@@ -88,7 +88,7 @@ public class TestWorkspaceRunnerRedisStorage {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_04.xml");) {
 			Workspace w = WorkspaceUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
-			context.setStorageProvider(storageProvider);
+			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
 			wExecutor.execute(w);
 

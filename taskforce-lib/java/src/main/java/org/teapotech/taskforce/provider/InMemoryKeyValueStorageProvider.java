@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author jiangl
  *
  */
-public class InMemoryTaskforceStorageProvider implements TaskforceStorageProvider {
+public class InMemoryKeyValueStorageProvider implements KeyValueStorageProvider {
 
 	private final ConcurrentMap<String, Map<String, Object>> valueMap = new ConcurrentHashMap<>();
 

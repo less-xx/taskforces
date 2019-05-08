@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableTransactionManagement
 @EntityScan({ "org.teapotech.taskforce.entity" })
 @EnableJpaRepositories(basePackages = { "org.teapotech.taskforce.repo" })
-@ComponentScan(basePackages = { "org.teapotech.taskforce" })
+@ComponentScan(basePackages = { "org.teapotech.taskforce", "org.teapotech.user" })
 public class TaskforceServiceLoader {
 
 	public static void main(String[] args) {

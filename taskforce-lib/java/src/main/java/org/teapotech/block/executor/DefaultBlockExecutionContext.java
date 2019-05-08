@@ -3,10 +3,13 @@
  */
 package org.teapotech.block.executor;
 
+import java.io.InputStream;
 import java.util.Collection;
 
 import org.teapotech.block.BlockExecutorFactory;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.FileStorageException;
+import org.teapotech.taskforce.provider.FileStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author jiangl
@@ -16,7 +19,8 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	private final BlockExecutorFactory blockExecutorFactory;
 	private final String workspaceId;
-	private TaskforceStorageProvider storageProvider;
+	private KeyValueStorageProvider kvStorageProvider;
+	private FileStorageProvider fileStorageProvider;
 
 	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory) {
 		this.blockExecutorFactory = blockExecutorFactory;
@@ -28,8 +32,12 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 		this.workspaceId = workspaceId;
 	}
 
-	public void setStorageProvider(TaskforceStorageProvider storageProvider) {
-		this.storageProvider = storageProvider;
+	public void setKeyValueStorageProvider(KeyValueStorageProvider storageProvider) {
+		this.kvStorageProvider = storageProvider;
+	}
+
+	public void setFileStorageProvider(FileStorageProvider fileStorageProvider) {
+		this.fileStorageProvider = fileStorageProvider;
 	}
 
 	@Override
@@ -39,17 +47,17 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public Object getVariable(String id) {
-		return storageProvider.get(workspaceId, id);
+		return kvStorageProvider.get(workspaceId, id);
 	}
 
 	@Override
 	public void setVariable(String id, Object value) {
-		storageProvider.put(workspaceId, id, value);
+		kvStorageProvider.put(workspaceId, id, value);
 	}
 
 	@Override
 	public Collection<String> getAllVariableNames() {
-		return storageProvider.getAllKeys(workspaceId);
+		return kvStorageProvider.getAllKeys(workspaceId);
 	}
 
 	@Override
@@ -59,6 +67,17 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public void destroy() {
-		storageProvider.destroy(workspaceId);
+		kvStorageProvider.destroy(workspaceId);
+	}
+
+	@Override
+	public void storeFile(String key, InputStream in) throws FileStorageException {
+		this.fileStorageProvider.store(workspaceId, key, in);
+
+	}
+
+	@Override
+	public InputStream loadFile(String key) throws FileStorageException {
+		return this.fileStorageProvider.load(workspaceId, key);
 	}
 }

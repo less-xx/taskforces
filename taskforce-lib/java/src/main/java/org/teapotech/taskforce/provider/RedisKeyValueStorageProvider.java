@@ -14,13 +14,13 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @author jiangl
  *
  */
-public class RedisTaskforceStorageProvider implements TaskforceStorageProvider {
+public class RedisKeyValueStorageProvider implements KeyValueStorageProvider {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RedisTaskforceStorageProvider.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RedisKeyValueStorageProvider.class);
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
-	public RedisTaskforceStorageProvider(RedisTemplate<String, Object> redisTemplate) {
+	public RedisKeyValueStorageProvider(RedisTemplate<String, Object> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
 

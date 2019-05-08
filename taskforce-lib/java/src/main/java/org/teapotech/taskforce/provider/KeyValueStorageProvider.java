@@ -9,7 +9,7 @@ import java.util.Collection;
  * @author jiangl
  *
  */
-public interface TaskforceStorageProvider {
+public interface KeyValueStorageProvider {
 
 	Object get(String taskforceId, String key);
 

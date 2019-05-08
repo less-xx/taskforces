@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.executor.docker;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +13,9 @@ import java.util.Map;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.FileStorageException;
+import org.teapotech.taskforce.provider.FileStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author jiangl
@@ -22,15 +25,18 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 	private final BlockExecutorFactory blockExecutorFactory;
 	private final String workspaceId;
-	private final TaskforceStorageProvider storageProvider;
+	private final KeyValueStorageProvider kvStorageProvider;
+	private final FileStorageProvider fileStorageProvider;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
-			TaskforceStorageProvider storageProvider) {
+			KeyValueStorageProvider kvStorageProvider,
+			FileStorageProvider fileStorageProvider) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
-		this.storageProvider = storageProvider;
+		this.kvStorageProvider = kvStorageProvider;
+		this.fileStorageProvider = fileStorageProvider;
 	}
 
 	@Override
@@ -38,8 +44,12 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		return workspaceId;
 	}
 
-	public TaskforceStorageProvider getTaskforceResultStorageProvider() {
-		return storageProvider;
+	public KeyValueStorageProvider getKeyValueStorageProvider() {
+		return kvStorageProvider;
+	}
+
+	public FileStorageProvider getFileStorageProvider() {
+		return fileStorageProvider;
 	}
 
 	@Override
@@ -49,34 +59,45 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 	@Override
 	public void setVariable(String id, Object value) {
-		if (storageProvider == null) {
+		if (kvStorageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		storageProvider.put(workspaceId, id, value);
+		kvStorageProvider.put(workspaceId, id, value);
 	}
 
 	@Override
 	public Collection<String> getAllVariableNames() {
-		if (storageProvider == null) {
+		if (kvStorageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		return storageProvider.getAllKeys(workspaceId);
+		return kvStorageProvider.getAllKeys(workspaceId);
 	}
 
 	@Override
 	public Object getVariable(String id) {
-		if (storageProvider == null) {
+		if (kvStorageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		return storageProvider.get(workspaceId, id);
+		return kvStorageProvider.get(workspaceId, id);
 	}
 
 	@Override
 	public void destroy() {
-		if (storageProvider == null) {
+		if (kvStorageProvider == null) {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
-		storageProvider.destroy(workspaceId);
+		kvStorageProvider.destroy(workspaceId);
+	}
+
+	@Override
+	public void storeFile(String key, InputStream in) throws FileStorageException {
+		this.fileStorageProvider.store(workspaceId, key, in);
+
+	}
+
+	@Override
+	public InputStream loadFile(String key) throws FileStorageException {
+		return this.fileStorageProvider.load(workspaceId, key);
 	}
 
 	public ContainerSettings getContainerSettings() {

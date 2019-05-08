@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.teapotech.taskforce.exception.TaskforceDataStoreException;
+import org.teapotech.taskforce.web.ErrorResponse;
+import org.teapotech.user.exception.UserNotLogonException;
 
 /**
  * @author jiangl
@@ -23,12 +26,34 @@ public class ControllerExceptionHandler {
 
 	private final static Logger LOG = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+	@ExceptionHandler({ TaskforceDataStoreException.class })
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponse handleTaskforceDataStoreException(Exception e, HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		return respondError(e, httpRequest, httpResponse, false);
+	}
+
+	@ExceptionHandler({ UserNotLogonException.class })
+	@ResponseStatus(value = HttpStatus.FORBIDDEN)
+	@ResponseBody
+	public ErrorResponse handleUserNotLogonException(Exception e, HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		return respondError(e, httpRequest, httpResponse, true);
+	}
+
 	@ExceptionHandler({ Exception.class })
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public ErrorResponse handleGeneralException(Exception e, HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
-		return respondError(null, e, httpRequest, httpResponse, true);
+		return respondError(e, httpRequest, httpResponse, true);
+	}
+
+	private ErrorResponse respondError(Exception e,
+			HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse, boolean showStackTrace) {
+		return respondError(null, e, httpRequest, httpResponse, showStackTrace);
 	}
 
 	private ErrorResponse respondError(String message, Exception e,
@@ -48,23 +73,4 @@ public class ControllerExceptionHandler {
 		return input.replaceAll("(<.*?>)|(&.*?;)|([ ]{2,})", "");
 	}
 
-	public static class ErrorResponse {
-
-		String message;
-
-		public ErrorResponse() {
-		}
-
-		public ErrorResponse(String message) {
-			this.message = message;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
-		}
-	}
 }

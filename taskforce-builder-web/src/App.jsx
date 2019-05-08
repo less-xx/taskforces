@@ -5,29 +5,27 @@ import {
   NavItem,
   NavDropdown,
   MenuItem,
-  Grid,
-  Row,
-  Col,
   Button,
-  Glyphicon,
-  OverlayTrigger,
-  Tooltip,
   Form,
   FormControl
 } from 'react-bootstrap';
 import './App.css';
-import TaskforceBuilder from './taskforce-builder/TaskforceBuilder';
+import logo from './logo.svg'
+import AppRouter from './AppRouter'
 
 function App() {
   return (
 
     <div className="App" id="appMain">
-      <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+      <Navbar bg="dark" expand="lg" variant="dark">
+        <Navbar.Brand href="#home">
+          <img src={logo} className="App-logo" alt="logo"/>
+          {'React-Bootstrap'}
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="/taskforces">Taskforces</Nav.Link>
             <Nav.Link href="#link">Link</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -43,9 +41,9 @@ function App() {
           </Form>
         </Navbar.Collapse>
       </Navbar>
-      
-      <TaskforceBuilder />
-      
+
+      <AppRouter />
+
     </div>
   );
 }

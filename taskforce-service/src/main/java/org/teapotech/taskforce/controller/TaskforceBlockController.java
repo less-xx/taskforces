@@ -20,14 +20,15 @@ import org.teapotech.taskforce.service.BlockRegistryService;
  */
 @RestController
 @CrossOrigin("*")
-public class BlockRegistryController {
+public class TaskforceBlockController extends LogonUserController {
 
 	@Autowired
 	BlockRegistryService blockRegistryService;
 
-	@GetMapping("/block-registries")
+	@GetMapping("/taskforce-blocks")
 	@ResponseBody
 	public Map<String, Set<BlockRegistryDTO>> getAllBlockRegistries() throws Exception {
 		return blockRegistryService.getCategorizedBlockRegistries();
 	}
+
 }

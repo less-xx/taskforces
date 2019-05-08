@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.executor.DefaultBlockExecutionContext;
-import org.teapotech.taskforce.provider.TaskforceStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author lessdev
@@ -29,7 +29,7 @@ public class TaskForceContextAutoConfig {
 	String taskforceId;
 
 	@Autowired
-	TaskforceStorageProvider storageProvider;
+	KeyValueStorageProvider storageProvider;
 
 	@Bean
 	BlockExecutionContext taskForceContext() {
