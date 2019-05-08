@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import {
-    Container,
+    Modal,
     Row,
     Col,
     ButtonToolbar,
-    Button
+    Button,
+    Form
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Taskforces.css'
 import Moment from 'react-moment';
+import Select from 'react-select';
 
 class Taskforces extends Component {
 
@@ -23,7 +25,8 @@ class Taskforces extends Component {
                 page: 0,
                 size: 20,
                 sort: null
-            }
+            },
+            showNewTaskforceModal: false
         };
     }
 
@@ -78,12 +81,19 @@ class Taskforces extends Component {
             text: 'Last Updated',
             formatter: this.dateTimeFormatter
         }];
+        const groupOptions = this.state.taskforceGroups.map(g=>
+            ({
+                value: g.id, 
+                label: g.name
+            })
+        );
         return (
             <div>
                 <h1>Taskforces</h1>
                 <ButtonToolbar className="major-operation-button-bar">
-                    <Button variant="outline-primary" size="sm" href="/taskforce-editor">New</Button>
-                </ButtonToolbar>;
+                    <Button variant="outline-primary" size="sm" onClick={this.showNewTaskforce.bind(this)}>New</Button>
+                </ButtonToolbar>
+
                 <BootstrapTable
                     keyField='id'
                     data={this.state.taskforceGroups}
@@ -95,8 +105,46 @@ class Taskforces extends Component {
                     wrapperClasses="taskforce-grid"
                     bordered={false}
                 />
+
+                <Modal show={this.state.showNewTaskforceModal} onHide={this.hideNewTaskforce.bind(this)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Taskforce</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form onSubmit={e => this.handleNewTaskforce(e)}>
+                            <Form.Group controlId="taskforceName">
+                                <Form.Label>Taskforce Name</Form.Label>
+                                <Form.Control type="text" placeholder="Enter taskforce name" required/>
+                                <Form.Text className="text-muted">
+                                    The name fo the taskforce should be unique.
+                                </Form.Text>
+                                <Form.Control.Feedback type="invalid">
+                                    Taskforce name is required.
+                                </Form.Control.Feedback>
+                            </Form.Group>
+
+                            <Form.Group controlId="taskforceGroup">
+                                <Form.Label>Group</Form.Label>
+                                <Select options={groupOptions} />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={this.hideNewTaskforce.bind(this)}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         );
+    }
+
+    hideNewTaskforce() {
+        this.setState({ showNewTaskforceModal: false });
+    }
+
+    showNewTaskforce() {
+        this.setState({ showNewTaskforceModal: true });
     }
 }
 
