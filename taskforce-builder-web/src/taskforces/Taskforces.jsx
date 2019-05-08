@@ -111,7 +111,7 @@ class Taskforces extends Component {
                         <Modal.Title>New Taskforce</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form onSubmit={e => this.handleNewTaskforce(e)}>
+                        <Form noValidate validated={validated} onSubmit={e => this.createTaskforce(e)}>
                             <Form.Group controlId="taskforceName">
                                 <Form.Label>Taskforce Name</Form.Label>
                                 <Form.Control type="text" placeholder="Enter taskforce name" required/>
@@ -131,7 +131,10 @@ class Taskforces extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.hideNewTaskforce.bind(this)}>
-                            Close
+                            Cancel
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Create
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -145,6 +148,10 @@ class Taskforces extends Component {
 
     showNewTaskforce() {
         this.setState({ showNewTaskforceModal: true });
+    }
+
+    createTaskforce() {
+
     }
 }
 
