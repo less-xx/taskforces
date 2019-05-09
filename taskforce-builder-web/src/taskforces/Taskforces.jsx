@@ -155,7 +155,7 @@ class Taskforces extends Component {
                 <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce}
                     show={this.state.showNewTaskforceModal} disableGroupSelection={true} />
 
-                <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} placement="bottom">
+                <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} >
                     <Dropdown.Menu show>
                         <Dropdown.Item eventKey="1" onSelect={this.editGroup.bind(this)}>Edit</Dropdown.Item>
                         <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
