@@ -64,7 +64,8 @@ public class TaskforceDataStoreService {
 			LOG.info("Created taskforce group, ID: {}, Name: {}, Created By: {}", tg.getId(), tg.getName(),
 					tg.getUpdatedBy());
 		} else {
-			LOG.info("Updated taskforce, ID: {}, Name:{}, Updated By: {}", tg.getId(), tg.getName(), tg.getUpdatedBy());
+			LOG.info("Updated taskforce group, ID: {}, Name:{}, Updated By: {}", tg.getId(), tg.getName(),
+					tg.getUpdatedBy());
 		}
 		return tg;
 	}
