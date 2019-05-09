@@ -22,7 +22,7 @@ class EditTaskforceModal extends Component {
             taskforceId: null,
             taskforceName: null,
             taskforceDesc: null,
-            taskforceGroupId: null,
+            taskforceGroupId: props.group ? props.group.id : null,
             disableGroupSelection: props.disableGroupSelection
         };
     }
@@ -39,6 +39,10 @@ class EditTaskforceModal extends Component {
                 taskforceName: newProps.taskforce.name,
                 taskforceGroupId: newProps.taskforce.groupId,
                 taskforceDesc: newProps.taskforce.description
+            });
+        }else if(newProps.group){
+            this.setState({
+                taskforceGroupId: newProps.group.id
             });
         }
     }
@@ -143,7 +147,8 @@ class EditTaskforceModal extends Component {
             body: JSON.stringify({
                 name: this.state.taskforceName,
                 description: this.state.taskforceDesc,
-                groupId: this.state.taskforceGroupId
+                groupId: this.state.taskforceGroupId,
+                configuration: "<xml></xml>"
             })
         })
             .then(response => response.json())

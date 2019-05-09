@@ -123,7 +123,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		TaskforceEntity t = new TaskforceEntity();
 		t.setConfiguration(request.getConfiguration());
 		t.setDescription(request.getDescription());
-		t.setName(t.getName());
+		t.setName(request.getName());
 		t.setGroup(group);
 		t.setLastUpdatedTime(new Date());
 		t.setUpdatedBy(getLogonUser(httpRequest).getName());

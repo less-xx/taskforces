@@ -16,7 +16,7 @@ class GroupTaskforces extends Component {
 
     constructor(props) {
         super(props);
-        console.log(props);
+        //console.log(props);
         this.state = {
             error: null,
             isLoaded: false,
@@ -31,6 +31,10 @@ class GroupTaskforces extends Component {
     }
 
     componentDidMount() {
+        this.loadGroupTaskforces();
+    }
+    
+    loadGroupTaskforces() {
         var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCES);
         url.search = new URLSearchParams({
             group_id: this.state.taskforceGroup.id
@@ -61,12 +65,20 @@ class GroupTaskforces extends Component {
     }
 
     render() {
+        var dateTimeFormatter=function(cell, row) {
+            return (
+                <Moment format="YYYY-MM-DD HH:mm">
+                    {new Date(cell)}
+                </Moment>
+            );
+        }
+
         const columns = [{
             dataField: 'name',
             text: 'Name',
             align: 'left',
             headerAlign: 'left',
-            headerStyle: { width: "15%" }
+            headerStyle: { width: "20%" }
         }, {
             dataField: 'description',
             text: 'Description',
@@ -77,12 +89,14 @@ class GroupTaskforces extends Component {
             text: 'Last Updated',
             align: 'center',
             headerAlign: 'center',
-            formatter: this.dateTimeFormatter
+            headerStyle: { width: "150px" },
+            formatter: dateTimeFormatter
         }, {
             dataField: 'updatedBy',
             text: 'Updated By',
             align: 'center',
-            headerAlign: 'center'
+            headerAlign: 'center',
+            headerStyle: { width: "150px" }
         }];
 
         return (
@@ -104,6 +118,7 @@ class GroupTaskforces extends Component {
     }
 
     editTaskforce() {
+        console.log(this.state.taskforceGroup);
         this.props.parent.editTaskforce(this.state.taskforceGroup);
     }
 }

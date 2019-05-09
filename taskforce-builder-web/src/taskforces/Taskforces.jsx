@@ -70,14 +70,6 @@ class Taskforces extends Component {
             );
     }
 
-    dateTimeFormatter(cell, row) {
-        return (
-            <Moment format="YYYY-MM-DD HH:mm">
-                {new Date(cell)}
-            </Moment>
-        );
-    }
-
     render() {
 
         var opColFormatter = function (cell, row, rowIndex, formatExtraData) {
@@ -87,12 +79,20 @@ class Taskforces extends Component {
             );
         }.bind(this);
 
+        var dateTimeFormatter = function(cell, row) {
+            return (
+                <Moment format="YYYY-MM-DD HH:mm">
+                    {new Date(cell)}
+                </Moment>
+            );
+        }
+
         const columns = [{
             dataField: 'name',
             text: 'Group Name',
             align: 'left',
             headerAlign: 'left',
-            headerStyle: { width: "15%" }
+            headerStyle: { width: "20%" }
         }, {
             dataField: 'description',
             text: 'Description',
@@ -103,7 +103,8 @@ class Taskforces extends Component {
             text: 'Last Updated',
             align: 'center',
             headerAlign: 'center',
-            formatter: this.dateTimeFormatter
+            headerStyle: { width: "150px" },
+            formatter: dateTimeFormatter
         }, {
             dataField: 'id',
             text: '',
@@ -152,7 +153,7 @@ class Taskforces extends Component {
                 <EditTaskforceGroupModal group={this.state.selectedGroup} show={this.state.showEditGroupModal}
                     refresh={this.refresh.bind(this)} />
 
-                <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce}
+                <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce} group={this.state.selectedGroup}
                     show={this.state.showNewTaskforceModal} disableGroupSelection={true} />
 
                 <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} >
@@ -164,6 +165,36 @@ class Taskforces extends Component {
 
             </div>
         );
+    }
+
+    loadGroupTaskforces() {
+        var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCES);
+        url.search = new URLSearchParams({
+            group_id: this.state.selectedGroup.id
+        });
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    var taskforces = result.body.content;
+                    var pager = result.body.pageable;
+                    this.setState({
+                        isLoaded: true,
+                        taskforces: taskforces,
+                        pageable: {
+                            page: pager.number,
+                            size: pager.size
+                        }
+                    });
+                },
+                (error) => {
+                    console.log(error);
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            );
     }
 
     refresh() {
