@@ -27,3 +27,14 @@ h1 {
   font-size: 2rem;
   margin: 10px 10px 0px 10px;
 }
+
+.form-control {
+  font-size: 0.8rem;
+  line-height: 0.8rem;
+}
+
+.form-text {
+  font-size: 0.7rem;
+  line-height: 0.8rem;
+  color: lightgray;
+}

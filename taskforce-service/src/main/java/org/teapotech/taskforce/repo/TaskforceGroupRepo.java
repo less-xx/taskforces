@@ -14,4 +14,5 @@ import org.teapotech.taskforce.entity.TaskforceGroup;
 public interface TaskforceGroupRepo
 		extends JpaRepository<TaskforceGroup, String>, JpaSpecificationExecutor<TaskforceGroup> {
 
+	TaskforceGroup findByName(String name);
 }

@@ -1,7 +1,25 @@
-
-.taskforce-grid {
+.taskforce-group-grid {
     border: 1px solid lightgray;
     margin: 0px 10px 0px 10px;
     font-size: 0.8rem;
     line-height: 0.8rem;
+}
+
+.taskforce-grid {
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+    background-color: white;
+}
+
+.taskforce-grid table thead tr td{
+    border-top: 0px;
+    border-spacing: 0px;
+}
+
+.reset-expansion-style .row-expansion-style {
+    padding: 0px 0px 0px 40px;
+}
+
+.reset-expansion-style table thead tr td {
+    border-top: 0px;
 }

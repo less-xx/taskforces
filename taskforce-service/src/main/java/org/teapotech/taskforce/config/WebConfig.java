@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.teapotech.user.interceptor.UserLogonInterceptor;
 
-
 /**
  * @author jiangl
  *
@@ -23,6 +22,6 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 
-		registry.addInterceptor(userLogonInterceptor).addPathPatterns("/taskforces/**");
+		registry.addInterceptor(userLogonInterceptor).addPathPatterns("/**");
 	}
 }

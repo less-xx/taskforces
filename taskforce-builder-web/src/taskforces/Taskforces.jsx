@@ -11,7 +11,11 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Taskforces.css'
 import Moment from 'react-moment';
-import Select from 'react-select';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
+import EditTaskforceGroupModal from './EditTaskforceGroupModal';
+import EditTaskforceModal from './EditTaskforceModal';
+import GroupTaskforces from './GroupTaskforces';
+import { padding } from 'polished';
 
 class Taskforces extends Component {
 
@@ -26,11 +30,18 @@ class Taskforces extends Component {
                 size: 20,
                 sort: null
             },
-            showNewTaskforceModal: false
+            showNewGroupModal: false,
+            showNewTaskforceModal: false,
+            selectedGroup: null,
+            selectTaskforce: null
         };
     }
 
     componentDidMount() {
+        this.fetchGroups();
+    }
+
+    fetchGroups() {
         var url = process.env.REACT_APP_URL_GET_TASKFORCE_GROUPS;
         fetch(url)
             .then(res => res.json())
@@ -58,9 +69,6 @@ class Taskforces extends Component {
     }
 
     dateTimeFormatter(cell, row) {
-        //console.log(cell);
-        //return "aa";
-        //return new Date(cell).toISOString();
         return (
             <Moment format="YYYY-MM-DD HH:mm">
                 {new Date(cell)}
@@ -71,87 +79,79 @@ class Taskforces extends Component {
     render() {
         const columns = [{
             dataField: 'name',
-            text: 'Name',
+            text: 'Group Name',
+            align: 'left',
+            headerAlign: 'left',
             headerStyle: { width: "15%" }
         }, {
             dataField: 'description',
-            text: 'Description'
+            text: 'Description',
+            align: 'left',
+            headerAlign: 'left',
         }, {
             dataField: 'lastUpdatedTime',
             text: 'Last Updated',
+            align: 'center',
+            headerAlign: 'center',
             formatter: this.dateTimeFormatter
         }];
-        const groupOptions = this.state.taskforceGroups.map(g=>
-            ({
-                value: g.id, 
-                label: g.name
-            })
-        );
+        var parent = this;
+        const expandRow = {
+            renderer: row => (
+                <GroupTaskforces group={row} parent={parent}/>
+            ),
+            showExpandColumn: true,
+            expandHeaderColumnRenderer: ({ isAnyExpands }) => {
+                return "";
+            },
+            expandColumnRenderer: ({ expanded }) => {
+                if (expanded) {
+                    return <MdExpandLess />;
+                }
+                return <MdExpandMore />;
+            }
+        };
+
+        var groups = this.state.selectedGroup?[this.state.selectedGroup]:[];
         return (
             <div>
                 <h1>Taskforces</h1>
                 <ButtonToolbar className="major-operation-button-bar">
-                    <Button variant="outline-primary" size="sm" onClick={this.showNewTaskforce.bind(this)}>New</Button>
+                    <Button variant="outline-primary" size="sm" onClick={this.newTaskforceGroup.bind(this)}>New Group</Button>
                 </ButtonToolbar>
 
                 <BootstrapTable
                     keyField='id'
                     data={this.state.taskforceGroups}
                     columns={columns}
-                    striped
                     hover
                     condensed
-                    noDataIndication="Table is Empty"
-                    wrapperClasses="taskforce-grid"
+                    noDataIndication="No taskforce group"
+                    wrapperClasses="taskforce-group-grid"
                     bordered={false}
+                    expandRow={expandRow}
                 />
 
-                <Modal show={this.state.showNewTaskforceModal} onHide={this.hideNewTaskforce.bind(this)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>New Taskforce</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form noValidate validated={validated} onSubmit={e => this.createTaskforce(e)}>
-                            <Form.Group controlId="taskforceName">
-                                <Form.Label>Taskforce Name</Form.Label>
-                                <Form.Control type="text" placeholder="Enter taskforce name" required/>
-                                <Form.Text className="text-muted">
-                                    The name fo the taskforce should be unique.
-                                </Form.Text>
-                                <Form.Control.Feedback type="invalid">
-                                    Taskforce name is required.
-                                </Form.Control.Feedback>
-                            </Form.Group>
+                <EditTaskforceGroupModal group={this.state.selectedGroup} show={this.state.showNewGroupModal}
+                    refresh={this.refresh.bind(this)} />
 
-                            <Form.Group controlId="taskforceGroup">
-                                <Form.Label>Group</Form.Label>
-                                <Select options={groupOptions} />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={this.hideNewTaskforce.bind(this)}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" type="submit">
-                            Create
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce}
+                    show={this.state.showNewTaskforceModal} disableGroupSelection={true} />
             </div>
         );
     }
 
-    hideNewTaskforce() {
-        this.setState({ showNewTaskforceModal: false });
+    refresh() {
+        this.setState({ showNewGroupModal: false });
+        this.fetchGroups();
     }
 
-    showNewTaskforce() {
+    newTaskforceGroup() {
+        this.setState({ showNewGroupModal: true });
+    }
+
+    editTaskforce() {
         this.setState({ showNewTaskforceModal: true });
-    }
-
-    createTaskforce() {
-
     }
 }
 

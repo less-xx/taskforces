@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +25,11 @@ import org.teapotech.taskforce.exception.TaskforceDataStoreException;
 import org.teapotech.taskforce.service.TaskforceDataStoreService;
 import org.teapotech.taskforce.web.RestResponse;
 import org.teapotech.taskforce.web.SimpleTaskforceEntity;
+import org.teapotech.taskforce.web.SimpleTaskforceGroup;
+import org.teapotech.taskforce.web.TaskforceGroupRequest;
 import org.teapotech.taskforce.web.TaskforceRequest;
 
 @RestController
-@CrossOrigin("*")
 public class TaskforceDataStoreController extends LogonUserController {
 
 	@Autowired
@@ -45,12 +45,56 @@ public class TaskforceDataStoreController extends LogonUserController {
 		return new RestResponse<Page<TaskforceGroup>>(result);
 	}
 
+	@PostMapping("/taskforce-groups")
+	@ResponseBody
+	public RestResponse<SimpleTaskforceGroup> createTaskforceGroup(@RequestBody TaskforceGroupRequest request,
+			HttpServletRequest httpRequest)
+			throws TaskforceDataStoreException {
+		TaskforceGroup group = tfDataStoreService.findTaskforceGroupByName(request.getName());
+		if (group != null) {
+			throw new TaskforceDataStoreException("Taskforce group with name " + request.getName() + " exists.");
+		}
+		group = new TaskforceGroup();
+		group.setName(request.getName());
+		group.setDescription(request.getDescription());
+		group.setLastUpdatedTime(new Date());
+		group.setUpdatedBy(getLogonUser(httpRequest).getName());
+		group = tfDataStoreService.saveTaskforceGroup(group);
+		return new RestResponse<SimpleTaskforceGroup>(new SimpleTaskforceGroup(group));
+
+	}
+
+	@PutMapping("/taskforce-groups/{id}")
+	@ResponseBody
+	public RestResponse<SimpleTaskforceGroup> updateTaskforceGroup(
+			@PathVariable("id") String groupId,
+			@RequestBody TaskforceGroupRequest request,
+			HttpServletRequest httpRequest)
+			throws TaskforceDataStoreException {
+		TaskforceGroup group = tfDataStoreService.findTaskforceGroupById(groupId);
+		if (group == null) {
+			throw new TaskforceDataStoreException("Cannot find taskforce group by id: " + groupId);
+		}
+
+		TaskforceGroup existedGroup = tfDataStoreService.findTaskforceGroupByName(request.getName());
+		if (existedGroup != null && !existedGroup.getId().equals(groupId)) {
+			throw new TaskforceDataStoreException("Taskforce group with name " + request.getName() + " exists.");
+		}
+		group.setName(request.getName());
+		group.setDescription(request.getDescription());
+		group.setLastUpdatedTime(new Date());
+		group.setUpdatedBy(getLogonUser(httpRequest).getName());
+		group = tfDataStoreService.saveTaskforceGroup(group);
+		return new RestResponse<SimpleTaskforceGroup>(new SimpleTaskforceGroup(group));
+
+	}
+
 	@GetMapping("/taskforces")
 	@ResponseBody
 	public RestResponse<Page<SimpleTaskforceEntity>> getTaskforces(
-			@RequestParam("id") String id,
-			@RequestParam("name") String name,
-			@RequestParam("group_id") String groupId,
+			@RequestParam(name = "id", required = false) String id,
+			@RequestParam(name = "name", required = false) String name,
+			@RequestParam(name = "group_id", required = false) String groupId,
 			Pageable pageable,
 			HttpServletRequest httpRequest)
 			throws TaskforceDataStoreException {

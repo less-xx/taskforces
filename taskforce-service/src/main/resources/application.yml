@@ -28,9 +28,10 @@ spring:
     timeout: ${CONFIG_REDIS_TIMEOUT:3000}
     database: ${CONFIG_REDIS_DATABASE:1}
 
-security:
-  basic:
-    enabled: false
+security.web:
+  allowed-origins: ${HTTP_ALLOWED_ORIGINS:http://localhost:3000}
+  allowed-methods: ${HTTP_ALLOWED_METHODS:GET,POST,PUT,OPTION,DELETE}
+  
 server:
   servlet:
     context-path: /taskforce-service
@@ -39,6 +40,7 @@ logging:
   level:
     root: INFO
     org.teapotech.taskforce: DEBUG
+    org.springframework: WARN
 
 taskforce:
   kv-storage:

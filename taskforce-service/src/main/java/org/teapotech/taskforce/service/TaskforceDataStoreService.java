@@ -58,6 +58,17 @@ public class TaskforceDataStoreService {
 		return t;
 	}
 
+	public TaskforceGroup saveTaskforceGroup(TaskforceGroup group) {
+		TaskforceGroup tg = groupRepo.save(group);
+		if (StringUtils.isBlank(group.getId())) {
+			LOG.info("Created taskforce group, ID: {}, Name: {}, Created By: {}", tg.getId(), tg.getName(),
+					tg.getUpdatedBy());
+		} else {
+			LOG.info("Updated taskforce, ID: {}, Name:{}, Updated By: {}", tg.getId(), tg.getName(), tg.getUpdatedBy());
+		}
+		return tg;
+	}
+
 	public TaskforceEntity findByNameAndGroup(String name, TaskforceGroup group) {
 		return taskforceEntityRepo.findByNameAndGroup(name, group);
 	}
@@ -87,6 +98,10 @@ public class TaskforceDataStoreService {
 			return null;
 		}
 		return groupRepo.findById(id).orElse(null);
+	}
+
+	public TaskforceGroup findTaskforceGroupByName(String name) {
+		return groupRepo.findByName(name);
 	}
 
 }

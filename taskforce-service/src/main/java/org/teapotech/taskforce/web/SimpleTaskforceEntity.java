@@ -3,21 +3,24 @@
  */
 package org.teapotech.taskforce.web;
 
+import java.util.Date;
+
 import org.teapotech.taskforce.entity.TaskforceEntity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
  * @author jiangl
  *
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder(alphabetic = true)
 public class SimpleTaskforceEntity {
 	private String id;
 	private String name;
 	private String description;
+	private Date lastUpdatedTime;
+	private String updatedBy;
+	private SimpleTaskforceGroup group;
 
 	public SimpleTaskforceEntity() {
 	}
@@ -26,6 +29,9 @@ public class SimpleTaskforceEntity {
 		this.id = taskforce.getId();
 		this.name = taskforce.getName();
 		this.description = taskforce.getDescription();
+		this.lastUpdatedTime = taskforce.getLastUpdatedTime();
+		this.updatedBy = taskforce.getUpdatedBy();
+		this.group = new SimpleTaskforceGroup(taskforce.getGroup());
 	}
 
 	public String getId() {
@@ -50,5 +56,29 @@ public class SimpleTaskforceEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setGroup(SimpleTaskforceGroup group) {
+		this.group = group;
+	}
+
+	public SimpleTaskforceGroup getGroup() {
+		return group;
+	}
+
+	public Date getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(Date lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
 	}
 }
