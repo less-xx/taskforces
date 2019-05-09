@@ -78,7 +78,7 @@ class EditTaskforceModal extends Component {
 
                         <Form.Group controlId="taskforceGroup">
                             <Form.Label>Group</Form.Label>
-                            <Select options={groupOptions} defaultValue={groupOptions[0]} onChange={this.onChangeGroup.bind(this)} isDisabled={this.state.disabled} />
+                            <Select options={groupOptions} defaultValue={groupOptions[0]} onChange={this.onChangeGroup.bind(this)} isDisabled={this.state.disableGroupSelection} />
                         </Form.Group>
 
                     </Modal.Body>

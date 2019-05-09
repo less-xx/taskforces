@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import {
     Modal,
     Row,
-    Col,
+    Dropdown,
     ButtonToolbar,
     Button,
-    Form
+    Overlay
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import './Taskforces.css'
 import Moment from 'react-moment';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
+import { MdExpandLess, MdExpandMore, MdMoreVert } from 'react-icons/md';
 import EditTaskforceGroupModal from './EditTaskforceGroupModal';
 import EditTaskforceModal from './EditTaskforceModal';
 import GroupTaskforces from './GroupTaskforces';
@@ -30,10 +30,12 @@ class Taskforces extends Component {
                 size: 20,
                 sort: null
             },
-            showNewGroupModal: false,
+            showEditGroupModal: false,
             showNewTaskforceModal: false,
             selectedGroup: null,
-            selectTaskforce: null
+            selectTaskforce: null,
+            showGroupOpMenu: false,
+            groupOpMenuTarget: null
         };
     }
 
@@ -77,6 +79,14 @@ class Taskforces extends Component {
     }
 
     render() {
+
+        var opColFormatter = function (cell, row, rowIndex, formatExtraData) {
+
+            return (
+                <MdMoreVert onClick={(e) => this.showTaskforceGroupMenu(e.target, row)} />
+            );
+        }.bind(this);
+
         const columns = [{
             dataField: 'name',
             text: 'Group Name',
@@ -94,13 +104,21 @@ class Taskforces extends Component {
             align: 'center',
             headerAlign: 'center',
             formatter: this.dateTimeFormatter
+        }, {
+            dataField: 'id',
+            text: '',
+            align: 'center',
+            headerAlign: 'center',
+            headerStyle: { width: "40px" },
+            formatter: opColFormatter
         }];
         var parent = this;
         const expandRow = {
             renderer: row => (
-                <GroupTaskforces group={row} parent={parent}/>
+                <GroupTaskforces group={row} parent={parent} />
             ),
             showExpandColumn: true,
+            expandByColumnOnly: true,
             expandHeaderColumnRenderer: ({ isAnyExpands }) => {
                 return "";
             },
@@ -112,19 +130,18 @@ class Taskforces extends Component {
             }
         };
 
-        var groups = this.state.selectedGroup?[this.state.selectedGroup]:[];
+        var groups = this.state.selectedGroup ? [this.state.selectedGroup] : this.state.taskforceGroups;
         return (
             <div>
                 <h1>Taskforces</h1>
                 <ButtonToolbar className="major-operation-button-bar">
-                    <Button variant="outline-primary" size="sm" onClick={this.newTaskforceGroup.bind(this)}>New Group</Button>
+                    <Button variant="outline-primary" size="sm" onClick={this.editTaskforceGroup.bind(this)}>New Group</Button>
                 </ButtonToolbar>
 
                 <BootstrapTable
                     keyField='id'
                     data={this.state.taskforceGroups}
                     columns={columns}
-                    hover
                     condensed
                     noDataIndication="No taskforce group"
                     wrapperClasses="taskforce-group-grid"
@@ -132,26 +149,59 @@ class Taskforces extends Component {
                     expandRow={expandRow}
                 />
 
-                <EditTaskforceGroupModal group={this.state.selectedGroup} show={this.state.showNewGroupModal}
+                <EditTaskforceGroupModal group={this.state.selectedGroup} show={this.state.showEditGroupModal}
                     refresh={this.refresh.bind(this)} />
 
                 <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce}
                     show={this.state.showNewTaskforceModal} disableGroupSelection={true} />
+
+                <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} placement="bottom">
+                    <Dropdown.Menu show>
+                        <Dropdown.Item eventKey="1" onSelect={this.editGroup.bind(this)}>Edit</Dropdown.Item>
+                        <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Overlay>
+
             </div>
         );
     }
 
     refresh() {
-        this.setState({ showNewGroupModal: false });
+        this.setState({ showEditGroupModal: false });
         this.fetchGroups();
     }
 
-    newTaskforceGroup() {
-        this.setState({ showNewGroupModal: true });
+    editTaskforceGroup() {
+        this.setState({
+            showEditGroupModal: true,
+            showNewTaskforceModal: false
+        });
     }
 
-    editTaskforce() {
-        this.setState({ showNewTaskforceModal: true });
+    editTaskforce(group) {
+        this.setState({
+            showNewTaskforceModal: true,
+            showEditGroupModal: false,
+            selectedGroup: group
+        });
+    }
+
+    showTaskforceGroupMenu(target, group) {
+        this.setState({
+            groupOpMenuTarget: target,
+            showGroupOpMenu: true,
+            showEditGroupModal: false,
+            selectedGroup: group
+        });
+        //console.log(target);
+    }
+
+    editGroup() {
+        //console.log(this.state.selectedGroup);
+        this.setState({
+            showGroupOpMenu: false
+        });
+        this.editTaskforceGroup();
     }
 }
 

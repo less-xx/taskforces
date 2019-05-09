@@ -33,7 +33,7 @@ class EditTaskforceGroupModal extends Component {
             this.setState({
                 groupId: newProps.group.id,
                 groupName: newProps.group.name,
-                groupDesc: newProps.group.groupDesc,
+                groupDesc: newProps.group.description,
             });
         }
     }

@@ -104,7 +104,7 @@ class GroupTaskforces extends Component {
     }
 
     editTaskforce() {
-        this.props.parent.editTaskforce()
+        this.props.parent.editTaskforce(this.state.taskforceGroup);
     }
 }
 
