@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
 import './TaskforceBuilder.css';
 import DataService from '../DataService';
@@ -8,19 +9,19 @@ class TaskforceBuilder extends Component {
 
     constructor(props) {
         super(props);
+        const cookies = new Cookies();
         this.state = {
             error: null,
             isLoaded: false,
             workspace: null,
             taskforce: null,
-            taskforceId: DataStore.currentTaskforceId
+            taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId")
         };
         this.toSaveList = [];
     }
 
     componentDidMount() {
-
-
+        
         DataService.fetchTaskforceBlocks(
             (result) => {
                 var toolboxXml = this.buildToolbox(result);
@@ -34,7 +35,11 @@ class TaskforceBuilder extends Component {
                     isLoaded: true,
                     workspace: workspace
                 });
+                const cookies = new Cookies();
+                cookies.set('currentTaskforceId', this.state.taskforceId, { path: '/' });
                 if (this.state.taskforceId) {
+                    
+                    
                     this.loadWorkspace();
                 }
                 this.resizeWorkspace();
