@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import {
-    Modal,
-    Row,
     Dropdown,
     ButtonToolbar,
     Button,
@@ -15,7 +13,8 @@ import { MdExpandLess, MdExpandMore, MdMoreVert } from 'react-icons/md';
 import EditTaskforceGroupModal from './EditTaskforceGroupModal';
 import EditTaskforceModal from './EditTaskforceModal';
 import GroupTaskforces from './GroupTaskforces';
-import { padding } from 'polished';
+import DataService from '../DataService';
+import DataStore from '../DataStore';
 
 class Taskforces extends Component {
 
@@ -24,14 +23,13 @@ class Taskforces extends Component {
         this.state = {
             error: null,
             isLoaded: false,
-            taskforceGroups: [],
             pageable: {
                 page: 0,
                 size: 20,
                 sort: null
             },
             showEditGroupModal: false,
-            showNewTaskforceModal: false,
+            showEditTaskforceModal: false,
             selectedGroup: null,
             selectTaskforce: null,
             showGroupOpMenu: false,
@@ -40,34 +38,10 @@ class Taskforces extends Component {
     }
 
     componentDidMount() {
-        this.fetchGroups();
-    }
-
-    fetchGroups() {
-        var url = process.env.REACT_APP_URL_GET_TASKFORCE_GROUPS;
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    var groups = result.body.content;
-                    var pager = result.body.pageable;
-                    this.setState({
-                        isLoaded: true,
-                        taskforceGroups: groups,
-                        pageable: {
-                            page: pager.number,
-                            size: pager.size
-                        }
-                    });
-                },
-                (error) => {
-                    console.log(error);
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            );
+        this.setState({ isLoaded: false });
+        DataService.fetchTaskforceGroups((groups, pager) => {
+            this.setState({ isLoaded: true });
+        });
     }
 
     render() {
@@ -79,7 +53,7 @@ class Taskforces extends Component {
             );
         }.bind(this);
 
-        var dateTimeFormatter = function(cell, row) {
+        var dateTimeFormatter = function (cell, row) {
             return (
                 <Moment format="YYYY-MM-DD HH:mm">
                     {new Date(cell)}
@@ -141,7 +115,7 @@ class Taskforces extends Component {
 
                 <BootstrapTable
                     keyField='id'
-                    data={this.state.taskforceGroups}
+                    data={DataStore.taskforceGroups.content}
                     columns={columns}
                     condensed
                     noDataIndication="No taskforce group"
@@ -154,7 +128,8 @@ class Taskforces extends Component {
                     refresh={this.refresh.bind(this)} />
 
                 <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce} group={this.state.selectedGroup}
-                    show={this.state.showNewTaskforceModal} disableGroupSelection={true} />
+                    refresh={this.refreshGroupTaskforces.bind(this)}
+                    show={this.state.showEditTaskforceModal} disableGroupSelection={true} />
 
                 <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} >
                     <Dropdown.Menu show>
@@ -167,51 +142,36 @@ class Taskforces extends Component {
         );
     }
 
-    loadGroupTaskforces() {
-        var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCES);
-        url.search = new URLSearchParams({
-            group_id: this.state.selectedGroup.id
+    refresh() {
+        this.setState({
+            showEditGroupModal: false,
+            isLoaded: false
         });
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    var taskforces = result.body.content;
-                    var pager = result.body.pageable;
-                    this.setState({
-                        isLoaded: true,
-                        taskforces: taskforces,
-                        pageable: {
-                            page: pager.number,
-                            size: pager.size
-                        }
-                    });
-                },
-                (error) => {
-                    console.log(error);
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            );
+        DataService.fetchTaskforceGroups((groups, pager) => {
+            this.setState({ isLoaded: true });
+        });
     }
 
-    refresh() {
-        this.setState({ showEditGroupModal: false });
-        this.fetchGroups();
+    refreshGroupTaskforces() {
+        this.setState({ 
+            showEditTaskforceModal: false,
+            isLoaded: false
+        });
+        DataService.fetchGroupTaskforces(this.state.selectedGroup.id, (taskforces, pager) => {
+            this.setState({ isLoaded: true });
+        });
     }
 
     editTaskforceGroup() {
         this.setState({
             showEditGroupModal: true,
-            showNewTaskforceModal: false
+            showEditTaskforceModal: false
         });
     }
 
     editTaskforce(group) {
         this.setState({
-            showNewTaskforceModal: true,
+            showEditTaskforceModal: true,
             showEditGroupModal: false,
             selectedGroup: group
         });

@@ -31,11 +31,11 @@ public class TaskforceEntityQuerySpecs {
 			public Predicate toPredicate(Root<TaskforceEntity> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
 				List<Predicate> predicates = new ArrayList<Predicate>();
 
-				if (id != null) {
+				if (StringUtils.isNotBlank(id)) {
 					predicates.add(cb.equal(root.<String>get("id"), id));
 				}
 
-				if (StringUtils.isNotEmpty(name)) {
+				if (StringUtils.isNotBlank(name)) {
 					predicates.add(cb.like(root.<String>get("name"), "%" + name + "%"));
 				}
 

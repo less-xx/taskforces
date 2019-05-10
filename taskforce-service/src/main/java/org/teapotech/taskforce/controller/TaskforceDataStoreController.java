@@ -140,6 +140,8 @@ public class TaskforceDataStoreController extends LogonUserController {
 		if (existedTaskfoce == null) {
 			throw new TaskforceDataStoreException("Cannot find taskfoce by id [" + taskforceId + "].");
 		}
+
+		// update group
 		if (!StringUtils.isBlank(request.getGroupId())) {
 			TaskforceGroup group = tfDataStoreService.findTaskforceGroupById(request.getGroupId());
 			if (group == null) {
@@ -147,12 +149,41 @@ public class TaskforceDataStoreController extends LogonUserController {
 			}
 			existedTaskfoce.setGroup(group);
 		}
-		existedTaskfoce.setConfiguration(request.getConfiguration());
-		existedTaskfoce.setDescription(request.getDescription());
-		existedTaskfoce.setName(request.getName());
+
+		// update name
+		if (!StringUtils.isBlank(request.getName())) {
+			TaskforceEntity sameNameTaskforce = tfDataStoreService.findByNameAndGroup(request.getName(),
+					existedTaskfoce.getGroup());
+			if (sameNameTaskforce != null && !sameNameTaskforce.getId().equals(taskforceId)) {
+				throw new TaskforceDataStoreException("Taskfoce with name [" + request.getName() + "] exists.");
+			}
+			existedTaskfoce.setName(request.getName());
+		}
+
+		// update configuration
+		if (!StringUtils.isBlank(request.getConfiguration())) {
+			existedTaskfoce.setConfiguration(request.getConfiguration());
+		}
+		// update description
+		if (!StringUtils.isBlank(request.getDescription())) {
+			existedTaskfoce.setDescription(request.getDescription());
+		}
+
 		existedTaskfoce.setLastUpdatedTime(new Date());
 		existedTaskfoce.setUpdatedBy(getLogonUser(httpRequest).getName());
 		existedTaskfoce = tfDataStoreService.saveTaskforceEntity(existedTaskfoce);
 		return new RestResponse<SimpleTaskforceEntity>(new SimpleTaskforceEntity(existedTaskfoce));
+	}
+
+	@GetMapping("/taskforces/{id}")
+	public RestResponse<TaskforceEntity> getTaskforce(@PathVariable("id") String taskforceId,
+			HttpServletRequest httpRequest)
+			throws TaskforceDataStoreException {
+
+		TaskforceEntity existedTaskfoce = tfDataStoreService.findTaskforceEntityById(taskforceId);
+		if (existedTaskfoce == null) {
+			throw new TaskforceDataStoreException("Cannot find taskfoce by id [" + taskforceId + "].");
+		}
+		return new RestResponse<TaskforceEntity>(existedTaskfoce);
 	}
 }

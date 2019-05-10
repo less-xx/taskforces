@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import {
-    Modal,
-    Row,
-    Col,
-    ButtonToolbar,
-    Button,
-    Form
+    Button
 } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import BootstrapTable from 'react-bootstrap-table-next';
 import './Taskforces.css'
 import Moment from 'react-moment';
-import EditTaskforceModal from './EditTaskforceModal';
+import DataService from '../DataService';
+import DataStore from '../DataStore';
 
 class GroupTaskforces extends Component {
 
     constructor(props) {
         super(props);
-        //console.log(props);
+        console.log(props);
         this.state = {
             error: null,
             isLoaded: false,
             taskforceGroup: props.group,
-            taskforces: [],
             pageable: {
                 page: 0,
                 size: 20,
@@ -31,45 +27,28 @@ class GroupTaskforces extends Component {
     }
 
     componentDidMount() {
-        this.loadGroupTaskforces();
-    }
-    
-    loadGroupTaskforces() {
-        var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCES);
-        url.search = new URLSearchParams({
-            group_id: this.state.taskforceGroup.id
+        this.setState({
+            isLoaded: false
         });
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    var taskforces = result.body.content;
-                    var pager = result.body.pageable;
-                    this.setState({
-                        isLoaded: true,
-                        taskforces: taskforces,
-                        pageable: {
-                            page: pager.number,
-                            size: pager.size
-                        }
-                    });
-                },
-                (error) => {
-                    console.log(error);
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            );
+        DataService.fetchGroupTaskforces(this.state.taskforceGroup.id, (taskforce, pager) => {
+            this.setState({
+                isLoaded: true
+            });
+        });
     }
 
     render() {
-        var dateTimeFormatter=function(cell, row) {
+        var dateTimeFormatter = function (cell, row) {
             return (
                 <Moment format="YYYY-MM-DD HH:mm">
                     {new Date(cell)}
                 </Moment>
+            );
+        }
+
+        var taskforceNameFormatter = function (cell, row) {
+            return (
+                <Link to="/taskforce-editor" onClick={DataStore.setCurrentTaskforceId(row.id)}> {cell} </Link>
             );
         }
 
@@ -78,7 +57,8 @@ class GroupTaskforces extends Component {
             text: 'Name',
             align: 'left',
             headerAlign: 'left',
-            headerStyle: { width: "20%" }
+            headerStyle: { width: "20%" },
+            formatter: taskforceNameFormatter
         }, {
             dataField: 'description',
             text: 'Description',
@@ -98,17 +78,16 @@ class GroupTaskforces extends Component {
             headerAlign: 'center',
             headerStyle: { width: "150px" }
         }];
-
         return (
             <div>
                 <BootstrapTable
                     keyField='id'
-                    data={this.state.taskforces}
+                    data={DataStore.getGroupTaskforces(this.state.taskforceGroup.id)}
                     columns={columns}
                     stripped
                     hover
                     condensed
-                    noDataIndication={<Button variant="outline-primary" size="sm" onClick={this.editTaskforce.bind(this)}>New Taskforce</Button>}
+                    noDataIndication = { <Button variant="outline-primary" size="sm" onClick={this.editTaskforce.bind(this)}> New Taskforce </Button> }
                     wrapperClasses="taskforce-grid"
                     bordered={false}
                 />

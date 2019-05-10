@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Blockly from 'node-blockly/browser';
-import './TaskforceBuilder.css'
+import './TaskforceBuilder.css';
+import DataService from '../DataService';
+import DataStore from '../DataStore';
 
 class TaskforceBuilder extends Component {
 
@@ -10,40 +12,36 @@ class TaskforceBuilder extends Component {
             error: null,
             isLoaded: false,
             workspace: null,
-            name: null,
-            id: null
+            taskforce: null,
+            taskforceId: DataStore.currentTaskforceId
         };
         this.toSaveList = [];
-        this.xmlSerializer = new XMLSerializer();
     }
 
     componentDidMount() {
-        var url = process.env.REACT_APP_URL_GET_TASKFORCE_BLOCKS;
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    var toolboxXml = this.buildToolbox(result);
-                    //console.log(toolboxXml);
-                    var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
-                    //console.log(mediaUrl);
-                    var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
-                    Blockly.Xml.domToWorkspace(toolboxXml, workspace);
-                    workspace.addChangeListener(this.onChangeWorkspace.bind(this));
-                    this.setState({
-                        isLoaded: true,
-                        workspace: workspace
-                    });
 
-                    this.resizeWorkspace();
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
+
+        DataService.fetchTaskforceBlocks(
+            (result) => {
+                var toolboxXml = this.buildToolbox(result);
+                //console.log(toolboxXml);
+                var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
+                //console.log(mediaUrl);
+                var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
+                //Blockly.Xml.domToWorkspace(toolboxXml, workspace);
+                workspace.addChangeListener(this.onChangeWorkspace.bind(this));
+                this.setState({
+                    isLoaded: true,
+                    workspace: workspace
+                });
+                if (this.state.taskforceId) {
+                    this.loadWorkspace();
                 }
-            );
+                this.resizeWorkspace();
+            },
+            (error) => {
+                console.log(error);
+            });
 
         window.addEventListener('resize', this.resizeWorkspace.bind(this), false);
 
@@ -51,11 +49,26 @@ class TaskforceBuilder extends Component {
             if (this.toSaveList.length === 0) {
                 return;
             }
+            if (this.state.taskforce == null) {
+                console.log("taskforce is null");
+                return;
+            }
             var xml = this.toSaveList.pop();
-            console.log(xml);
-            //TODO save the workspace xml
+
+            var request = {
+                configuration: xml
+            }
+            console.log(request);
+            DataService.updateTaskforce(this.state.taskforce.id, request,
+                (taskforce) => {
+                    this.setState({ isLoaded: true })
+                },
+                (error) => {
+                    console.log(error);
+                })
         }.bind(this), 10000);
     }
+
 
     buildToolbox(toolboxContent) {
         var xmlDoc = document.implementation.createDocument(null, "xml");
@@ -85,6 +98,24 @@ class TaskforceBuilder extends Component {
                 this.jsonInit(blockDef);
             }
         };
+    }
+
+    loadWorkspace() {
+        DataService.fetchTaskforce(this.state.taskforceId,
+            (taskforce) => {
+                console.log(taskforce);
+
+                var xml = Blockly.Xml.textToDom(taskforce.configuration);
+                Blockly.Xml.domToWorkspace(xml, this.state.workspace);
+
+                this.setState({
+                    isLoaded: true,
+                    taskforce: taskforce
+                });
+            },
+            (error) => {
+                console.log(error);
+            });
     }
 
     render() {
@@ -129,9 +160,9 @@ class TaskforceBuilder extends Component {
 
         var xml = Blockly.Xml.workspaceToDom(this.state.workspace);
         if (this.toSaveList.length === 0) {
-            this.toSaveList.push(xml);
+            this.toSaveList.push(Blockly.Xml.domToText(xml));
         } else {
-            this.toSaveList[0] = xml;
+            this.toSaveList[0] = Blockly.Xml.domToText(xml);
         }
     }
 

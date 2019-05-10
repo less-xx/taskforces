@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {
     Modal,
-    ButtonToolbar,
     Button,
     Form
 } from 'react-bootstrap';
 import './Taskforces.css'
 import Select from 'react-select';
+import DataService from '../DataService';
 
 class EditTaskforceModal extends Component {
 
@@ -40,7 +40,7 @@ class EditTaskforceModal extends Component {
                 taskforceGroupId: newProps.taskforce.groupId,
                 taskforceDesc: newProps.taskforce.description
             });
-        }else if(newProps.group){
+        } else if (newProps.group) {
             this.setState({
                 taskforceGroupId: newProps.group.id
             });
@@ -66,7 +66,7 @@ class EditTaskforceModal extends Component {
 
                         <Form.Group controlId="taskforceName">
                             <Form.Label>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Enter taskforce name" required onChange={this.onChangeName.bind(this)} defaultValue={this.state.taskforceName}/>
+                            <Form.Control type="text" placeholder="Enter taskforce name" required onChange={this.onChangeName.bind(this)} defaultValue={this.state.taskforceName} />
                             <Form.Text className="text-muted">
                                 The name fo the taskforce should be unique.
                             </Form.Text>
@@ -112,8 +112,13 @@ class EditTaskforceModal extends Component {
         }
         this.setState({ validated: true });
 
-        if (this.state.group) {
-            this.updateTaskforce(
+        if (this.state.taskforce) {
+            var request1 = {
+                name: this.state.taskforceName,
+                description: this.state.taskforceDesc,
+                groupId: this.state.taskforceGroupId
+            };
+            DataService.updateTaskforce(this.state.taskforceId, request1,
                 (json) => {
                     console.log(json);
                     this.props.refresh();
@@ -122,59 +127,21 @@ class EditTaskforceModal extends Component {
                     console.log(error);
                 });
         } else {
-            this.createTaskforce(
+            var request2 = {
+                name: this.state.taskforceName,
+                description: this.state.taskforceDesc,
+                groupId: this.state.taskforceGroupId,
+                configuration: "<xml></xml>"
+            };
+            DataService.createTaskforce(request2,
                 (json) => {
                     console.log(json);
                     this.props.refresh();
                 },
                 (error) => {
                     console.log(error);
-                }
-            );
+                });
         }
-    }
-
-    createTaskforce(success, failure) {
-        var url = process.env.REACT_APP_URL_POST_TASKFORCE;
-        fetch(url, {
-            method: "POST",
-            credentials: "include",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            redirect: "follow",
-            body: JSON.stringify({
-                name: this.state.taskforceName,
-                description: this.state.taskforceDesc,
-                groupId: this.state.taskforceGroupId,
-                configuration: "<xml></xml>"
-            })
-        })
-            .then(response => response.json())
-            .then(json => success(json))
-            .then(this.setState({ isLoaded: true }))
-            .catch(error => failure(error));
-    }
-
-    updateTaskforce(success, failure) {
-        var url = process.env.REACT_APP_URL_PUT_TASKFORCE + "/" + this.state.taskforceId;
-        fetch(url, {
-            method: "PUT",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name: this.state.taskforceName,
-                description: this.state.taskforceDesc,
-                groupId: this.state.taskforceGroupId
-            })
-        })
-            .then(response => response.json())
-            .then(json => success(json))
-            .then(this.setState({ isLoaded: true }))
-            .catch(error => failure(error));
     }
 
     onChangeName(e) {

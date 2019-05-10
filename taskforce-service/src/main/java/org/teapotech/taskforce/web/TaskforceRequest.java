@@ -3,20 +3,15 @@
  */
 package org.teapotech.taskforce.web;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @author jiangl
  *
  */
 public class TaskforceRequest {
 
-	@NotNull
 	private String name;
 	private String description;
 	private String groupId;
-
-	@NotNull
 	private String configuration;
 
 	public String getName() {
