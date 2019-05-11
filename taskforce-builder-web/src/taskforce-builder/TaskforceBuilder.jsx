@@ -4,6 +4,7 @@ import Blockly from 'node-blockly/browser';
 import './TaskforceBuilder.css';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
+import Notifications, { notify } from 'react-notify-toast';
 
 class TaskforceBuilder extends Component {
 
@@ -21,7 +22,7 @@ class TaskforceBuilder extends Component {
     }
 
     componentDidMount() {
-        
+
         DataService.fetchTaskforceBlocks(
             (result) => {
                 var toolboxXml = this.buildToolbox(result);
@@ -38,8 +39,8 @@ class TaskforceBuilder extends Component {
                 const cookies = new Cookies();
                 cookies.set('currentTaskforceId', this.state.taskforceId, { path: '/' });
                 if (this.state.taskforceId) {
-                    
-                    
+
+
                     this.loadWorkspace();
                 }
                 this.resizeWorkspace();
@@ -66,10 +67,12 @@ class TaskforceBuilder extends Component {
             console.log(request);
             DataService.updateTaskforce(this.state.taskforce.id, request,
                 (taskforce) => {
-                    this.setState({ isLoaded: true })
+                    this.setState({ isLoaded: true });
+                    notify.show("Worksapce saved ...", "info");
                 },
                 (error) => {
                     console.log(error);
+                    notify.show("Failed to save worksace ...", "error", 8000);
                 })
         }.bind(this), 10000);
     }
@@ -126,7 +129,17 @@ class TaskforceBuilder extends Component {
     render() {
         return (
             <div id="blocklyContainer">
-                <div id="blocklyDiv" style={{ position: "absolute" }}></div>
+                <Notifications options={{
+                    zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
+                        info: {
+                            color: "#999999",
+                            backgroundColor: '#FDFDFD'
+                        }
+                    }
+                }} />
+                <div id="blocklyDiv">
+
+                </div>
             </div>
         );
     }
@@ -163,27 +176,17 @@ class TaskforceBuilder extends Component {
             return;
         }
 
-        var xml = Blockly.Xml.workspaceToDom(this.state.workspace);
-        if (this.toSaveList.length === 0) {
-            this.toSaveList.push(Blockly.Xml.domToText(xml));
-        } else {
-            this.toSaveList[0] = Blockly.Xml.domToText(xml);
+        var xmlStr = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(this.state.workspace));
+        if (this.state.taskforce) {
+            if (this.state.taskforce.configuration === xmlStr) {
+                return;
+            }
         }
-    }
-
-    saveWorksace(xml) {
-        var url = process.env.REACT_APP_URL_CREATE_TASKFORCE;
-        var xmlStr = JSON.stringify({
-
-        });
-        fetch(url, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: xmlStr
-        })
+        if (this.toSaveList.length === 0) {
+            this.toSaveList.push((xmlStr));
+        } else {
+            this.toSaveList[0] = xmlStr;
+        }
     }
 }
 

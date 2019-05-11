@@ -1,4 +1,9 @@
 #blocklyContainer {
-    height: 800px;
+    height: 100%;
     border: 1px dotted grey;
+    overflow-x: hidden;
+}
+
+#blocklyDiv {
+    height: 100%;
 }
