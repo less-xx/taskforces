@@ -7,7 +7,7 @@
 			"check": "String"
 		}
 	],
-	"output": null,
+	"output": "FileList",
 	"colour": 230,
 	"tooltip": "",
 	"helpUrl": ""
