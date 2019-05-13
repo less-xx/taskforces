@@ -10,7 +10,7 @@ import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
-import org.teapotech.taskforce.entity.CustomResourcePath;
+import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -29,9 +29,9 @@ public class ResourcePathBlock extends CustomBlockDefinition implements CustomRe
 	public String getBlockDefinition() {
 		try {
 			ObjectNode tplNode = (ObjectNode) loadBlockDefinitionTemplateObject();
-			List<CustomResourcePath> csConf = customResourcePathLoader.getAllCustomResourcePaths();
+			List<FileSystemPath> csConf = customResourcePathLoader.getAllFileSystemPaths();
 			ArrayNode optionsNode = (ArrayNode) tplNode.get("args0").get(0).get("options");
-			for (CustomResourcePath csc : csConf) {
+			for (FileSystemPath csc : csConf) {
 				ArrayNode opNode = JSONUtils.createArrayNode();
 				opNode.add(csc.getName()).add(csc.getId());
 				optionsNode.add(opNode);
