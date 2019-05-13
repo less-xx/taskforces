@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -28,7 +29,9 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	}
 
 	public DefaultBlockExecutionContext(String workspaceId) {
-		this.blockExecutorFactory = BlockExecutorFactory.build();
+		BlockRegistryManager brm = new BlockRegistryManager();
+		brm.loadBlockRegistries();
+		this.blockExecutorFactory = BlockExecutorFactory.build(brm);
 		this.workspaceId = workspaceId;
 	}
 

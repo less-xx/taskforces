@@ -3,11 +3,10 @@
  */
 package org.teapotech.taskforce.storage;
 
-import org.teapotech.taskforce.entity.CustomStorageConfigEntity;
-import org.teapotech.taskforce.entity.CustomStorageConfigEntity.StorageType;
+import org.teapotech.taskforce.entity.CustomResourcePath;
+import org.teapotech.taskforce.entity.CustomResourcePath.AccessType;
 import org.teapotech.taskforce.exception.InvalidTaskforceStorageConfigurationException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.teapotech.taskforce.util.JSONUtils;
 
 /**
  * @author lessdev
@@ -15,15 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class TaskforceStorageConfigFactory {
 
-	private static ObjectMapper mapper = new ObjectMapper();
-
-	public static TaskforceStorageConfig createConfig(CustomStorageConfigEntity storageDef)
+	public static TaskforceStorageConfig createConfig(CustomResourcePath storageDef)
 			throws InvalidTaskforceStorageConfigurationException {
 		String conf = storageDef.getConfiguration();
 
 		try {
-			if (storageDef.getStorageType() == StorageType.File) {
-				return mapper.readValue(conf, FileStorageConfig.class);
+			if (storageDef.getStorageType() == AccessType.File) {
+				return JSONUtils.getObject(conf, FileStorageConfig.class);
 			}
 		} catch (Exception e) {
 			throw new InvalidTaskforceStorageConfigurationException(e.getMessage(), e);

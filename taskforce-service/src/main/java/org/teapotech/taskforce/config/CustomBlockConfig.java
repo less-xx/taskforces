@@ -6,8 +6,8 @@ package org.teapotech.taskforce.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.teapotech.block.def.CopyFileBlock;
-import org.teapotech.taskforce.service.CustomStorageConfigService;
+import org.teapotech.block.def.file.CopyFileBlock;
+import org.teapotech.block.support.CustomResourcePathLoader;
 
 /**
  * @author lessdev
@@ -17,7 +17,7 @@ import org.teapotech.taskforce.service.CustomStorageConfigService;
 public class CustomBlockConfig {
 
 	@Autowired
-	CustomStorageConfigService custStorageConfigService;
+	CustomResourcePathLoader custStorageConfigService;
 
 	@Bean
 	public CopyFileBlock copyFileBlock() {

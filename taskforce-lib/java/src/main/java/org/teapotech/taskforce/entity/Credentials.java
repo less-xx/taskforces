@@ -21,11 +21,11 @@ import org.hibernate.annotations.UpdateTimestamp;
  *
  */
 @Entity
-@Table(name = "tf_storage_def")
-public class CustomStorageConfigEntity {
+@Table(name = "tf_credentials")
+public class Credentials {
 
-	public static enum StorageType {
-		File
+	public static enum Catalog {
+		USERNAME_PASSWORD, DATABASE_CONNECTION_JDBC, WS_OAUTH2, WS_API_KEY
 	}
 
 	@Id
@@ -34,18 +34,15 @@ public class CustomStorageConfigEntity {
 	@Column(name = "id")
 	private String id;
 
-	@Column(name = "name", nullable = false, unique = true)
+	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "description", nullable = true)
-	private String description;
-
-	@Column(name = "storage_type", nullable = false)
+	@Column(name = "catalog", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private StorageType storageType;
+	private Catalog catalog;
 
-	@Column(name = "tf_config", columnDefinition = "TEXT", nullable = false)
-	private String configuration;
+	@Column(name = "credentials", columnDefinition = "TEXT", nullable = false)
+	private String credentials;
 
 	@Column(name = "last_updated")
 	@UpdateTimestamp
@@ -53,14 +50,6 @@ public class CustomStorageConfigEntity {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
-
-	public CustomStorageConfigEntity() {
-	}
-
-	public CustomStorageConfigEntity(String id, String name) {
-		this.id = id;
-		this.name = name;
-	}
 
 	public String getId() {
 		return id;
@@ -78,20 +67,20 @@ public class CustomStorageConfigEntity {
 		this.name = name;
 	}
 
-	public String getDescription() {
-		return description;
+	public Catalog getCatalog() {
+		return catalog;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCatalog(Catalog catalog) {
+		this.catalog = catalog;
 	}
 
-	public String getConfiguration() {
-		return configuration;
+	public String getCredentials() {
+		return credentials;
 	}
 
-	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
+	public void setCredentials(String credentials) {
+		this.credentials = credentials;
 	}
 
 	public Date getLastUpdatedTime() {
@@ -110,11 +99,11 @@ public class CustomStorageConfigEntity {
 		this.updatedBy = updatedBy;
 	}
 
-	public StorageType getStorageType() {
-		return storageType;
-	}
-
-	public void setStorageType(StorageType storageType) {
-		this.storageType = storageType;
+	@Override
+	public String toString() {
+		return "{\n\tID: " + this.id
+				+ ",\n\tName: " + this.name
+				+ ",\n\tCalalog: " + this.catalog
+				+ "\n}";
 	}
 }
