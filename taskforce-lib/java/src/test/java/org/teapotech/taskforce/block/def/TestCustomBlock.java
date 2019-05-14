@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.teapotech.block.def.file.FilePathBlock;
 import org.teapotech.block.support.CustomResourcePathLoader;
-import org.teapotech.taskforce.entity.CustomResourcePath;
+import org.teapotech.taskforce.entity.FileSystemPath;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCustomBlock {
@@ -22,10 +22,9 @@ public class TestCustomBlock {
 
 	@BeforeEach
 	void init() {
-		when(customResourcePathLoader.getAllCustomResourcePaths())
-				.thenReturn(Arrays.asList(new CustomResourcePath("id0", "Temp file system"),
-						new CustomResourcePath("id1", "File storage 1"),
-						new CustomResourcePath("id2", "Shared folder 2")));
+		when(customResourcePathLoader.getAllFileSystemPaths())
+				.thenReturn(Arrays.asList(new FileSystemPath("id0", "Temp file system"),
+						new FileSystemPath("id1", "File storage 1"), new FileSystemPath("id2", "Shared folder 2")));
 	}
 
 	@Test

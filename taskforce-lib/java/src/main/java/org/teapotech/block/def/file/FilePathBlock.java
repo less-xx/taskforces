@@ -3,7 +3,7 @@
  */
 package org.teapotech.block.def.file;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
@@ -28,7 +28,7 @@ public class FilePathBlock extends CustomBlockDefinition implements CustomResour
 	public String getBlockDefinition() {
 		try {
 			ObjectNode tplNode = (ObjectNode) loadBlockDefinitionTemplateObject();
-			List<FileSystemPath> csConf = customResourcePathLoader.getAllFileSystemPaths();
+			Collection<FileSystemPath> csConf = customResourcePathLoader.getAllFileSystemPaths();
 			ArrayNode optionsNode = (ArrayNode) tplNode.get("args0").get(0).get("options");
 			for (FileSystemPath csc : csConf) {
 				ArrayNode opNode = JSONUtils.createArrayNode();

@@ -1,6 +1,6 @@
 package org.teapotech.block.def.file;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CopyFileBlock extends CustomBlockDefinition implements CustomResour
 	public String getBlockDefinition() {
 		try {
 			ObjectNode tplNode = (ObjectNode) loadBlockDefinitionTemplateObject();
-			List<FileSystemPath> csConf = customResourcePathLoader.getAllFileSystemPaths();
+			Collection<FileSystemPath> csConf = customResourcePathLoader.getAllFileSystemPaths();
 			ArrayNode optionsNode = (ArrayNode) tplNode.get("args0").get(1).get("options");
 			for (CustomResourcePath csc : csConf) {
 				ArrayNode opNode = JSONUtils.createArrayNode();

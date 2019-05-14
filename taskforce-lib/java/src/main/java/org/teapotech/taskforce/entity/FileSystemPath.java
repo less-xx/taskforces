@@ -18,6 +18,13 @@ public class FileSystemPath extends CustomResourcePath {
 	@Column(name = "file_path", columnDefinition = "TEXT", nullable = false)
 	private String path;
 
+	public FileSystemPath() {
+	}
+
+	public FileSystemPath(String id, String name) {
+		super(id, name);
+	}
+
 	public String getPath() {
 		return path;
 	}

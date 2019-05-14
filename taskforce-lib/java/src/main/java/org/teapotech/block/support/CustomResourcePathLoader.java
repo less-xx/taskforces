@@ -1,12 +1,12 @@
 package org.teapotech.block.support;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.teapotech.taskforce.entity.FileSystemPath;
 
 public interface CustomResourcePathLoader {
 
-	List<FileSystemPath> getAllFileSystemPaths();
+	Collection<FileSystemPath> getAllFileSystemPaths();
 
 	FileSystemPath getFileSystemPathById(String id);
 }

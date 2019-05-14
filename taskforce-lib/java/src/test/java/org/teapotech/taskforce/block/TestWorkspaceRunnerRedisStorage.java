@@ -3,7 +3,11 @@
  */
 package org.teapotech.taskforce.block;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,10 +20,13 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
+import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.WorkspaceUtils;
+import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.provider.RedisKeyValueStorageProvider;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
@@ -31,11 +38,39 @@ import org.teapotech.taskforce.task.TaskExecutionUtil;
 public class TestWorkspaceRunnerRedisStorage {
 
 	private static BlockExecutorFactory factory;
+	private static BlockRegistryManager registryManager;
 	private static KeyValueStorageProvider storageProvider;
 
 	@BeforeAll
 	static void init() {
-		factory = BlockExecutorFactory.build();
+
+		registryManager = new BlockRegistryManager();
+		final Map<String, FileSystemPath> filePaths = new HashMap<>();
+		filePaths.put("id0", new FileSystemPath("id0", "Test file system path 0"));
+		filePaths.put("id0", new FileSystemPath("id1", "Test file system path 1"));
+		filePaths.put("id0", new FileSystemPath("id2", "Test file system path 2"));
+
+		final CustomResourcePathLoader pathLoader = new CustomResourcePathLoader() {
+
+			@Override
+			public FileSystemPath getFileSystemPathById(String id) {
+				FileSystemPath filePath = filePaths.get(id);
+				File tmpPath = new File("/tmp/" + id);
+				if (!tmpPath.exists()) {
+					tmpPath.mkdirs();
+				}
+				filePath.setPath(tmpPath.getAbsolutePath());
+				return filePath;
+			}
+
+			@Override
+			public Collection<FileSystemPath> getAllFileSystemPaths() {
+				return filePaths.values();
+			}
+		};
+		registryManager.setCustomResourcePathLoader(pathLoader);
+		registryManager.loadBlockRegistries();
+		factory = BlockExecutorFactory.build(registryManager);
 		String host = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_HOST);
 		String port = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PORT);
 		String password = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PASSWORD);

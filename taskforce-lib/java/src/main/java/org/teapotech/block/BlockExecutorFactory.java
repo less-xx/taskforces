@@ -34,7 +34,7 @@ public class BlockExecutorFactory {
 	private final BlockRegistryManager blockRegistryManager;
 
 	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager) {
-		return build(null);
+		return build(blockRegistryManager, null);
 	}
 
 	@SuppressWarnings("unchecked")
