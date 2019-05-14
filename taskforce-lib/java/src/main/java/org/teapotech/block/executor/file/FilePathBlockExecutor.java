@@ -3,6 +3,8 @@
  */
 package org.teapotech.block.executor.file;
 
+import java.io.File;
+
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
@@ -11,21 +13,21 @@ import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Field;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
-import org.teapotech.taskforce.entity.CustomResourcePath;
+import org.teapotech.taskforce.entity.FileSystemPath;
 
 /**
  * @author lessdev
  *
  */
-public class ResourcePathBlockExecutor extends AbstractBlockExecutor implements CustomResourcePathLoaderSupport {
+public class FilePathBlockExecutor extends AbstractBlockExecutor implements CustomResourcePathLoaderSupport {
 
 	private CustomResourcePathLoader customResourcePathLoader;
 
-	public ResourcePathBlockExecutor(Block block) {
+	public FilePathBlockExecutor(Block block) {
 		super(block);
 	}
 
-	public ResourcePathBlockExecutor(BlockValue blockValue) {
+	public FilePathBlockExecutor(BlockValue blockValue) {
 		super(blockValue);
 	}
 
@@ -33,16 +35,20 @@ public class ResourcePathBlockExecutor extends AbstractBlockExecutor implements 
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 		Field field = null;
 		if (this.block != null) {
-			field = this.block.getFieldByName("customResourcePathId", this.block.getFields().get(0));
+			field = this.block.getFieldByName("customFilePathId", this.block.getFields().get(0));
 		} else {
 			field = this.shadow.getField();
 		}
-		String customResourcePathId = field.getValue();
-		CustomResourcePath resPath = this.customResourcePathLoader.getCustomResourcePathById(customResourcePathId);
+		String customFilePathId = field.getValue();
+		FileSystemPath resPath = this.customResourcePathLoader.getFileSystemPathById(customFilePathId);
 		if (resPath == null) {
-			throw new BlockExecutionException("Cannot find custom resource path by id " + customResourcePathId);
+			throw new BlockExecutionException("Cannot find custom file path by id " + customFilePathId);
 		}
-		return resPath;
+		File path = new File(resPath.getPath());
+		if (!path.exists()) {
+			throw new BlockExecutionException("File path does not exist. " + path.getAbsolutePath());
+		}
+		return path.listFiles();
 	}
 
 	@Override

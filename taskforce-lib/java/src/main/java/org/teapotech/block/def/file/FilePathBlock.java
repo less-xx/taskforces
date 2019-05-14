@@ -5,9 +5,9 @@ package org.teapotech.block.def.file;
 
 import java.util.List;
 
-import org.teapotech.block.annotation.CustomBlock;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
+import org.teapotech.block.executor.file.FilePathBlockExecutor;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
 import org.teapotech.taskforce.entity.FileSystemPath;
@@ -20,8 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author jiangl
  *
  */
-@CustomBlock
-public class ResourcePathBlock extends CustomBlockDefinition implements CustomResourcePathLoaderSupport {
+public class FilePathBlock extends CustomBlockDefinition implements CustomResourcePathLoaderSupport {
 
 	private CustomResourcePathLoader customResourcePathLoader;
 
@@ -45,7 +44,7 @@ public class ResourcePathBlock extends CustomBlockDefinition implements CustomRe
 
 	@Override
 	public String getBlockType() {
-		return "resource_path";
+		return "file_path";
 	}
 
 	@Override
@@ -57,12 +56,12 @@ public class ResourcePathBlock extends CustomBlockDefinition implements CustomRe
 
 	@Override
 	public String getCategory() {
-		return "Resource";
+		return "File Operation";
 	}
 
 	@Override
 	public Class<? extends BlockExecutor> getExecutorClass() {
-		return null;
+		return FilePathBlockExecutor.class;
 	}
 
 }

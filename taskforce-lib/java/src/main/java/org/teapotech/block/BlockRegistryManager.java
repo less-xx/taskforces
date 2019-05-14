@@ -89,4 +89,9 @@ public class BlockRegistryManager {
 			}
 		}
 	}
+
+	public void registerBlock(BlockRegistry reg) {
+		this.blockRegistries.add(reg);
+		LOG.info("Registered custom block, Type: {}, Executor class: {}", reg.getType(), reg.getExecutorClass());
+	}
 }

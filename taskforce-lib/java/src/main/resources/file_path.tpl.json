@@ -1,10 +1,10 @@
 {
 	"type": "file_path",
-	"message0": "files at %1  ,include %2",
+	"message0": "files at %1 , include %2",
 	"args0": [
 		{
 			"type": "field_dropdown",
-			"name": "customFilePaths",
+			"name": "customFilePathId",
 			"options": []
 		},
 		{
@@ -14,7 +14,7 @@
 		}
 	],
 	"inputsInline": true,
-	"output": "Files",
+	"output": "FileList",
 	"colour": 230,
 	"tooltip": "",
 	"helpUrl": ""

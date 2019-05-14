@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.teapotech.block.def.file.ResourcePathBlock;
+import org.teapotech.block.def.file.FilePathBlock;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.taskforce.entity.CustomResourcePath;
 
@@ -30,7 +30,7 @@ public class TestCustomBlock {
 
 	@Test
 	public void testResourcePathBlock() {
-		ResourcePathBlock b = new ResourcePathBlock();
+		FilePathBlock b = new FilePathBlock();
 		b.setCustomResourcePathLoader(customResourcePathLoader);
 		String def = b.getBlockDefinition();
 		System.out.println(def);

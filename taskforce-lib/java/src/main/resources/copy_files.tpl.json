@@ -10,7 +10,7 @@
 		},
 		{
 			"type": "field_dropdown",
-			"name": "customStorage",
+			"name": "customFilePathId",
 			"options": [
 			]
 		}

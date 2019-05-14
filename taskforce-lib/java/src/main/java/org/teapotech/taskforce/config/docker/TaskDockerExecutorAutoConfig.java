@@ -9,10 +9,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.BlockRegistry;
+import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.executor.docker.DockerBlockManager;
+import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 import com.spotify.docker.client.DockerClient;
@@ -27,16 +30,15 @@ public class TaskDockerExecutorAutoConfig {
 	DockerClient dockerClient;
 
 	@Autowired
-	KeyValueStorageProvider storageProvider;;
+	KeyValueStorageProvider storageProvider;
+
+	@Autowired
+	CustomResourcePathLoader customResourcePathLoader;
 
 	@Bean
 	BlockExecutorFactory blockExecutorFactory() throws InvalidBlockException {
-		BlockExecutorFactory fac = BlockExecutorFactory.build(dockerClient);
-		Collection<DockerBlockDescriptor> blockDescriptors = dockerTaskManager().getAllTaskDescriptors();
-		for (DockerBlockDescriptor bd : blockDescriptors) {
-			String name = bd.getName();
-			fac.registerExecutor(name, bd.getCategory(), bd.getDefinition(), DockerBlockExecutor.class);
-		}
+		BlockExecutorFactory fac = BlockExecutorFactory.build(blockRegistryManager(), dockerClient);
+
 		LOG.info("BlockExecutorFactory initialized.");
 		return fac;
 	}
@@ -44,5 +46,28 @@ public class TaskDockerExecutorAutoConfig {
 	@Bean
 	DockerBlockManager dockerTaskManager() {
 		return new DockerBlockManager(dockerClient);
+	}
+
+	@Bean("blockRegistryManager")
+	BlockRegistryManager blockRegistryManager() {
+		BlockRegistryManager manager = new BlockRegistryManager();
+		manager.setCustomResourcePathLoader(customResourcePathLoader);
+		manager.loadBlockRegistries();
+		try {
+			Collection<DockerBlockDescriptor> blockDescriptors = dockerTaskManager().getAllTaskDescriptors();
+			for (DockerBlockDescriptor bd : blockDescriptors) {
+				String name = bd.getName();
+				BlockRegistry br = new BlockRegistry();
+				br.setType(name);
+				br.setCategory(bd.getCategory());
+				br.setDefinition(bd.getDefinition());
+				br.setExecutorClass(DockerBlockExecutor.class.getName());
+				manager.registerBlock(br);
+			}
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+
+		return manager;
 	}
 }
