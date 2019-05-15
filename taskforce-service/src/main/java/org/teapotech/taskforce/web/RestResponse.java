@@ -26,4 +26,8 @@ public class RestResponse<T> {
 		this.body = body;
 	}
 
+	public static <K> RestResponse<K> ok(K body) {
+		return new RestResponse<>(body);
+	}
+
 }

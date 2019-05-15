@@ -11,7 +11,8 @@ import org.teapotech.taskforce.entity.FileSystemPath;
  * @author jiangl
  *
  */
-public interface FileSystemPathRepo extends JpaRepository<FileSystemPath, String>,
-		JpaSpecificationExecutor<FileSystemPath> {
+public interface FileSystemPathRepo
+		extends JpaRepository<FileSystemPath, String>, JpaSpecificationExecutor<FileSystemPath> {
 
+	FileSystemPath findByName(String name);
 }

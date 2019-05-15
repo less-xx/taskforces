@@ -24,7 +24,7 @@ public class TaskforceGroup {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
 	@Column(name = "id")
 	private String id;
 

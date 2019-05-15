@@ -115,6 +115,44 @@ const DataService = {
             .catch(error => handleError(error));
     },
 
+    fetchFileSystemPaths: function (handlePaths, handleError) {
+        var url = process.env.REACT_APP_URL_GET_CUSTOM_FILE_PATHS;
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                var paths = result.body.content;
+                var pager = result.body.pageable;
+                if (handlePaths) {
+                    handlePaths(paths,pager);
+                }
+            })
+            .catch(error => {
+                if (handleError) {
+                    handleError(error);
+                }
+            })
+    },
+
+    createFileSystemPath: function (request, handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_POST_CUSTOM_FILE_PATHS;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            body: JSON.stringify(request)
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
 };
 export default DataService;
 

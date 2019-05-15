@@ -34,7 +34,7 @@ public class CustomResourcePath {
 
 	@Id
 	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
 	@Column(name = "id")
 	private String id;
 
@@ -43,9 +43,6 @@ public class CustomResourcePath {
 
 	@Column(name = "description", nullable = true)
 	private String description;
-
-	@Column(name = "res_path_config", columnDefinition = "TEXT", nullable = false)
-	private String configuration;
 
 	@Column(name = "last_updated")
 	@UpdateTimestamp
@@ -84,14 +81,6 @@ public class CustomResourcePath {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(String configuration) {
-		this.configuration = configuration;
 	}
 
 	public Date getLastUpdatedTime() {
