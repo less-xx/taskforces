@@ -47,22 +47,24 @@ public class TestWorkspaceRunner {
 		filePaths.put("id1", new FileSystemPath("id1", "Test file system path 1"));
 		filePaths.put("id2", new FileSystemPath("id2", "Test file system path 2"));
 
+		for (FileSystemPath filePath : filePaths.values()) {
+			File tmpPath = new File("/tmp/" + filePath.getId());
+			if (tmpPath.exists()) {
+				try {
+					FileUtils.deleteDirectory(tmpPath);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			tmpPath.mkdirs();
+			filePath.setPath(tmpPath.getAbsolutePath());
+		}
+
 		final CustomResourcePathLoader pathLoader = new CustomResourcePathLoader() {
 
 			@Override
 			public FileSystemPath getFileSystemPathById(String id) {
-				FileSystemPath filePath = filePaths.get(id);
-				File tmpPath = new File("/tmp/" + id);
-				if (tmpPath.exists()) {
-					try {
-						FileUtils.deleteDirectory(tmpPath);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-				tmpPath.mkdirs();
-				filePath.setPath(tmpPath.getAbsolutePath());
-				return filePath;
+				return filePaths.get(id);
 			}
 
 			@Override
@@ -139,6 +141,7 @@ public class TestWorkspaceRunner {
 		assertNotNull(files);
 		assertTrue(files.length > 0);
 		System.out.println(files[0]);
+		f1.delete();
 	}
 
 }

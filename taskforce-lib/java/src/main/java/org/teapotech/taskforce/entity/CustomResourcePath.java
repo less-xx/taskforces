@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -45,10 +43,6 @@ public class CustomResourcePath {
 
 	@Column(name = "description", nullable = true)
 	private String description;
-
-	@Column(name = "access_type", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private AccessType accessType;
 
 	@Column(name = "res_path_config", columnDefinition = "TEXT", nullable = false)
 	private String configuration;
@@ -116,11 +110,4 @@ public class CustomResourcePath {
 		this.updatedBy = updatedBy;
 	}
 
-	public AccessType getAccessType() {
-		return accessType;
-	}
-
-	public void setAccessType(AccessType accessType) {
-		this.accessType = accessType;
-	}
 }

@@ -3,8 +3,8 @@
  */
 package org.teapotech.taskforce.service;
 
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -16,11 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.teapotech.block.BlockExecutorFactory;
-import org.teapotech.block.BlockExecutorFactory.BlockRegistry;
+import org.teapotech.block.BlockRegistry;
+import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.taskforce.dto.BlockRegistryDTO;
+import org.teapotech.taskforce.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author jiangl
@@ -30,19 +31,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class BlockRegistryService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BlockRegistryService.class);
-	private static ObjectMapper mapper = new ObjectMapper();
+
+	@Autowired
+	BlockRegistryManager blockRegistryManager;
 
 	@Autowired
 	BlockExecutorFactory blockFactory;
 
-	public List<BlockRegistry> getAllBlockRegistries() {
-		return blockFactory.getBlockRegistries();
+	public Collection<BlockRegistry> getAllBlockRegistries() {
+		return blockRegistryManager.getBlockRegistries();
 	}
 
 	public Map<String, Set<BlockRegistryDTO>> getCategorizedBlockRegistries() {
 
 		final Map<String, Set<BlockRegistryDTO>> result = new TreeMap<>();
-		blockFactory.getBlockRegistries().stream().forEach(br -> {
+		blockRegistryManager.getBlockRegistries().stream().forEach(br -> {
 			String category = br.getCategory();
 			if (StringUtils.isBlank(category)) {
 				LOG.error("Missing category for block, type: {}.", br.getType());
@@ -64,7 +67,7 @@ public class BlockRegistryService {
 				brs.add(new BlockRegistryDTO(br));
 			} else {
 				try {
-					JsonNode defNode = mapper.readTree(br.getDefinition());
+					JsonNode defNode = JSONUtils.getObject(br.getDefinition());
 					brs.add(new BlockRegistryDTO(br, defNode));
 				} catch (Exception e) {
 					LOG.error("Invalid block definition. Ignore it. \n{}", e.getMessage());

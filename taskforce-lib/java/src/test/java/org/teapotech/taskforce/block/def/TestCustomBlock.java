@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.teapotech.block.def.file.CopyFileBlock;
 import org.teapotech.block.def.file.FilePathBlock;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.taskforce.entity.FileSystemPath;
@@ -38,6 +39,10 @@ public class TestCustomBlock {
 
 	@Test
 	public void testCopyFileBlock() {
-
+		CopyFileBlock b = new CopyFileBlock();
+		b.setCustomResourcePathLoader(customResourcePathLoader);
+		String def = b.getBlockDefinition();
+		System.out.println(def);
+		assertNotNull(def);
 	}
 }

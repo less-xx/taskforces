@@ -3,7 +3,7 @@
  */
 package org.teapotech.taskforce.dto;
 
-import org.teapotech.block.BlockExecutorFactory.BlockRegistry;
+import org.teapotech.block.BlockRegistry;
 
 /**
  * @author jiangl

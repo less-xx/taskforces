@@ -38,7 +38,6 @@ public class TaskDockerExecutorAutoConfig {
 	@Bean
 	BlockExecutorFactory blockExecutorFactory() throws InvalidBlockException {
 		BlockExecutorFactory fac = BlockExecutorFactory.build(blockRegistryManager(), dockerClient);
-
 		LOG.info("BlockExecutorFactory initialized.");
 		return fac;
 	}
