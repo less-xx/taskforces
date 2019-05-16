@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ClassUtils;
@@ -22,6 +24,7 @@ public class BlockRegistryManager {
 
 	private static Logger LOG = LoggerFactory.getLogger(BlockRegistryManager.class);
 	private final List<BlockRegistry> blockRegistries = new ArrayList<>();
+	private final Map<String, BlockDefinition> customBlockDefinitions = new HashMap<>();
 
 	private CustomResourcePathLoader customResourcePathLoader;
 
@@ -34,6 +37,14 @@ public class BlockRegistryManager {
 	}
 
 	public List<BlockRegistry> getBlockRegistries() {
+		List<BlockRegistry> result = new ArrayList<>();
+		for (BlockRegistry breg : this.blockRegistries) {
+			if (customBlockDefinitions.containsKey(breg.getType())) {
+				BlockDefinition bdef = customBlockDefinitions.get(breg.getType());
+				breg.setDefinition(bdef.getBlockDefinition());
+			}
+			result.add(breg);
+		}
 		return blockRegistries;
 	}
 
@@ -76,6 +87,7 @@ public class BlockRegistryManager {
 					((CustomResourcePathLoaderSupport) blockDef).setCustomResourcePathLoader(customResourcePathLoader);
 					LOG.debug("Assign {} to {}", customResourcePathLoader, blockDef);
 				}
+				customBlockDefinitions.put(blockDef.getBlockType(), blockDef);
 				BlockRegistry reg = new BlockRegistry();
 				reg.setDefinition(blockDef.getBlockDefinition());
 				reg.setType(blockDef.getBlockType());

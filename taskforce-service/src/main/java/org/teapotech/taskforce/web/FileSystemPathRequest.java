@@ -12,6 +12,7 @@ public class FileSystemPathRequest {
 	private String name;
 	private String description;
 	private String path;
+	private boolean createIfNotExist;
 
 	public String getName() {
 		return name;
@@ -36,4 +37,13 @@ public class FileSystemPathRequest {
 	public void setPath(String path) {
 		this.path = path;
 	}
+
+	public boolean isCreateIfNotExist() {
+		return createIfNotExist;
+	}
+
+	public void setCreateIfNotExist(boolean createIfNotExist) {
+		this.createIfNotExist = createIfNotExist;
+	}
+
 }

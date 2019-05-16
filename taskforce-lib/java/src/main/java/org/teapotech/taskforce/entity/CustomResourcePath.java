@@ -23,7 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  *
  */
 @Entity
-@Table(name = "tf_cust_res_path")
+@Table(name = "tf_cust_res_location")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "access_type", discriminatorType = DiscriminatorType.STRING)
 public class CustomResourcePath {

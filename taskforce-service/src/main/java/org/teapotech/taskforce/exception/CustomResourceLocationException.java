@@ -1,32 +1,32 @@
 package org.teapotech.taskforce.exception;
 
-public class CustomResourcePathException extends Exception {
+public class CustomResourceLocationException extends Exception {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3148866942125202363L;
 
-	public CustomResourcePathException() {
+	public CustomResourceLocationException() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomResourcePathException(String message) {
+	public CustomResourceLocationException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomResourcePathException(Throwable cause) {
+	public CustomResourceLocationException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomResourcePathException(String message, Throwable cause) {
+	public CustomResourceLocationException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomResourcePathException(String message, Throwable cause, boolean enableSuppression,
+	public CustomResourceLocationException(String message, Throwable cause, boolean enableSuppression,
 			boolean writableStackTrace) {
 		super(message, cause, enableSuppression, writableStackTrace);
 		// TODO Auto-generated constructor stub

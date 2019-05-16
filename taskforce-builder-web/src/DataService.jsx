@@ -120,8 +120,8 @@ const DataService = {
         fetch(url)
             .then(res => res.json())
             .then(json => {
-                var paths = result.body.content;
-                var pager = result.body.pageable;
+                var paths = json.body.content;
+                var pager = json.body.pageable;
                 if (handlePaths) {
                     handlePaths(paths,pager);
                 }
@@ -134,9 +134,29 @@ const DataService = {
     },
 
     createFileSystemPath: function (request, handleResponse, handleError) {
-        var url = process.env.REACT_APP_URL_POST_CUSTOM_FILE_PATHS;
+        var url = process.env.REACT_APP_URL_POST_CUSTOM_FILE_PATH;
         fetch(url, {
             method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            body: JSON.stringify(request)
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
+    updateFileSystemPath: function (pathId, request, handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_PUT_CUSTOM_FILE_PATH.replace(/\{.*\}/g, pathId);
+        fetch(url, {
+            method: "PUT",
             credentials: "include",
             mode: "cors",
             headers: {
