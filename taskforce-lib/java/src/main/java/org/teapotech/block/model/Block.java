@@ -11,12 +11,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * @author jiangl
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(namespace = "blockly.block")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Block {
 
 	@XmlAttribute

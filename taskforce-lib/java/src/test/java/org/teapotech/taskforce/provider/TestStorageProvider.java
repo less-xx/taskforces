@@ -16,7 +16,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Workspace;
-import org.teapotech.block.util.WorkspaceUtils;
+import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 public class TestStorageProvider {
@@ -49,7 +49,7 @@ public class TestStorageProvider {
 		String taskforceId = "test-taskforce-id";
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_03.xml");) {
-			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			Block block = w.getBlock();
 			String key = "testBlock";
 			storage.put(taskforceId, key, block);

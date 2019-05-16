@@ -25,7 +25,7 @@ import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.WorkspaceExecutor;
-import org.teapotech.block.util.WorkspaceUtils;
+import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.provider.RedisKeyValueStorageProvider;
@@ -99,7 +99,7 @@ public class TestWorkspaceRunnerRedisStorage {
 	@Test
 	public void testRunWorkspace_01() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
-			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
@@ -110,7 +110,7 @@ public class TestWorkspaceRunnerRedisStorage {
 	@Test
 	public void testRunWorkspace_02() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
-			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
@@ -121,7 +121,7 @@ public class TestWorkspaceRunnerRedisStorage {
 	@Test
 	public void testRunWorkspace_04() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_04.xml");) {
-			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);

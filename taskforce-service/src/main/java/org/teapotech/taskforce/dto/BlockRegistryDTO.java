@@ -5,10 +5,13 @@ package org.teapotech.taskforce.dto;
 
 import org.teapotech.block.BlockRegistry;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * @author jiangl
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BlockRegistryDTO {
 
 	private String type;

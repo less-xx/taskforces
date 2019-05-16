@@ -14,8 +14,10 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.def.BlockDefinition;
+import org.teapotech.block.model.Block;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
+import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.taskforce.util.JSONUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -105,5 +107,16 @@ public class BlockRegistryManager {
 	public void registerBlock(BlockRegistry reg) {
 		this.blockRegistries.add(reg);
 		LOG.info("Registered custom block, Type: {}, Executor class: {}", reg.getType(), reg.getExecutorClass());
+	}
+
+	public Block getToolboxConfig(String blockType) throws Exception {
+		InputStream in = getClass().getClassLoader().getResourceAsStream("/toolbox-config/" + blockType + ".xml");
+		if (in == null) {
+			Block b = new Block();
+			b.setType(blockType);
+			return b;
+		}
+		return BlockXmlUtils.xmlToBlock(in);
+
 	}
 }

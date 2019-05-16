@@ -13,7 +13,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.junit.jupiter.api.Test;
 import org.teapotech.block.model.Workspace;
-import org.teapotech.block.util.WorkspaceUtils;
+import org.teapotech.block.util.BlockXmlUtils;
 
 /**
  * @author jiangl
@@ -25,7 +25,7 @@ public class TestWorkspaceUtils {
 	public void testWorkspaceUtils_01() throws Exception {
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
-			Workspace w = WorkspaceUtils.loadWorkspace(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			assertNotNull(w);
 			assertNotNull(w.getVariables());
 			assertNotNull(w.getVariables().get(0));
@@ -52,7 +52,7 @@ public class TestWorkspaceUtils {
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Source source = new StreamSource(in);
-			Workspace w = WorkspaceUtils.loadWorkspace(source);
+			Workspace w = BlockXmlUtils.loadWorkspace(source);
 			assertNotNull(w);
 			assertNotNull(w.getBlock());
 			assertNotNull(w.getBlock().getValues());
