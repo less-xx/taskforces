@@ -1,0 +1,9 @@
+<xml>
+	<block type="file_path">
+		<value name="include">
+			<shadow type="text">
+				<field name="TEXT">*.*</field>
+			</shadow>
+		</value>
+	</block>
+</xml>

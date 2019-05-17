@@ -2,13 +2,27 @@ import DataStore from './DataStore';
 
 const DataService = {
 
-    fetchTaskforceBlocks: function (handleBlocks, handleError) {
-        var url = process.env.REACT_APP_URL_GET_TASKFORCE_BLOCKS;
+    fetchCustomBlockDefinitions: function (handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_GET_CUSTOM_BLOCK_DEFS;
         fetch(url)
             .then(res => res.json())
             .then(
                 (result) => {
-                    handleBlocks(result);
+                    handleResponse(result);
+                })
+            .catch(error => {
+                handleError(error);
+            });
+    },
+
+    fetchTaskforceBlocks: function (handleBlocks, handleError) {
+        var url = process.env.REACT_APP_URL_GET_TASKFORCE_BLOCKS;
+        fetch(url)
+            .then(response => response.text())
+            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+            .then(
+                (result) => {
+                    handleBlocks(result.documentElement);
                 })
             .catch(error => {
                 handleError(error);
@@ -123,7 +137,7 @@ const DataService = {
                 var paths = json.body.content;
                 var pager = json.body.pageable;
                 if (handlePaths) {
-                    handlePaths(paths,pager);
+                    handlePaths(paths, pager);
                 }
             })
             .catch(error => {

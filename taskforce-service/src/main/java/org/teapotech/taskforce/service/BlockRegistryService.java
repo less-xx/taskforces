@@ -5,12 +5,7 @@ package org.teapotech.taskforce.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -20,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistry;
 import org.teapotech.block.BlockRegistryManager;
-import org.teapotech.block.model.Block;
+import org.teapotech.block.model.toolbox.Category;
+import org.teapotech.block.model.toolbox.Toolbox;
+import org.teapotech.block.model.toolbox.ToolboxBlock;
 import org.teapotech.taskforce.dto.BlockDefinitionDTO;
 import org.teapotech.taskforce.util.JSONUtils;
 
@@ -60,34 +57,27 @@ public class BlockRegistryService {
 		return result;
 	}
 
-	public Map<String, Set<Block>> getToolboxConfiguration() {
-		final Map<String, Set<Block>> result = new TreeMap<>();
+	public Toolbox getToolboxConfiguration() {
+		Toolbox toolbox = new Toolbox();
 		blockRegistryManager.getBlockRegistries().stream().forEach(br -> {
 			String category = br.getCategory();
-			if (StringUtils.isBlank(category)) {
-				LOG.error("Missing category for block, type: {}.", br.getType());
-				category = "Unknown";
-			}
-			Set<Block> blocks = result.get(category);
-			if (blocks == null) {
-				blocks = new TreeSet<>(new Comparator<Block>() {
+			Category cat = toolbox.getCategoryByName(category);
 
-					@Override
-					public int compare(Block o1, Block o2) {
-						return o1.getType().compareTo(o2.getType());
-					}
-
-				});
-				result.put(category, blocks);
-			}
 			try {
-				Block b = blockRegistryManager.getToolboxConfig(br.getType());
-				blocks.add(b);
+				ToolboxBlock tb = blockRegistryManager.getToolboxConfig(br.getType());
+				if (tb == null) {
+					tb = new ToolboxBlock();
+					tb.setType(br.getType());
+				}
+				if (cat.getBlocks() == null) {
+					cat.setBlocks(new ArrayList<>());
+				}
+				cat.getBlocks().add(tb);
 			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 		});
-		return result;
+		return toolbox;
 	}
 
 }

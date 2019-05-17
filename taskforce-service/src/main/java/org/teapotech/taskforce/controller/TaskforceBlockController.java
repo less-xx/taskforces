@@ -4,8 +4,6 @@
 package org.teapotech.taskforce.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -13,7 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.teapotech.block.model.Block;
+import org.teapotech.block.model.toolbox.Toolbox;
 import org.teapotech.taskforce.dto.BlockDefinitionDTO;
 import org.teapotech.taskforce.service.BlockRegistryService;
 
@@ -28,15 +26,15 @@ public class TaskforceBlockController extends LogonUserController {
 	@Autowired
 	BlockRegistryService blockRegistryService;
 
-	@GetMapping("/custom-block-definitions")
+	@GetMapping(value = "/custom-block-definitions", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<BlockDefinitionDTO> getAllBlockDefinitions() throws Exception {
 		return blockRegistryService.getCustomBlockDefinitions();
 	}
 
-	@GetMapping(value = "/taskforce-blocks", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/taskforce-blocks", produces = MediaType.APPLICATION_XML_VALUE)
 	@ResponseBody
-	public Map<String, Set<Block>> getAllBlockRegistries() throws Exception {
+	public Toolbox getAllBlockRegistries() throws Exception {
 		return blockRegistryService.getToolboxConfiguration();
 	}
 

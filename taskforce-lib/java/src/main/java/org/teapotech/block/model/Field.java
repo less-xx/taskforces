@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * 
  * @author jiangl
@@ -13,6 +15,7 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(namespace = "blockly.field")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Field {
 
 	@XmlAttribute

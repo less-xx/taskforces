@@ -14,7 +14,7 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.def.BlockDefinition;
-import org.teapotech.block.model.Block;
+import org.teapotech.block.model.toolbox.ToolboxBlock;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
 import org.teapotech.block.util.BlockXmlUtils;
@@ -58,7 +58,7 @@ public class BlockRegistryManager {
 	private void loadDefaultBlockRegistry() {
 		List<BlockRegistry> regs = null;
 		try (InputStream in = BlockExecutorFactory.class.getClassLoader()
-				.getResourceAsStream("block-executor-registry.json");) {
+				.getResourceAsStream("basic-block-definitions.json");) {
 			regs = JSONUtils.getObject(in, new TypeReference<List<BlockRegistry>>() {
 			});
 		} catch (IOException e) {
@@ -109,14 +109,14 @@ public class BlockRegistryManager {
 		LOG.info("Registered custom block, Type: {}, Executor class: {}", reg.getType(), reg.getExecutorClass());
 	}
 
-	public Block getToolboxConfig(String blockType) throws Exception {
-		InputStream in = getClass().getClassLoader().getResourceAsStream("/toolbox-config/" + blockType + ".xml");
+	public ToolboxBlock getToolboxConfig(String blockType) throws Exception {
+		InputStream in = getClass().getClassLoader().getResourceAsStream("toolbox-config/" + blockType + ".xml");
 		if (in == null) {
-			Block b = new Block();
+			ToolboxBlock b = new ToolboxBlock();
 			b.setType(blockType);
 			return b;
 		}
-		return BlockXmlUtils.xmlToBlock(in);
+		return BlockXmlUtils.loadToolboxBlock(in);
 
 	}
 }

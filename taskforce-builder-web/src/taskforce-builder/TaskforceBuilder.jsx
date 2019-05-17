@@ -23,13 +23,23 @@ class TaskforceBuilder extends Component {
 
     componentDidMount() {
 
+        DataService.fetchCustomBlockDefinitions((result) => {
+            result.forEach(r => {
+                this.registerBlock(r.type, r.definition);
+            });
+
+
+
+        }, (error) => {
+            console.log(error);
+        });
+
         DataService.fetchTaskforceBlocks(
             (result) => {
-                var toolboxXml = this.buildToolbox(result);
-                //console.log(toolboxXml);
+                console.log(result);
                 var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
                 //console.log(mediaUrl);
-                var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: toolboxXml });
+                var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: result });
                 //Blockly.Xml.domToWorkspace(toolboxXml, workspace);
                 workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                 this.setState({
@@ -39,8 +49,6 @@ class TaskforceBuilder extends Component {
                 const cookies = new Cookies();
                 cookies.set('currentTaskforceId', this.state.taskforceId, { path: '/' });
                 if (this.state.taskforceId) {
-
-
                     this.loadWorkspace();
                 }
                 this.resizeWorkspace();
@@ -75,29 +83,6 @@ class TaskforceBuilder extends Component {
                     notify.show("Failed to save worksace ...", "error", 8000);
                 })
         }.bind(this), 10000);
-    }
-
-
-    buildToolbox(toolboxContent) {
-        var xmlDoc = document.implementation.createDocument(null, "xml");
-        var categories = Object.keys(toolboxContent);
-        categories.forEach(c => {
-            var blocks = toolboxContent[c];
-            var categoryNode = xmlDoc.createElement("category");
-            categoryNode.setAttribute("name", c);
-            blocks.forEach(b => {
-                var blockNode = xmlDoc.createElement("block");
-                blockNode.setAttribute("type", b["type"]);
-                categoryNode.appendChild(blockNode);
-
-                if (b["def"] != null) {
-                    this.registerBlock(b["type"], b["def"]);
-                    console.log(b);
-                }
-            });
-            xmlDoc.documentElement.appendChild(categoryNode);
-        });
-        return xmlDoc.documentElement;
     }
 
     registerBlock(blockType, blockDef) {

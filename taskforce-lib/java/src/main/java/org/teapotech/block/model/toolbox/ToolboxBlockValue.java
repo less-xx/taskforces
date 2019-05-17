@@ -1,16 +1,15 @@
 /**
  * 
  */
-package org.teapotech.block.model;
+package org.teapotech.block.model.toolbox;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.teapotech.block.model.toolbox.Shadow;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 
 /**
  * @author jiangl
@@ -18,16 +17,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BlockValue {
+public class ToolboxBlockValue {
 
 	@XmlAttribute
 	private String name;
 
-	@XmlElement(namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "shadow", namespace = "")
 	private Shadow shadow;
 
-	@XmlElement(namespace = Workspace.NAMESPACE)
-	private Block block;
+	@XmlElement(namespace = "")
+	@JacksonXmlElementWrapper(useWrapping = false)
+	private ToolboxBlock block;
 
 	public String getName() {
 		return name;
@@ -45,11 +45,11 @@ public class BlockValue {
 		this.shadow = shadow;
 	}
 
-	public Block getBlock() {
+	public ToolboxBlock getBlock() {
 		return block;
 	}
 
-	public void setBlock(Block block) {
+	public void setBlock(ToolboxBlock block) {
 		this.block = block;
 	}
 
