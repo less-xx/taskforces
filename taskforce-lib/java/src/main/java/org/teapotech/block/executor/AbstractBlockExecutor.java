@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
-import org.teapotech.block.model.toolbox.Shadow;
+import org.teapotech.block.model.Shadow;
 
 /**
  * @author jiangl

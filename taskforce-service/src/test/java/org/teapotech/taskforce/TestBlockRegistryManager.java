@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.teapotech.block.model.toolbox.Toolbox;
+import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.taskforce.service.BlockRegistryService;
 
@@ -32,7 +32,7 @@ public class TestBlockRegistryManager {
 
 	@Test
 	public void testBlockRegistryManager() throws Exception {
-		Toolbox toolbox = blockRegService.getToolboxConfiguration();
+		Workspace toolbox = blockRegService.getToolboxConfiguration();
 
 		String xml = BlockXmlUtils.toXml(toolbox);
 		System.out.println(xml);

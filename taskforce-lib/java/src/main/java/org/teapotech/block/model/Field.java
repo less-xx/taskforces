@@ -3,7 +3,6 @@ package org.teapotech.block.model;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace = "blockly.field")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Field {
 
@@ -24,7 +22,7 @@ public class Field {
 	@XmlAttribute
 	private String name;
 
-	@XmlAttribute(name = "variabletype")
+	@XmlAttribute
 	private String variableType;
 
 	@XmlValue

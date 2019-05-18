@@ -1,14 +1,12 @@
 /**
  * 
  */
-package org.teapotech.block.model.toolbox;
+package org.teapotech.block.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-
-import org.teapotech.block.model.Field;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -26,7 +24,7 @@ public class Shadow {
 	@XmlAttribute
 	private String id;
 
-	@XmlElement(name = "field", namespace = "")
+	@XmlElement(name = "field")
 	private Field field;
 
 	public String getType() {

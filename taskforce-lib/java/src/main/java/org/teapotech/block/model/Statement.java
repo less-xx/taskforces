@@ -18,7 +18,7 @@ public class Statement {
 	@XmlAttribute
 	private String name;
 
-	@XmlElement(name = "block", namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "block")
 	private Block block;
 
 	public String getName() {

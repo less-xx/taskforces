@@ -15,4 +15,6 @@ public interface FileSystemPathRepo
 		extends JpaRepository<FileSystemPath, String>, JpaSpecificationExecutor<FileSystemPath> {
 
 	FileSystemPath findByName(String name);
+
+	FileSystemPath findFirstByPath(String path);
 }

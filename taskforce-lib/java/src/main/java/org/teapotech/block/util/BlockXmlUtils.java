@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.util;
 
+import java.beans.Statement;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
@@ -16,14 +17,10 @@ import javax.xml.transform.Source;
 
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.block.model.Category;
+import org.teapotech.block.model.Shadow;
 import org.teapotech.block.model.Variable;
 import org.teapotech.block.model.Workspace;
-import org.teapotech.block.model.toolbox.Category;
-import org.teapotech.block.model.toolbox.Shadow;
-import org.teapotech.block.model.toolbox.Toolbox;
-import org.teapotech.block.model.toolbox.ToolboxBlock;
-import org.teapotech.block.model.toolbox.ToolboxBlockValue;
-import org.teapotech.block.model.toolbox.ToolboxBlockWrapper;
 
 /**
  * @author jiangl
@@ -31,9 +28,8 @@ import org.teapotech.block.model.toolbox.ToolboxBlockWrapper;
  */
 public class BlockXmlUtils {
 
-	private static Class<?>[] BLOCK_CLASSES = { Workspace.class, Block.class, BlockValue.class, Field.class,
-			Shadow.class, Variable.class, Category.class, Toolbox.class, ToolboxBlock.class, ToolboxBlockValue.class,
-			ToolboxBlockWrapper.class };
+	private static Class<?>[] BLOCK_CLASSES = { Workspace.class, Category.class, Block.class, BlockValue.class,
+			Field.class, Shadow.class, Variable.class, Statement.class };
 	private static JAXBContext BLOCK_CONTEXT = null;
 	private static Unmarshaller BLOCK_UNMARSHALLER = null;
 	private static Marshaller BLOCK_MARSHALLER = null;
@@ -59,8 +55,8 @@ public class BlockXmlUtils {
 		return (Workspace) o;
 	}
 
-	public static ToolboxBlock loadToolboxBlock(InputStream in) throws JAXBException {
-		ToolboxBlockWrapper tbw = (ToolboxBlockWrapper) BLOCK_UNMARSHALLER.unmarshal(in);
+	public static Block loadToolboxBlock(InputStream in) throws JAXBException {
+		Workspace tbw = (Workspace) BLOCK_UNMARSHALLER.unmarshal(in);
 		if (tbw == null) {
 			return null;
 		}

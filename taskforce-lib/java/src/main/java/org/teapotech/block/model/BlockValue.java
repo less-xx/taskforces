@@ -8,8 +8,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.teapotech.block.model.toolbox.Shadow;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
@@ -23,10 +21,10 @@ public class BlockValue {
 	@XmlAttribute
 	private String name;
 
-	@XmlElement(namespace = Workspace.NAMESPACE)
+	@XmlElement
 	private Shadow shadow;
 
-	@XmlElement(namespace = Workspace.NAMESPACE)
+	@XmlElement
 	private Block block;
 
 	public String getName() {

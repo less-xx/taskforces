@@ -1,4 +1,4 @@
-<xml>
+<xml xmlns="http://www.w3.org/1999/xhtml">
 	<block type="file_path">
 		<value name="include">
 			<shadow type="text">

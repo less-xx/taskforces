@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistry;
 import org.teapotech.block.BlockRegistryManager;
-import org.teapotech.block.model.toolbox.Category;
-import org.teapotech.block.model.toolbox.Toolbox;
-import org.teapotech.block.model.toolbox.ToolboxBlock;
+import org.teapotech.block.model.Block;
+import org.teapotech.block.model.Category;
+import org.teapotech.block.model.Workspace;
 import org.teapotech.taskforce.dto.BlockDefinitionDTO;
 import org.teapotech.taskforce.util.JSONUtils;
 
@@ -57,16 +57,16 @@ public class BlockRegistryService {
 		return result;
 	}
 
-	public Toolbox getToolboxConfiguration() {
-		Toolbox toolbox = new Toolbox();
+	public Workspace getToolboxConfiguration() {
+		Workspace toolbox = new Workspace();
 		blockRegistryManager.getBlockRegistries().stream().forEach(br -> {
 			String category = br.getCategory();
-			Category cat = toolbox.getCategoryByName(category);
+			Category cat = toolbox.getCategoryByName(category, true);
 
 			try {
-				ToolboxBlock tb = blockRegistryManager.getToolboxConfig(br.getType());
+				Block tb = blockRegistryManager.getToolboxConfig(br.getType());
 				if (tb == null) {
-					tb = new ToolboxBlock();
+					tb = new Block();
 					tb.setType(br.getType());
 				}
 				if (cat.getBlocks() == null) {

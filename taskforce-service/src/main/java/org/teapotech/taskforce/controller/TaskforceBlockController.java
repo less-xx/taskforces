@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.teapotech.block.model.toolbox.Toolbox;
+import org.teapotech.block.model.Workspace;
 import org.teapotech.taskforce.dto.BlockDefinitionDTO;
 import org.teapotech.taskforce.service.BlockRegistryService;
 
@@ -34,7 +34,7 @@ public class TaskforceBlockController extends LogonUserController {
 
 	@GetMapping(value = "/taskforce-blocks", produces = MediaType.APPLICATION_XML_VALUE)
 	@ResponseBody
-	public Toolbox getAllBlockRegistries() throws Exception {
+	public Workspace getAllBlockRegistries() throws Exception {
 		return blockRegistryService.getToolboxConfiguration();
 	}
 

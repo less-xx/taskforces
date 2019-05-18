@@ -5,9 +5,12 @@ package org.teapotech.taskforce.service;
 
 import java.util.Collection;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,21 @@ public class CustomResourcePathServiceImpl implements CustomResourcePathLoader {
 
 	@Autowired
 	FileSystemPathRepo fileSystemRepo;
+
+	@Value("${taskforce.file-storage.base-dir}")
+	String fileStorageBaseDir;
+
+	@PostConstruct
+	void init() {
+		FileSystemPath path = fileSystemRepo.findFirstByPath(fileStorageBaseDir);
+		if (path == null) {
+			path = new FileSystemPath();
+			path.setName("File Storage Base Dir");
+			path.setPath(fileStorageBaseDir);
+			fileSystemRepo.save(path);
+			LOG.info("Saved file storage base dir.");
+		}
+	}
 
 	@Override
 	public Collection<FileSystemPath> getAllFileSystemPaths() {

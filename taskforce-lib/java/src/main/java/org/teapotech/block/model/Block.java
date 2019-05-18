@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -18,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace = "blockly.block")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Block {
 
@@ -34,19 +32,19 @@ public class Block {
 	@XmlAttribute
 	private Integer y;
 
-	@XmlElement(name = "value", namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "value")
 	private List<BlockValue> values;
 
-	@XmlElement(name = "statement", namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "statement")
 	private List<Statement> statements;
 
-	@XmlElement(namespace = Workspace.NAMESPACE)
+	@XmlElement
 	private Next next;
 
-	@XmlElement(name = "mutation", namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "mutation")
 	private BlockMutation mutation;
 
-	@XmlElement(name = "field", namespace = Workspace.NAMESPACE)
+	@XmlElement(name = "field")
 	private List<Field> fields;
 
 	public String getType() {
@@ -146,7 +144,7 @@ public class Block {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Next {
 
-		@XmlElement(name = "block", namespace = Workspace.NAMESPACE)
+		@XmlElement(name = "block")
 		private Block block;
 
 		public Block getBlock() {

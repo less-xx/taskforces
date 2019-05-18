@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.block.model.toolbox;
+package org.teapotech.block.model;
 
 import java.util.List;
 
@@ -24,13 +24,13 @@ public class Category {
 	@XmlAttribute
 	private String name;
 
-	@XmlElement(name = "category", namespace = "")
+	@XmlElement(name = "category")
 	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<Category> categories;
 
-	@XmlElement(name = "block", namespace = "")
+	@XmlElement(name = "block")
 	@JacksonXmlElementWrapper(useWrapping = false)
-	private List<ToolboxBlock> blocks;
+	private List<Block> blocks;
 
 	public Category() {
 	}
@@ -55,11 +55,11 @@ public class Category {
 		this.categories = categories;
 	}
 
-	public List<ToolboxBlock> getBlocks() {
+	public List<Block> getBlocks() {
 		return blocks;
 	}
 
-	public void setBlocks(List<ToolboxBlock> blocks) {
+	public void setBlocks(List<Block> blocks) {
 		this.blocks = blocks;
 	}
 
