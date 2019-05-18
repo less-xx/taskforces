@@ -33,7 +33,7 @@ public class Workspace {
 	private List<Category> categories = null;
 
 	@XmlElement(name = "block")
-	private Block block;
+	private Block block = null;
 
 	@XmlAttribute
 	private String id = "toolbox";

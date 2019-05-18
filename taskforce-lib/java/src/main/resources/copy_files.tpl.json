@@ -1,7 +1,7 @@
 {
 	"type": "copy_files",
 	"lastDummyAlign0": "RIGHT",
-	"message0": "copy files %1 to %2",
+	"message0": "copy %1 to %2",
 	"args0": [
 		{
 			"type": "input_value",

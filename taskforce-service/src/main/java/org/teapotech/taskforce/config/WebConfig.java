@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.teapotech.user.interceptor.UserLogonInterceptor;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 
@@ -38,6 +39,7 @@ public class WebConfig implements WebMvcConfigurer {
 		converters.add(new MappingJackson2HttpMessageConverter());
 
 		XmlMapper xmlMapper = new XmlMapper();
+		xmlMapper.setSerializationInclusion(Include.NON_NULL);
 		xmlMapper.setDefaultUseWrapper(false);
 		xmlMapper.registerModule(new JaxbAnnotationModule());
 		converters.add(new MappingJackson2XmlHttpMessageConverter(xmlMapper));
