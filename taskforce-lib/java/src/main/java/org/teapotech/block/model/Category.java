@@ -24,6 +24,12 @@ public class Category {
 	@XmlAttribute
 	private String name;
 
+	@XmlAttribute(name = "categorystyle")
+	private String style;
+
+	@XmlAttribute
+	private String colour;
+
 	@XmlElement(name = "category")
 	@JacksonXmlElementWrapper(useWrapping = false)
 	private List<Category> categories;
@@ -36,7 +42,7 @@ public class Category {
 	}
 
 	public Category(String name) {
-		this.name = name;
+		this.setName(name);
 	}
 
 	public String getName() {
@@ -61,6 +67,22 @@ public class Category {
 
 	public void setBlocks(List<Block> blocks) {
 		this.blocks = blocks;
+	}
+
+	public String getCategorystyle() {
+		return style;
+	}
+
+	public void setCategorystyle(String categorystyle) {
+		this.style = categorystyle;
+	}
+
+	public String getColour() {
+		return colour;
+	}
+
+	public void setColour(String colour) {
+		this.colour = colour;
 	}
 
 	@Override

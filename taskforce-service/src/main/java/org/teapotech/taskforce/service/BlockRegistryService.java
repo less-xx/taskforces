@@ -62,7 +62,9 @@ public class BlockRegistryService {
 		blockRegistryManager.getBlockRegistries().stream().forEach(br -> {
 			String category = br.getCategory();
 			Category cat = toolbox.getCategoryByName(category, true);
-
+			if (br.getColour() != null) {
+				cat.setColour(String.valueOf(br.getColour()));
+			}
 			try {
 				Block tb = blockRegistryManager.getToolboxConfig(br.getType());
 				if (tb == null) {

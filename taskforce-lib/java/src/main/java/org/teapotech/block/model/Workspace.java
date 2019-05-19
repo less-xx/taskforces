@@ -93,6 +93,7 @@ public class Workspace {
 			}
 		}
 		List<Category> cl = this.categories;
+		String style = "";
 		for (String cname : cc) {
 			Optional<Category> op = cl.stream().filter(c -> c.getName().equalsIgnoreCase(cname)).findFirst();
 			if (op.isPresent()) {
@@ -100,6 +101,8 @@ public class Workspace {
 				cl = cat.getCategories();
 			} else {
 				cat = new Category(cname);
+				style = style + "_" + cname.toLowerCase();
+				cat.setCategorystyle(style.substring(1));
 				cl.add(cat);
 				cl = cat.getCategories();
 			}

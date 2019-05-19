@@ -5,6 +5,7 @@ import './TaskforceBuilder.css';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
+import CategoryStyles from "./CategoryStyles";
 
 class TaskforceBuilder extends Component {
 
@@ -39,13 +40,33 @@ class TaskforceBuilder extends Component {
                 console.log(result);
                 var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
                 //console.log(mediaUrl);
-                var workspace = Blockly.inject('blocklyDiv', { media: mediaUrl, toolbox: result });
-                //Blockly.Xml.domToWorkspace(toolboxXml, workspace);
+                var workspace = Blockly.inject('blocklyDiv', {
+                    media: mediaUrl,
+                    toolbox: result,
+                    grid:{
+                        spacing: 20,
+                        length: 3,
+                        colour: '#ccc',
+                        snap: true
+                    },
+                    zoom: {
+                        controls: true,
+                        wheel: true,
+                        startScale: 1.0,
+                        maxScale: 2,
+                        minScale: 0.5,
+                        scaleSpeed: 1.2
+                    },
+                    theme: Blockly.Theme(null, CategoryStyles),
+                    trashcan: true
+                });
+
                 workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                 this.setState({
                     isLoaded: true,
                     workspace: workspace
                 });
+
                 const cookies = new Cookies();
                 cookies.set('currentTaskforceId', this.state.taskforceId, { path: '/' });
                 if (this.state.taskforceId) {

@@ -2,76 +2,91 @@
 	{
 		"type": "variables_set",
 		"category": "Basic/Variables",
+		"colour": 130,
 		"executorClass": "org.teapotech.block.executor.variable.VariableSetBlockExecutor"
 	},
 	{
 		"type": "variables_get",
 		"category": "Basic/Variables",
+		"colour": 130,
 		"executorClass": "org.teapotech.block.executor.variable.VariableGetBlockExecutor"
 	},
 	{
 		"type": "math_change",
 		"category": "Basic/Variables",
+		"colour": 130,
 		"executorClass": "org.teapotech.block.executor.variable.MathChangeBlockExecutor"
 	},
 	{
 		"type": "controls_if",
 		"category": "Basic/Logic",
+		"colour": 150,
 		"executorClass": "org.teapotech.block.executor.logic.ControlsIfBlockExecutor"
 	},
 	{
 		"type": "logic_compare",
 		"category": "Basic/Logic",
+		"colour": 150,
 		"executorClass": "org.teapotech.block.executor.logic.LogicCompareBlockExecutor"
 	},
 	{
 		"type": "controls_repeat_ext",
 		"category": "Basic/Loop",
+		"colour": 170,
 		"executorClass": "org.teapotech.block.executor.loop.ControlsRepeatExtBlockExecutor"
 	},
 	{
 		"type": "controls_whileUntil",
 		"category": "Basic/Loop",
+		"colour": 170,
 		"executorClass": "org.teapotech.block.executor.loop.ControlsWhileUntilBlockExecutor"
 	},
 	{
 		"type": "controls_flow_statements",
 		"category": "Basic/Loop",
+		"colour": 170,
 		"executorClass": "org.teapotech.block.executor.loop.ControlsFlowStatementsBlockExecutor"
 	},
 	{
 		"type": "text",
 		"category": "Basic/Text",
+		"colour": 200,
 		"executorClass": "org.teapotech.block.executor.text.TextBlockExecutor"
 	},
 	{
 		"type": "text_join",
 		"category": "Basic/Text",
+		"colour": 200,
 		"executorClass": "org.teapotech.block.executor.text.JoinTextBlockExecutor"
 	},
 	{
 		"type": "text_print",
 		"category": "Basic/Text",
+		"colour": 200,
 		"executorClass": "org.teapotech.block.executor.text.PrintTextBlockExecutor"
 	},
 	{
 		"type": "math_number",
 		"category": "Basic/Math",
+		"colour": 230,
 		"executorClass": "org.teapotech.block.executor.math.MathNumberBlockExecutor"
 	},
 	{
 		"type": "math_random_int",
 		"category": "Basic/Math",
+		"colour": 230,
 		"executorClass": "org.teapotech.block.executor.math.MathRandomIntBlockExecutor"
 	},
 	{
 		"type": "math_round",
 		"category": "Basic/Math",
+		"colour": 230,
 		"executorClass": "org.teapotech.block.executor.math.MathRoundBlockExecutor"
 	},
 	{
 		"type": "math_arithmetic",
 		"category": "Basic/Math",
+		"colour": 230,
 		"executorClass": "org.teapotech.block.executor.math.MathArithmeticBlockExecutor"
 	}
 ]
