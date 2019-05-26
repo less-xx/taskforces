@@ -43,7 +43,7 @@ class CustomResourceLocation extends Component {
             selectedResourceLocation: null
         });
         DataService.fetchFileSystemPaths((paths, pager) => {
-            this.setState({ 
+            this.setState({
                 isLoaded: true,
                 pager: pager,
                 userDefinedFileSystemPaths: paths
@@ -53,7 +53,8 @@ class CustomResourceLocation extends Component {
 
     editFilePath() {
         this.setState({
-            showEditFilePathModal: true
+            showEditFilePathModal: true,
+            selectedResourceLocation: null
         });
     }
 
@@ -99,7 +100,7 @@ class CustomResourceLocation extends Component {
             text: 'Path',
             align: 'left',
             headerAlign: 'left',
-        },{
+        }, {
             dataField: 'lastUpdatedTime',
             text: 'Last Updated',
             align: 'center',
@@ -115,7 +116,7 @@ class CustomResourceLocation extends Component {
             formatter: opColFormatter
         }];
 
-       return (
+        return (
             <div>
                 <h1>User Defined File System Path</h1>
                 <ButtonToolbar className="major-operation-button-bar">
@@ -140,7 +141,7 @@ class CustomResourceLocation extends Component {
                 </Overlay>
 
                 <EditFilePathModal filePath={this.state.selectedResourceLocation} show={this.state.showEditFilePathModal}
-                    refresh={this.loadFileSystemPaths.bind(this)}/>
+                    refresh={this.loadFileSystemPaths.bind(this)} />
             </div>
         );
     }

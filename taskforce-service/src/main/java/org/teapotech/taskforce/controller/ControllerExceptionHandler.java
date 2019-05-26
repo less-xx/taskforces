@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.teapotech.taskforce.exception.CustomResourceLocationException;
 import org.teapotech.taskforce.exception.TaskforceDataStoreException;
 import org.teapotech.taskforce.web.ErrorResponse;
 import org.teapotech.user.exception.UserNotLogonException;
@@ -26,7 +27,7 @@ public class ControllerExceptionHandler {
 
 	private final static Logger LOG = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
-	@ExceptionHandler({ TaskforceDataStoreException.class })
+	@ExceptionHandler({ TaskforceDataStoreException.class, CustomResourceLocationException.class })
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorResponse handleTaskforceDataStoreException(Exception e, HttpServletRequest httpRequest,

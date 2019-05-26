@@ -87,6 +87,7 @@ class EditTaskforceGroupModal extends Component {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.stopPropagation();
+            this.setState({ validated: true });
             return;
         }
         this.setState({ validated: true });

@@ -158,7 +158,11 @@ const DataService = {
             },
             redirect: "follow",
             body: JSON.stringify(request)
-        }).then(response => response.json())
+        }).then(response => { 
+            if(!response.ok){
+                throw Error(response.body);
+            }
+            return response.json(); })
             .then(json => {
                 if (handleResponse) {
                     handleResponse(json);

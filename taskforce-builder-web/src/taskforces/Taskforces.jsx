@@ -165,7 +165,8 @@ class Taskforces extends Component {
     editTaskforceGroup() {
         this.setState({
             showEditGroupModal: true,
-            showEditTaskforceModal: false
+            showEditTaskforceModal: false,
+            selectedGroup: null
         });
     }
 

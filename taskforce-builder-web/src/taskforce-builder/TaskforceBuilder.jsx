@@ -57,9 +57,9 @@ class TaskforceBuilder extends Component {
                         minScale: 0.5,
                         scaleSpeed: 1.2
                     },
-                    theme: Blockly.Theme(null, CategoryStyles),
                     trashcan: true
                 });
+                
 
                 workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                 this.setState({
