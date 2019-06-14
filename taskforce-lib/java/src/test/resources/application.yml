@@ -9,6 +9,12 @@ spring:
     password: ${CONFIG_REDIS_PASSWORD:dummy}
     timeout: ${CONFIG_REDIS_TIMEOUT:10000}
     database: ${CONFIG_REDIS_DATABASE:1}
+  rabbitmq:
+    host: ${CONFIG_RABBIT_HOST:dummy}
+    port: ${CONFIG_RABBIT_PORT:5672}
+    virtual-host: ${CONFIG_RABBIT_VHOST:/taskforce}
+    username: ${CONFIG_RABBIT_USERNAME:dummy}
+    password: ${CONFIG_RABBIT_PASSWORD:dummy}
       
 taskforce:
   kv-storage:
@@ -20,3 +26,7 @@ taskforce:
 taskforce.execution:
   driver: docker
   networkName: ${TASKFORCE_NETWORK:}
+  
+block.event.service.rabbitmq:
+  exchange: taskforce.block.event
+  

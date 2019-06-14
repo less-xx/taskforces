@@ -158,17 +158,15 @@ const DataService = {
             },
             redirect: "follow",
             body: JSON.stringify(request)
-        }).then(response => { 
-            if(!response.ok){
-                throw Error(response.body);
-            }
-            return response.json(); })
-            .then(json => {
-                if (handleResponse) {
-                    handleResponse(json);
+        }).then(response => {
+            return response.json().then(body => {
+                if (response.ok) {
+                    handleResponse(body);
+                } else {
+                    handleError(body);
                 }
             })
-            .catch(error => handleError(error));
+        }).catch(error => handleError(error));
     },
 
     updateFileSystemPath: function (pathId, request, handleResponse, handleError) {

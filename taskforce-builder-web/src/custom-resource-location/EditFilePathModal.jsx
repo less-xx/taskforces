@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
     Modal,
     Button,
-    Form
+    Form,
+    Alert
 } from 'react-bootstrap';
 import DataService from '../DataService';
 
@@ -27,6 +28,7 @@ class EditFilePathModal extends Component {
     componentWillReceiveProps(newProps) {
         this.setState({
             show: newProps.show ? newProps.show : false,
+            error:null
         });
         if (newProps.filePath) {
             this.setState({
@@ -35,6 +37,13 @@ class EditFilePathModal extends Component {
                 path: newProps.filePath.path,
                 description: newProps.filePath.description,
             });
+        }else{
+            this.setState({
+                id: null,
+                name: null,
+                path: null,
+                description: null,
+            });
         }
     }
 
@@ -42,6 +51,11 @@ class EditFilePathModal extends Component {
 
         const { validated } = this.state;
         const title = this.state.id ? "Edit File Path" : "New File Path";
+        const error= this.state.error;
+        var errorMessage = "";
+        if(error){
+            errorMessage = error.message;
+        }
         return (
             <Modal show={this.state.show} onHide={this.hideModal.bind(this)}>
                 <Form noValidate validated={validated} onSubmit={e => this.handleSubmit(e)}>
@@ -49,6 +63,7 @@ class EditFilePathModal extends Component {
                         <Modal.Title>{title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                        <Alert show={error} variant="danger">{errorMessage}</Alert>
                         <Form.Group controlId="filePathName">
                             <Form.Label>Group Name</Form.Label>
                             <Form.Control type="text" placeholder="Enter the name" required onChange={this.onChangeName.bind(this)} defaultValue={this.state.name} />
@@ -121,6 +136,7 @@ class EditFilePathModal extends Component {
                 this.props.refresh();
             }, (error)=>{
                 console.log(error);
+                this.setState({error:error});
             });
         }else{    
             DataService.createFileSystemPath(request, (resp)=>{
@@ -129,6 +145,7 @@ class EditFilePathModal extends Component {
                 this.props.refresh();
             }, (error)=>{
                 console.log(error);
+                this.setState({error:error});
             });
         }
         

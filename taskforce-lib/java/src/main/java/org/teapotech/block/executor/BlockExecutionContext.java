@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Collection;
 
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 
 /**
@@ -32,5 +33,7 @@ public interface BlockExecutionContext {
 	void storeFile(String key, InputStream in) throws FileStorageException;
 
 	InputStream loadFile(String key) throws FileStorageException;
+
+	BlockEventDispatcher getBlockEventDispatcher();
 
 }

@@ -6,6 +6,7 @@ package org.teapotech.block.executor.file;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.teapotech.block.event.FileEvent;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
@@ -56,6 +57,9 @@ public class CopyFileBlockExecutor extends AbstractBlockExecutor implements Cust
 		for (File f : files) {
 			FileUtils.copyFileToDirectory(f, toPath);
 			LOG.info("Copied file {} to {}", f.getName(), resPath.getName());
+			FileEvent evt = new FileEvent(context.getWorkspaceId(), this.block.getType(), this.block.getId());
+			evt.setFilePath(f.getAbsolutePath());
+			context.getBlockEventDispatcher().dispatchEvent(evt);
 		}
 		return null;
 	}

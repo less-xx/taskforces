@@ -20,8 +20,9 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
-import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.BlockXmlUtils;
+import org.teapotech.block.util.WorkspaceExecutor;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
@@ -46,6 +47,9 @@ public class TestTaskforceExecutor {
 	@Autowired
 	BlockExecutorFactory factory;
 
+	@Autowired
+	BlockEventDispatcher blockEvtDispatcher;
+
 	@BeforeAll
 	static void init() {
 		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id");
@@ -55,7 +59,7 @@ public class TestTaskforceExecutor {
 	public void testRunResourceFetcher() throws Exception {
 		String taskforceId = "test-taskforce-id";
 		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider);
+				fileStorageProvider, blockEvtDispatcher);
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/resource_fetcher_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);

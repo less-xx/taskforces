@@ -13,6 +13,7 @@ import java.util.Map;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -27,16 +28,19 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	private final String workspaceId;
 	private final KeyValueStorageProvider kvStorageProvider;
 	private final FileStorageProvider fileStorageProvider;
+	private final BlockEventDispatcher blockEventDispatcher;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider,
-			FileStorageProvider fileStorageProvider) {
+			FileStorageProvider fileStorageProvider,
+			BlockEventDispatcher blockEventDispatcher) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
 		this.kvStorageProvider = kvStorageProvider;
 		this.fileStorageProvider = fileStorageProvider;
+		this.blockEventDispatcher = blockEventDispatcher;
 	}
 
 	@Override
@@ -98,6 +102,11 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public InputStream loadFile(String key) throws FileStorageException {
 		return this.fileStorageProvider.load(workspaceId, key);
+	}
+
+	@Override
+	public BlockEventDispatcher getBlockEventDispatcher() {
+		return this.blockEventDispatcher;
 	}
 
 	public ContainerSettings getContainerSettings() {
@@ -188,4 +197,5 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 			this.taskWorkerNumber = taskWorkerNumber;
 		}
 	}
+
 }

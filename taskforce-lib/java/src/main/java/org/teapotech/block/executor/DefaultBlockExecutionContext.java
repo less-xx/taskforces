@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistryManager;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -22,6 +23,7 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	private final String workspaceId;
 	private KeyValueStorageProvider kvStorageProvider;
 	private FileStorageProvider fileStorageProvider;
+	private BlockEventDispatcher blockEventDispatcher;
 
 	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory) {
 		this.blockExecutorFactory = blockExecutorFactory;
@@ -41,6 +43,10 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
 	public void setFileStorageProvider(FileStorageProvider fileStorageProvider) {
 		this.fileStorageProvider = fileStorageProvider;
+	}
+
+	public void setBlockEventDispatcher(BlockEventDispatcher blockEventDispatcher) {
+		this.blockEventDispatcher = blockEventDispatcher;
 	}
 
 	@Override
@@ -82,5 +88,10 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public InputStream loadFile(String key) throws FileStorageException {
 		return this.fileStorageProvider.load(workspaceId, key);
+	}
+
+	@Override
+	public BlockEventDispatcher getBlockEventDispatcher() {
+		return this.blockEventDispatcher;
 	}
 }
