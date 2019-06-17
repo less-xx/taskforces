@@ -23,15 +23,16 @@ public class BlockEventRabbitMQAutoConfig {
 
 	private static Logger LOG = LoggerFactory.getLogger(BlockEventRabbitMQAutoConfig.class);
 
-	@Autowired
-	RabbitAdmin rabbitAdmin;
-
 	@Value("${block.event.service.rabbitmq.exchange}")
 	String blockEventExchangeName;
+
+	@Autowired
+	private ConnectionFactory rabbitConnectionFactory;
 
 	@PostConstruct
 	void init() {
 		TopicExchange blockEventExchange = blockEventExchange();
+		RabbitAdmin rabbitAdmin = rabbitAdmin(rabbitConnectionFactory);
 		rabbitAdmin.declareExchange(blockEventExchange);
 		LOG.info("Declared block event exchange {}", blockEventExchange);
 

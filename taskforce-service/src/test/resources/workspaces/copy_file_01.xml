@@ -1,0 +1,15 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+	<block id="NFM%2--uTXCU!A;.SCoj" type="copy_files" x="90" y="90">
+		<field name="customFilePathId">8aa07d8f6abe7273016abe75bb1b0000</field>
+		<value name="files">
+			<block id="K2^Eug)_sSfz9JmrPx{h" type="file_path">
+				<field name="customFilePathId">8ad4d20a6b2b8938016b2b89407b0000</field>
+				<value name="include">
+					<shadow id="AMoujw`-aM:y%u,Qv2:{" type="text">
+						<field name="TEXT">*.*</field>
+					</shadow>
+				</value>
+			</block>
+		</value>
+	</block>
+</xml>

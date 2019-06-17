@@ -3,11 +3,12 @@
  */
 package org.teapotech.taskforce.service;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,7 +18,15 @@ import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
+import org.teapotech.block.util.WorkspaceExecutor;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.provider.FileStorageProvider;
+import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 /**
  * @author jiangl
@@ -37,28 +46,52 @@ public class TaskforceExecutionService {
 	@Autowired
 	ConnectionFactory rabbitConnectionFactory;
 
-	private void executeWorkspace(Workspace workspace) {
-		String queueName = "queue.workspace." + workspace.getId();
+	@Autowired
+	KeyValueStorageProvider kvStorageProvider;
+
+	@Autowired
+	FileStorageProvider fileStorageProvider;
+
+	@Autowired
+	BlockExecutorFactory factory;
+
+	@Autowired
+	BlockEventDispatcher blockEvtDispatcher;
+
+	@PostConstruct
+	private void init() {
+		String queueName = "queue.workspace.events";
 		Queue eventQueue = new Queue(queueName);
-		String routingKey = "workspace." + workspace.getId() + ".#";
+		rabbitAdmin.declareQueue(eventQueue);
+		String routingKey = "workspace.#";
 		Binding binding = BindingBuilder.bind(eventQueue).to(eventExchange).with(routingKey);
 		rabbitAdmin.declareBinding(binding);
 		LOG.info("Event binding: {}", binding);
-
 		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 		container.setConnectionFactory(rabbitConnectionFactory);
 		container.setQueues(eventQueue);
-		MessageListenerAdapter listener = new MessageListenerAdapter() {
-			@Override
-			public void onMessage(Message message) {
-				// TODO Auto-generated method stub
-				super.onMessage(message);
-			}
-		};
-		listener.setMessageConverter(new Jackson2JsonMessageConverter());
-		container.setMessageListener(listener);
+		MessageListenerAdapter adapter = new MessageListenerAdapter(this, "handleEvent");
+		adapter.setMessageConverter(new Jackson2JsonMessageConverter());
+		container.setMessageListener(adapter);
+		container.start();
+	}
 
-		// TODO run
+	public BlockExecutionContext executeWorkspace(Workspace workspace) {
 
+		String taskforceId = workspace.getId();
+		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
+				fileStorageProvider, blockEvtDispatcher);
+		WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
+		try {
+			wExecutor.execute(workspace);
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+		wExecutor.destroy();
+		return context;
+	}
+
+	public void handleEvent(BlockEvent event) {
+		LOG.info("Received event: {}", event);
 	}
 }

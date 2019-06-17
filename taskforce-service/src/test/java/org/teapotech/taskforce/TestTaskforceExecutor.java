@@ -18,6 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.BlockXmlUtils;
@@ -25,6 +26,7 @@ import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.service.TaskforceExecutionService;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
 
 /**
@@ -50,6 +52,9 @@ public class TestTaskforceExecutor {
 	@Autowired
 	BlockEventDispatcher blockEvtDispatcher;
 
+	@Autowired
+	TaskforceExecutionService taskforceExecService;
+
 	@BeforeAll
 	static void init() {
 		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id");
@@ -71,6 +76,21 @@ public class TestTaskforceExecutor {
 			System.out.println(result);
 
 			wExecutor.destroy();
+		}
+	}
+
+	@Test
+	public void testRunCopyFileTask() throws Exception {
+		String taskforceId = "test-copy-file";
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/copy_file_01.xml");) {
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
+			w.setId(taskforceId);
+			BlockExecutionContext context = taskforceExecService.executeWorkspace(w);
+
+			Object result = context.getVariable("result");
+			assertNotNull(result);
+			System.out.println(result);
+
 		}
 	}
 }

@@ -2,6 +2,13 @@ package org.teapotech.block.event;
 
 public class FileEvent extends BlockEvent {
 
+	public static enum Operation {
+		New, Update, Delete
+	}
+
+	private String filePath;
+	private Operation operation;
+
 	public FileEvent() {
 		super();
 	}
@@ -10,13 +17,19 @@ public class FileEvent extends BlockEvent {
 		super(workspaceId, blockType, blockId);
 	}
 
-	private String filePath;
-
 	public String getFilePath() {
 		return filePath;
 	}
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+
+	public void setOperation(Operation operation) {
+		this.operation = operation;
+	}
+
+	public Operation getOperation() {
+		return operation;
 	}
 }

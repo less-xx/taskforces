@@ -28,7 +28,7 @@ class EditFilePathModal extends Component {
     componentWillReceiveProps(newProps) {
         this.setState({
             show: newProps.show ? newProps.show : false,
-            error:null
+            error: null
         });
         if (newProps.filePath) {
             this.setState({
@@ -37,7 +37,7 @@ class EditFilePathModal extends Component {
                 path: newProps.filePath.path,
                 description: newProps.filePath.description,
             });
-        }else{
+        } else {
             this.setState({
                 id: null,
                 name: null,
@@ -51,9 +51,9 @@ class EditFilePathModal extends Component {
 
         const { validated } = this.state;
         const title = this.state.id ? "Edit File Path" : "New File Path";
-        const error= this.state.error;
+        const error = this.state.error;
         var errorMessage = "";
-        if(error){
+        if (error) {
             errorMessage = error.message;
         }
         return (
@@ -111,7 +111,7 @@ class EditFilePathModal extends Component {
     }
 
     handleSubmit(event) {
-        
+
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.stopPropagation();
@@ -119,36 +119,36 @@ class EditFilePathModal extends Component {
             this.setState({ validated: true });
             return;
         }
-        
+
         event.preventDefault();
 
         var request = {
             name: this.state.name,
             path: this.state.path,
             description: this.state.description,
-            createIfNotExist: this.state.createOnNotExist   
+            createIfNotExist: this.state.createOnNotExist
         }
 
-        if(this.state.id){
-            DataService.updateFileSystemPath(this.state.id, request, (resp)=>{
+        if (this.state.id) {
+            DataService.updateFileSystemPath(this.state.id, request, (resp) => {
                 this.hideModal();
                 console.log(resp);
                 this.props.refresh();
-            }, (error)=>{
+            }, (error) => {
                 console.log(error);
-                this.setState({error:error});
+                this.setState({ error: error });
             });
-        }else{    
-            DataService.createFileSystemPath(request, (resp)=>{
+        } else {
+            DataService.createFileSystemPath(request, (resp) => {
                 this.hideModal();
                 console.log(resp);
                 this.props.refresh();
-            }, (error)=>{
+            }, (error) => {
                 console.log(error);
-                this.setState({error:error});
+                this.setState({ error: error });
             });
         }
-        
+
 
     }
 
@@ -173,7 +173,7 @@ class EditFilePathModal extends Component {
         });
     }
 
-    onChangeCreateOnNotExist(e){
+    onChangeCreateOnNotExist(e) {
         this.setState({
             createOnNotExist: e.target.checked
         });
