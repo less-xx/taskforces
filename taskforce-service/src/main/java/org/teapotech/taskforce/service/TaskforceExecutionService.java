@@ -81,9 +81,9 @@ public class TaskforceExecutionService {
 		String taskforceId = workspace.getId();
 		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
 				fileStorageProvider, blockEvtDispatcher);
-		WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
+		WorkspaceExecutor wExecutor = new WorkspaceExecutor(workspace, context);
 		try {
-			wExecutor.execute(workspace);
+			wExecutor.execute();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}

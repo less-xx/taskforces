@@ -1,0 +1,30 @@
+
+{
+	"type": "handle_file_event",
+	"message0": " when file is %1",
+	"args0": [
+		{
+			"type": "field_dropdown",
+			"name": "NAME",
+			"options": [
+				[
+					"created",
+					"Create"
+				],
+				[
+					"updated",
+					"Update"
+				],
+				[
+					"deleted",
+					"Delete"
+				]
+			]
+		}
+	],
+	"nextStatement": null,
+	"colour": 230,
+	"tooltip": "",
+	"helpUrl": "",
+	"hat": "cap"
+}

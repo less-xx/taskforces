@@ -33,7 +33,7 @@ public class Workspace {
 	private List<Category> categories = null;
 
 	@XmlElement(name = "block")
-	private Block block = null;
+	private List<Block> blocks = null;
 
 	@XmlAttribute
 	private String id = "toolbox";
@@ -49,12 +49,12 @@ public class Workspace {
 		this.variables = variables;
 	}
 
-	public Block getBlock() {
-		return block;
+	public List<Block> getBlocks() {
+		return blocks;
 	}
 
-	public void setBlock(Block block) {
-		this.block = block;
+	public void setBlocks(List<Block> blocks) {
+		this.blocks = blocks;
 	}
 
 	public List<Category> getCategories() {

@@ -60,7 +60,7 @@ public class BlockXmlUtils {
 		if (tbw == null) {
 			return null;
 		}
-		return tbw.getBlock();
+		return tbw.getBlocks().get(0);
 	}
 
 	public static String toXml(Object o) throws JAXBException {

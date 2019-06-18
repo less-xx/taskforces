@@ -27,4 +27,14 @@ public abstract class CustomBlockDefinition implements BlockDefinition {
 		}
 		return IOUtils.toString(in, "UTF-8");
 	}
+
+	@Override
+	public String getBlockDefinition() {
+		try {
+			return loadBlockDefinitionTemplate();
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+		}
+		return null;
+	}
 }

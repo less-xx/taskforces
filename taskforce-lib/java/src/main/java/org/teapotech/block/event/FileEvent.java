@@ -3,7 +3,7 @@ package org.teapotech.block.event;
 public class FileEvent extends BlockEvent {
 
 	public static enum Operation {
-		New, Update, Delete
+		Create, Update, Delete
 	}
 
 	private String filePath;

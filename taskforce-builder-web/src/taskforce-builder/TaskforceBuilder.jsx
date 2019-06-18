@@ -110,6 +110,7 @@ class TaskforceBuilder extends Component {
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
+                this.setStyle('hat_blocks');
             }
         };
     }
