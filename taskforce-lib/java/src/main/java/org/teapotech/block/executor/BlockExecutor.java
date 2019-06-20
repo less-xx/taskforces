@@ -15,5 +15,4 @@ public interface BlockExecutor {
 
 	Object execute(BlockExecutionContext context)
 			throws BlockExecutionException, InvalidBlockExecutorException, BlockExecutorNotFoundException;
-
 }

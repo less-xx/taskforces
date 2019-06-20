@@ -24,8 +24,8 @@ import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.support.CustomResourcePathLoader;
-import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.BlockXmlUtils;
+import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.provider.RedisKeyValueStorageProvider;
@@ -102,8 +102,8 @@ public class TestWorkspaceRunnerRedisStorage {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 		}
 	}
 
@@ -113,8 +113,8 @@ public class TestWorkspaceRunnerRedisStorage {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 		}
 	}
 
@@ -124,8 +124,8 @@ public class TestWorkspaceRunnerRedisStorage {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(storageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 
 			for (String name : context.getAllVariableNames()) {
 				Object value = context.getVariable(name);

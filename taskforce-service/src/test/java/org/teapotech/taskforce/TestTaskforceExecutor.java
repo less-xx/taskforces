@@ -24,6 +24,7 @@ import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.service.TaskforceExecutionService;
@@ -55,6 +56,9 @@ public class TestTaskforceExecutor {
 	@Autowired
 	TaskforceExecutionService taskforceExecService;
 
+	@Autowired
+	WorkspaceEventDispatcher workspaceEventDispatcher;
+
 	@BeforeAll
 	static void init() {
 		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id");
@@ -64,18 +68,16 @@ public class TestTaskforceExecutor {
 	public void testRunResourceFetcher() throws Exception {
 		String taskforceId = "test-taskforce-id";
 		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider, blockEvtDispatcher);
+				fileStorageProvider, blockEvtDispatcher, workspaceEventDispatcher);
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/resource_fetcher_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 
 			Object result = context.getVariable("result");
 			assertNotNull(result);
 			System.out.println(result);
-
-			wExecutor.destroy();
 		}
 	}
 

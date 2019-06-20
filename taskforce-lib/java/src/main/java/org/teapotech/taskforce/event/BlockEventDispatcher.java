@@ -11,6 +11,6 @@ import org.teapotech.block.event.BlockEvent;
  */
 public interface BlockEventDispatcher {
 
-	void dispatchEvent(BlockEvent event);
+	void dispatchBlockEvent(BlockEvent event);
 
 }

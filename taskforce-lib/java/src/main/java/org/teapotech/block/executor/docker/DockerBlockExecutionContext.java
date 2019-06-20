@@ -14,6 +14,7 @@ import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -29,18 +30,22 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	private final KeyValueStorageProvider kvStorageProvider;
 	private final FileStorageProvider fileStorageProvider;
 	private final BlockEventDispatcher blockEventDispatcher;
+	private final WorkspaceEventDispatcher workspaceEventDispatcher;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
+	private boolean stopped;
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider,
 			FileStorageProvider fileStorageProvider,
-			BlockEventDispatcher blockEventDispatcher) {
+			BlockEventDispatcher blockEventDispatcher,
+			WorkspaceEventDispatcher workspaceEventDispatcher) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
 		this.kvStorageProvider = kvStorageProvider;
 		this.fileStorageProvider = fileStorageProvider;
 		this.blockEventDispatcher = blockEventDispatcher;
+		this.workspaceEventDispatcher = workspaceEventDispatcher;
 	}
 
 	@Override
@@ -115,6 +120,21 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 	public ExecutionConfig getExecutionConfig() {
 		return executionConfig;
+	}
+
+	@Override
+	public WorkspaceEventDispatcher getWorkspaceEventDispatcher() {
+		return this.workspaceEventDispatcher;
+	}
+
+	@Override
+	public boolean isStopped() {
+		return this.stopped;
+	}
+
+	@Override
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
 	}
 
 	/**

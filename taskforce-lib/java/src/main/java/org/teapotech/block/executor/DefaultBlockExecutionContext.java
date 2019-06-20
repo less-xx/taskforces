@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -24,6 +25,9 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	private KeyValueStorageProvider kvStorageProvider;
 	private FileStorageProvider fileStorageProvider;
 	private BlockEventDispatcher blockEventDispatcher;
+	private WorkspaceEventDispatcher workspaceEventDispatcher;
+
+	private boolean stopped;
 
 	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory) {
 		this.blockExecutorFactory = blockExecutorFactory;
@@ -94,4 +98,24 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	public BlockEventDispatcher getBlockEventDispatcher() {
 		return this.blockEventDispatcher;
 	}
+
+	@Override
+	public WorkspaceEventDispatcher getWorkspaceEventDispatcher() {
+		return this.workspaceEventDispatcher;
+	}
+
+	public void setWorkspaceEventDispatcher(WorkspaceEventDispatcher workspaceEventDispatcher) {
+		this.workspaceEventDispatcher = workspaceEventDispatcher;
+	}
+
+	@Override
+	public boolean isStopped() {
+		return this.stopped;
+	}
+
+	@Override
+	public void setStopped(boolean stopped) {
+		this.stopped = stopped;
+	}
+
 }

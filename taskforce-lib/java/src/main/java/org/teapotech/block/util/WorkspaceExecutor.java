@@ -8,6 +8,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.event.WorkspaceExecutionEvent;
+import org.teapotech.block.event.WorkspaceExecutionEvent.Status;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Variable;
@@ -24,6 +26,8 @@ public class WorkspaceExecutor {
 	private final BlockExecutionContext context;
 	private final Workspace workspace;
 	private final ThreadGroup threadGroup;
+	private BlockExecutionThread[] blockExecutionThreads;
+	private BlockExecutionMonitoringThread monitoringThread;
 
 	public WorkspaceExecutor(Workspace workspace, BlockExecutionContext context) {
 		this.context = context;
@@ -42,6 +46,9 @@ public class WorkspaceExecutor {
 
 	public void execute() {
 
+		context.getWorkspaceEventDispatcher()
+				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Running));
+
 		List<Variable> variables = workspace.getVariables();
 		if (variables != null) {
 			variables.stream().forEach(v -> {
@@ -51,30 +58,73 @@ public class WorkspaceExecutor {
 		}
 
 		List<Block> startBlocks = workspace.getBlocks();
+		blockExecutionThreads = new BlockExecutionThread[startBlocks.size()];
 
-		for (final Block startBlock : startBlocks) {
-
-			new Thread(this.threadGroup, new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						LOG.info("Created thread for block, ID: {}, Type: {}, Group: {}", startBlock.getId(),
-								startBlock.getType(), threadGroup.getName());
-						BlockExecutorUtils.execute(startBlock, context);
-					} catch (Exception e) {
-						LOG.error(e.getMessage(), e);
-					}
-					LOG.info("Block thread exited. Group: {}, Active: {}", threadGroup.getName(),
-							threadGroup.activeCount());
-				}
-			}).start();
+		for (int i = 0; i < blockExecutionThreads.length; i++) {
+			BlockExecutionThread bt = new BlockExecutionThread(startBlocks.get(i), this.threadGroup);
+			blockExecutionThreads[i] = bt;
+			bt.start();
 		}
 
+		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + workspace.getId());
+		monitoringThread.start();
 	}
 
-	public void destroy() {
-		context.destroy();
+	public void stop() {
+		context.getWorkspaceEventDispatcher()
+				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Stopping));
+		this.context.setStopped(true);
 		this.threadGroup.interrupt();
+	}
+
+	private class BlockExecutionThread extends Thread {
+
+		private final Block startBlock;
+
+		public BlockExecutionThread(Block startBlock, ThreadGroup threadGroup) {
+			super(threadGroup, "block." + startBlock.getId());
+			this.startBlock = startBlock;
+			LOG.info("Created block execution thread. Block ID: {}, Type: {}, Group: {}", startBlock.getId(),
+					startBlock.getType(), threadGroup.getName());
+		}
+
+		@Override
+		public void run() {
+			try {
+				BlockExecutorUtils.execute(startBlock, context);
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+			}
+			LOG.info("Block execution thread exited. Group: {}, Active: {}", threadGroup.getName(),
+					threadGroup.activeCount());
+		}
+	}
+
+	private class BlockExecutionMonitoringThread extends Thread {
+
+		public BlockExecutionMonitoringThread(String name) {
+			super(name);
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				boolean running = false;
+				for (BlockExecutionThread t : blockExecutionThreads) {
+					running = running || t.isAlive();
+				}
+				if (!running) {
+					break;
+				}
+			}
+			LOG.info("All block execution threads are stopped.");
+			context.getWorkspaceEventDispatcher()
+					.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Stopped));
+			if (!context.isStopped()) {
+				context.setStopped(true);
+			}
+			threadGroup.destroy();
+			context.destroy();
+		}
 	}
 }

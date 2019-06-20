@@ -27,6 +27,6 @@ taskforce.execution:
   driver: docker
   networkName: ${TASKFORCE_NETWORK:}
   
-block.event.service.rabbitmq:
+taskforce.event.rabbitmq:
   exchange: taskforce.block.event
   

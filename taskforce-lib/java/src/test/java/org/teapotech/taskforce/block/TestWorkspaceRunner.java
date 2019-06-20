@@ -20,8 +20,8 @@ import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.block.executor.DefaultBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.support.CustomResourcePathLoader;
-import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.block.util.BlockXmlUtils;
+import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.provider.DiskFileStorageProvider;
 import org.teapotech.taskforce.provider.FileStorageProvider;
@@ -84,8 +84,8 @@ public class TestWorkspaceRunner {
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 		}
 	}
 
@@ -96,8 +96,8 @@ public class TestWorkspaceRunner {
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 		}
 	}
 
@@ -108,8 +108,8 @@ public class TestWorkspaceRunner {
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 
 			for (String name : context.getAllVariableNames()) {
 				Object value = context.getVariable(name);
@@ -131,8 +131,8 @@ public class TestWorkspaceRunner {
 			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
-			WorkspaceExecutor wExecutor = new WorkspaceExecutor(context);
-			wExecutor.execute(w);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
 
 		}
 		FileSystemPath p0 = registryManager.getCustomResourcePathLoader().getFileSystemPathById("id0");

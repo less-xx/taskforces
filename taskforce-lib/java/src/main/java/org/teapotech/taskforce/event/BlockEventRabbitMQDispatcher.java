@@ -23,9 +23,10 @@ public class BlockEventRabbitMQDispatcher implements BlockEventDispatcher {
 	}
 
 	@Override
-	public void dispatchEvent(BlockEvent event) {
+	public void dispatchBlockEvent(BlockEvent event) {
 		try {
-			String routingKey = "workspace." + event.getWorkspaceId() + "." + event.getId();
+			String routingKey = "workspace." + event.getWorkspaceId() + "." + event.getBlockType() + "."
+					+ event.getBlockId();
 			eventDispatcher.convertAndSend(routingKey, event);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());

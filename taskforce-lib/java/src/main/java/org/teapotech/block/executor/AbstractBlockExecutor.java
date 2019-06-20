@@ -33,6 +33,10 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 
 	@Override
 	public final Object execute(BlockExecutionContext context) throws BlockExecutionException {
+		if (context.isStopped()) {
+			LOG.info("Execution is stopped.");
+			return null;
+		}
 		try {
 			if (this.block != null) {
 				LOG.debug("Executing block, type: {}, id: {}", block.getType(), block.getId());
@@ -55,4 +59,5 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 	}
 
 	abstract protected Object doExecute(BlockExecutionContext context) throws Exception;
+
 }

@@ -61,7 +61,7 @@ public class CopyFileBlockExecutor extends AbstractBlockExecutor implements Cust
 			FileEvent evt = new FileEvent(context.getWorkspaceId(), this.block.getType(), this.block.getId());
 			evt.setFilePath(f.getAbsolutePath());
 			evt.setOperation(Operation.Create);
-			context.getBlockEventDispatcher().dispatchEvent(evt);
+			context.getBlockEventDispatcher().dispatchBlockEvent(evt);
 		}
 		return null;
 	}

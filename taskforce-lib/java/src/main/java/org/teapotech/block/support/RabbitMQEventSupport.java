@@ -1,6 +1,6 @@
 package org.teapotech.block.support;
 
-import org.springframework.amqp.core.Exchange;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 
 /**
@@ -12,5 +12,5 @@ public interface RabbitMQEventSupport {
 
 	void setRabbitAdmin(RabbitAdmin rabbitAdmin);
 
-	void setEventExchange(Exchange eventExchange);
+	void setEventExchange(TopicExchange eventExchange);
 }

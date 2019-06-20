@@ -8,6 +8,7 @@ import java.util.Collection;
 
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 
 /**
@@ -35,5 +36,11 @@ public interface BlockExecutionContext {
 	InputStream loadFile(String key) throws FileStorageException;
 
 	BlockEventDispatcher getBlockEventDispatcher();
+
+	WorkspaceEventDispatcher getWorkspaceEventDispatcher();
+
+	boolean isStopped();
+
+	void setStopped(boolean stopped);
 
 }

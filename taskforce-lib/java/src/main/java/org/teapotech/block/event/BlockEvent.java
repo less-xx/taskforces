@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public abstract class BlockEvent {
 
-	protected String id;
+	protected final String id;
 	protected String workspaceId;
 	protected String blockType;
 	protected String blockId;
@@ -31,7 +31,7 @@ public abstract class BlockEvent {
 		this.workspaceId = workspaceId;
 	}
 
-	protected String getBlockType() {
+	public String getBlockType() {
 		return blockType;
 	}
 
@@ -43,7 +43,7 @@ public abstract class BlockEvent {
 		return blockId;
 	}
 
-	public void setBlockId(String blockId) {
+	protected void setBlockId(String blockId) {
 		this.blockId = blockId;
 	}
 

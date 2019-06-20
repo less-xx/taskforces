@@ -3,6 +3,8 @@
  */
 package org.teapotech.taskforce.service;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -20,11 +23,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.WorkspaceExecutionEvent;
+import org.teapotech.block.event.WorkspaceExecutionEvent.Status;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
@@ -58,6 +64,11 @@ public class TaskforceExecutionService {
 	@Autowired
 	BlockEventDispatcher blockEvtDispatcher;
 
+	@Autowired
+	WorkspaceEventDispatcher workspaceEventDispatcher;
+
+	private final ConcurrentHashMap<String, WorkspaceExecutor> workspaceExecutors = new ConcurrentHashMap<>();
+
 	@PostConstruct
 	private void init() {
 		String queueName = "queue.workspace.events";
@@ -80,18 +91,27 @@ public class TaskforceExecutionService {
 
 		String taskforceId = workspace.getId();
 		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider, blockEvtDispatcher);
+				fileStorageProvider, blockEvtDispatcher, workspaceEventDispatcher);
 		WorkspaceExecutor wExecutor = new WorkspaceExecutor(workspace, context);
+		workspaceExecutors.put(workspace.getId(), wExecutor);
 		try {
 			wExecutor.execute();
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 		}
-		wExecutor.destroy();
 		return context;
 	}
 
 	public void handleEvent(BlockEvent event) {
 		LOG.info("Received event: {}", event);
 	}
+
+	@RabbitListener(queues = WorkspaceEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT)
+	public void handleWorkspaceExecutionEvent(final WorkspaceExecutionEvent event) {
+		LOG.info("Workspace event. ID: {}, Status: {}", event.getWorkspaceId(), event.getStatus());
+		if (event.getStatus() == Status.Stopped) {
+			workspaceExecutors.remove(event.getWorkspaceId());
+		}
+	}
+
 }

@@ -50,7 +50,7 @@ public class TestStorageProvider {
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_03.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			Block block = w.getBlock();
+			Block block = w.getBlocks().get(0);
 			String key = "testBlock";
 			storage.put(taskforceId, key, block);
 

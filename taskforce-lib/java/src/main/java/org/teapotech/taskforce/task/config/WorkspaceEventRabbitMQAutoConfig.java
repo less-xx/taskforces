@@ -4,7 +4,10 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.ExchangeBuilder;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -17,25 +20,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.teapotech.taskforce.event.BlockEventDispatcher;
 import org.teapotech.taskforce.event.BlockEventRabbitMQDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventRabbitMQDispatcher;
 
 @Configuration
-public class BlockEventRabbitMQAutoConfig {
+public class WorkspaceEventRabbitMQAutoConfig {
 
-	private static Logger LOG = LoggerFactory.getLogger(BlockEventRabbitMQAutoConfig.class);
+	private static Logger LOG = LoggerFactory.getLogger(WorkspaceEventRabbitMQAutoConfig.class);
 
-	@Value("${block.event.service.rabbitmq.exchange}")
-	String blockEventExchangeName;
+	@Value("${taskforce.event.rabbitmq.exchange}")
+	String taskforceEventExchangeName;
 
 	@Autowired
 	private ConnectionFactory rabbitConnectionFactory;
 
 	@PostConstruct
 	void init() {
-		TopicExchange blockEventExchange = blockEventExchange();
+		TopicExchange taskforceEventExchange = taskforceEventExchange();
 		RabbitAdmin rabbitAdmin = rabbitAdmin(rabbitConnectionFactory);
-		rabbitAdmin.declareExchange(blockEventExchange);
-		LOG.info("Declared block event exchange {}", blockEventExchange);
+		rabbitAdmin.declareExchange(taskforceEventExchange);
+		LOG.info("Declared block event exchange {}", taskforceEventExchange);
 
+		Binding binding = BindingBuilder.bind(workspaceExecutionEventQueue()).to(taskforceEventExchange)
+				.with("workspace.execution.*");
+		rabbitAdmin.declareBinding(binding);
 	}
 
 	@Bean
@@ -44,9 +52,9 @@ public class BlockEventRabbitMQAutoConfig {
 	}
 
 	@Bean
-	TopicExchange blockEventExchange() {
+	TopicExchange taskforceEventExchange() {
 		return (TopicExchange) ExchangeBuilder
-				.topicExchange(blockEventExchangeName)
+				.topicExchange(taskforceEventExchangeName)
 				.durable(true)
 				.build();
 	}
@@ -56,7 +64,7 @@ public class BlockEventRabbitMQAutoConfig {
 			Jackson2JsonMessageConverter converter) {
 		final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
 		rabbitTemplate.setMessageConverter(converter);
-		rabbitTemplate.setExchange(blockEventExchangeName);
+		rabbitTemplate.setExchange(taskforceEventExchangeName);
 		return rabbitTemplate;
 	}
 
@@ -79,6 +87,17 @@ public class BlockEventRabbitMQAutoConfig {
 	BlockEventDispatcher blockEventDispatcher(final ConnectionFactory connectionFactory,
 			Jackson2JsonMessageConverter converter) {
 		return new BlockEventRabbitMQDispatcher(rabbitTemplate(connectionFactory, converter));
+	}
+
+	@Bean
+	WorkspaceEventDispatcher workspaceEventDispatcher(final ConnectionFactory connectionFactory,
+			Jackson2JsonMessageConverter converter) {
+		return new WorkspaceEventRabbitMQDispatcher(rabbitTemplate(connectionFactory, converter));
+	}
+
+	@Bean
+	Queue workspaceExecutionEventQueue() {
+		return new Queue(WorkspaceEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT);
 	}
 
 }

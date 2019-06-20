@@ -30,20 +30,21 @@ public class TestWorkspaceUtils {
 			assertNotNull(w.getVariables());
 			assertNotNull(w.getVariables().get(0));
 			assertEquals("b", w.getVariables().get(0).getValue());
-			assertNotNull(w.getBlock());
-			assertNotNull(w.getBlock().getFields());
-			assertEquals("b", w.getBlock().getFields().get(0).getValue());
-			assertNotNull(w.getBlock().getValues());
-			assertNotNull(w.getBlock().getValues().get(0));
-			assertNotNull(w.getBlock().getNext());
-			assertNotNull(w.getBlock().getNext().getBlock());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0));
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getFields());
+			assertNotNull(w.getBlocks());
+			assertNotNull(w.getBlocks().get(0).getFields());
+			assertEquals("b", w.getBlocks().get(0).getFields().get(0).getValue());
+			assertNotNull(w.getBlocks().get(0).getValues());
+			assertNotNull(w.getBlocks().get(0).getValues().get(0));
+			assertNotNull(w.getBlocks().get(0).getNext());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0));
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock().getFields());
 			assertNotNull(
-					w.getBlock().getNext().getBlock().getValues().get(0).getBlock().getFields().get(0).getValue());
-			assertNotNull(w.getBlock().getNext().getBlock().getNext().getBlock().getStatements());
-			assertEquals(4, w.getBlock().getNext().getBlock().getNext().getBlock().getStatements().size());
+					w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock().getFields().get(0)
+							.getValue());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getStatements());
+			assertEquals(4, w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getStatements().size());
 		}
 	}
 
@@ -54,22 +55,39 @@ public class TestWorkspaceUtils {
 			Source source = new StreamSource(in);
 			Workspace w = BlockXmlUtils.loadWorkspace(source);
 			assertNotNull(w);
-			assertNotNull(w.getBlock());
-			assertNotNull(w.getBlock().getValues());
-			assertNotNull(w.getBlock().getValues().get(0).getShadow());
-			assertNotNull(w.getBlock().getValues().get(0).getBlock());
-			assertNotNull(w.getBlock().getNext());
-			assertNotNull(w.getBlock().getNext().getBlock());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getShadow());
-			assertNotNull(w.getBlock().getNext().getBlock().getValues().get(0).getBlock());
+			assertNotNull(w.getBlocks());
+			assertNotNull(w.getBlocks().get(0).getValues());
+			assertNotNull(w.getBlocks().get(0).getValues().get(0).getShadow());
+			assertNotNull(w.getBlocks().get(0).getValues().get(0).getBlock());
+			assertNotNull(w.getBlocks().get(0).getNext());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getShadow());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock());
 			assertNotNull(
-					w.getBlock().getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock().getMutation());
+					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+							.getMutation());
 			assertNotNull(
-					w.getBlock().getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock().getValues());
+					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+							.getValues());
 			assertNotNull(
-					w.getBlock().getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock().getValues()
+					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+							.getValues()
 							.get(1));
+		}
+	}
+
+	@Test
+	public void testWorkspaceUtils_06() throws Exception {
+
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_06.xml");) {
+			Source source = new StreamSource(in);
+			Workspace w = BlockXmlUtils.loadWorkspace(source);
+			assertNotNull(w);
+			assertNotNull(w.getBlocks());
+			assertEquals(2, w.getBlocks().size());
+			assertNotNull(w.getBlocks().get(1).getNext());
+			assertNotNull(w.getBlocks().get(1).getNext().getBlock());
 		}
 	}
 }

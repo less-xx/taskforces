@@ -63,5 +63,5 @@ application.user:
   default-userid: anonymous
   default-username: Anonymous
 
-block.event.service.rabbitmq:
+taskforce.event.rabbitmq:
   exchange: taskforce.block.event
