@@ -1,13 +1,11 @@
 package org.teapotech.block.event;
 
+import org.teapotech.taskforce.entity.TaskforceExecution.Status;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class WorkspaceExecutionEvent {
-
-	public static enum Status {
-		Running, Stopping, Stopped
-	}
 
 	public WorkspaceExecutionEvent() {
 	}

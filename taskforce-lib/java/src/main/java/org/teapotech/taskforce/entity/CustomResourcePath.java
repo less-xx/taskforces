@@ -33,8 +33,8 @@ public class CustomResourcePath {
 	}
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
+	@GeneratedValue(generator = "cust-res-loc-id-generator")
+	@GenericGenerator(name = "cust-res-loc-id-generator", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id")
 	private String id;
 

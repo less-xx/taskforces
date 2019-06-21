@@ -51,12 +51,12 @@ public class EventHandlerBlockExecutor extends AbstractBlockExecutor implements 
 		String workspaceId = context.getWorkspaceId();
 		String blockType = this.block.getType();
 		String blockId = this.block.getId();
-
+		// TODO
 		String queueName = "workspace." + workspaceId + "." + blockType + "." + blockId;
 		Queue eventQueue = new Queue(queueName);
 		rabbitAdmin.declareQueue(eventQueue);
 		String routingKey = queueName;
-
+		// TODO routingkey is not correct.
 		Binding binding = BindingBuilder.bind(eventQueue).to(eventExchange).with(routingKey);
 		rabbitAdmin.declareBinding(binding);
 		LOG.info("Event binding: {}", binding);

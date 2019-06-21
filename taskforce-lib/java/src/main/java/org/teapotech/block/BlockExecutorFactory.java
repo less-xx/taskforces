@@ -18,6 +18,7 @@ import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
+import org.teapotech.block.support.RabbitMQEventSupport;
 
 import com.spotify.docker.client.DockerClient;
 
@@ -30,7 +31,7 @@ public class BlockExecutorFactory {
 	private static Logger LOG = LoggerFactory.getLogger(BlockExecutorFactory.class);
 
 	private final Map<String, Class<? extends BlockExecutor>> blockExecutors = new HashMap<>();
-	private final DockerClient dockerClient;
+	private final DependencyRepository dependencyRepo;
 	private final BlockRegistryManager blockRegistryManager;
 
 	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager) {
@@ -38,8 +39,9 @@ public class BlockExecutorFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager, DockerClient client) {
-		BlockExecutorFactory fac = new BlockExecutorFactory(blockRegistryManager, client);
+	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager,
+			DependencyRepository dependencyRepo) {
+		BlockExecutorFactory fac = new BlockExecutorFactory(blockRegistryManager, dependencyRepo);
 
 		for (BlockRegistry br : fac.blockRegistryManager.getBlockRegistries()) {
 			try {
@@ -58,9 +60,9 @@ public class BlockExecutorFactory {
 		this(blockRegistryManager, null);
 	}
 
-	private BlockExecutorFactory(BlockRegistryManager blockRegistryManager, DockerClient dockerClient) {
+	private BlockExecutorFactory(BlockRegistryManager blockRegistryManager, DependencyRepository dependencyRepo) {
 		this.blockRegistryManager = blockRegistryManager;
-		this.dockerClient = dockerClient;
+		this.dependencyRepo = dependencyRepo;
 	}
 
 	public BlockExecutor createBlockExecutor(Block block)
@@ -75,7 +77,7 @@ public class BlockExecutorFactory {
 
 			if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 				Constructor<? extends BlockExecutor> cons = c.getConstructor(Block.class, DockerClient.class);
-				be = cons.newInstance(block, this.dockerClient);
+				be = cons.newInstance(block, this.dependencyRepo.getDockerClient());
 			} else {
 				Constructor<? extends BlockExecutor> cons = c.getConstructor(Block.class);
 				be = cons.newInstance(block);
@@ -84,6 +86,11 @@ public class BlockExecutorFactory {
 			if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
 				((CustomResourcePathLoaderSupport) be)
 						.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
+			}
+
+			if (ClassUtils.isAssignable(c, RabbitMQEventSupport.class)) {
+				((RabbitMQEventSupport) be).setRabbitAdmin(this.dependencyRepo.getRabbitAdmin());
+				((RabbitMQEventSupport) be).setEventExchange(this.dependencyRepo.getEventExchange());
 			}
 
 			return be;
@@ -113,7 +120,7 @@ public class BlockExecutorFactory {
 			if (blockValue.getBlock() != null) {
 				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 					cons = c.getConstructor(Block.class, DockerClient.class);
-					return cons.newInstance(blockValue.getBlock(), this.dockerClient);
+					return cons.newInstance(blockValue.getBlock(), this.dependencyRepo.getDockerClient());
 				} else {
 					cons = c.getConstructor(Block.class);
 					return cons.newInstance(blockValue.getBlock());
@@ -121,7 +128,7 @@ public class BlockExecutorFactory {
 			} else {
 				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 					cons = c.getConstructor(BlockValue.class, DockerClient.class);
-					return cons.newInstance(blockValue, this.dockerClient);
+					return cons.newInstance(blockValue, this.dependencyRepo.getDockerClient());
 				} else {
 					cons = c.getConstructor(BlockValue.class);
 					return cons.newInstance(blockValue);

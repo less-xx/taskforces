@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
-import org.teapotech.block.event.WorkspaceExecutionEvent.Status;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Variable;
 import org.teapotech.block.model.Workspace;
+import org.teapotech.taskforce.entity.TaskforceExecution.Status;
 
 /**
  * @author jiangl
@@ -32,7 +32,7 @@ public class WorkspaceExecutor {
 	public WorkspaceExecutor(Workspace workspace, BlockExecutionContext context) {
 		this.context = context;
 		this.workspace = workspace;
-		this.threadGroup = new ThreadGroup("group-" + workspace.getId());
+		this.threadGroup = new ThreadGroup("group-" + context.getWorkspaceId());
 		this.threadGroup.setDaemon(true);
 	}
 
@@ -47,7 +47,7 @@ public class WorkspaceExecutor {
 	public void execute() {
 
 		context.getWorkspaceEventDispatcher()
-				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Running));
+				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Running));
 
 		List<Variable> variables = workspace.getVariables();
 		if (variables != null) {
@@ -66,13 +66,14 @@ public class WorkspaceExecutor {
 			bt.start();
 		}
 
-		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + workspace.getId());
+		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + context.getWorkspaceId());
 		monitoringThread.start();
 	}
 
 	public void stop() {
 		context.getWorkspaceEventDispatcher()
-				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Stopping));
+				.dispatchWorkspaceExecutionEvent(
+						new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopping));
 		this.context.setStopped(true);
 		this.threadGroup.interrupt();
 	}
@@ -116,10 +117,17 @@ public class WorkspaceExecutor {
 				if (!running) {
 					break;
 				}
+				try {
+					Thread.sleep(2000L);
+				} catch (InterruptedException e) {
+					LOG.warn("Block monitoring thread is interrupted.");
+					break;
+				}
 			}
 			LOG.info("All block execution threads are stopped.");
 			context.getWorkspaceEventDispatcher()
-					.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(workspace.getId(), Status.Stopped));
+					.dispatchWorkspaceExecutionEvent(
+							new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopped));
 			if (!context.isStopped()) {
 				context.setStopped(true);
 			}

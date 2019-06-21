@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,8 +27,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class TaskforceEntity {
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
+	@GeneratedValue(generator = "tf-entity-id-generator")
+	@GenericGenerator(name = "tf-entity-id-generator", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id")
 	private String id;
 
@@ -43,6 +44,10 @@ public class TaskforceEntity {
 	@Column(name = "last_updated")
 	@UpdateTimestamp
 	private Date lastUpdatedTime;
+
+	@Version
+	@Column(name = "version", columnDefinition = "int DEFAULT 0", nullable = false)
+	private int version;
 
 	@Column(name = "updated_by")
 	private String updatedBy;
@@ -105,5 +110,13 @@ public class TaskforceEntity {
 
 	public void setGroup(TaskforceGroup group) {
 		this.group = group;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

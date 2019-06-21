@@ -51,7 +51,7 @@ public class WorkspaceEventRabbitMQAutoConfig {
 		return new RabbitAdmin(cf);
 	}
 
-	@Bean
+	@Bean("taskforce-event-exchange")
 	TopicExchange taskforceEventExchange() {
 		return (TopicExchange) ExchangeBuilder
 				.topicExchange(taskforceEventExchangeName)

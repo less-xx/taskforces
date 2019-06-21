@@ -23,8 +23,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 public class TaskforceGroup {
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
+	@GeneratedValue(generator = "group-id-generator")
+	@GenericGenerator(name = "group-id-generator", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id")
 	private String id;
 

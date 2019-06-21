@@ -29,8 +29,8 @@ public class Credentials {
 	}
 
 	@Id
-	@GeneratedValue(generator = "UUID")
-	@GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDHexGenerator")
+	@GeneratedValue(generator = "cred-id-generator")
+	@GenericGenerator(name = "cred-id-generator", strategy = "org.hibernate.id.UUIDGenerator")
 	@Column(name = "id")
 	private String id;
 

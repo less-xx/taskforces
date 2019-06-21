@@ -36,9 +36,6 @@ public class Workspace {
 	private List<Block> blocks = null;
 
 	@XmlAttribute
-	private String id = "toolbox";
-
-	@XmlAttribute
 	private String style = "display: none";
 
 	public List<Variable> getVariables() {
@@ -63,14 +60,6 @@ public class Workspace {
 
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getStyle() {

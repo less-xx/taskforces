@@ -86,8 +86,9 @@ public class TestTaskforceExecutor {
 		String taskforceId = "test-copy-file";
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/copy_file_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			w.setId(taskforceId);
-			BlockExecutionContext context = taskforceExecService.executeWorkspace(w);
+
+			BlockExecutionContext context = taskforceExecService.createWorkspaceExecutionContext(taskforceId);
+			taskforceExecService.executeWorkspace(w, context);
 
 			Object result = context.getVariable("result");
 			assertNotNull(result);

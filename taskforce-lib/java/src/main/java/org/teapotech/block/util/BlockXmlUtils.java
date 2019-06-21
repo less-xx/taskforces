@@ -5,6 +5,7 @@ package org.teapotech.block.util;
 
 import java.beans.Statement;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 
@@ -14,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
@@ -43,6 +45,13 @@ public class BlockXmlUtils {
 		} catch (Exception e) {
 			throw new Error(e.getMessage(), e);
 		}
+	}
+
+	public static Workspace loadWorkspace(String configuration) throws JAXBException {
+		StringReader reader = new StringReader(configuration);
+		StreamSource source = new StreamSource(reader);
+		JAXBElement<Workspace> e = BLOCK_UNMARSHALLER.unmarshal(source, Workspace.class);
+		return e.getValue();
 	}
 
 	public static Workspace loadWorkspace(Source source) throws JAXBException {
