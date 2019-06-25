@@ -83,15 +83,7 @@ public class BlockExecutorFactory {
 				be = cons.newInstance(block);
 			}
 
-			if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
-				((CustomResourcePathLoaderSupport) be)
-						.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
-			}
-
-			if (ClassUtils.isAssignable(c, RabbitMQEventSupport.class)) {
-				((RabbitMQEventSupport) be).setRabbitAdmin(this.dependencyRepo.getRabbitAdmin());
-				((RabbitMQEventSupport) be).setEventExchange(this.dependencyRepo.getEventExchange());
-			}
+			assignExecutorCapabilities(c, be);
 
 			return be;
 
@@ -116,27 +108,47 @@ public class BlockExecutorFactory {
 			throw new BlockExecutorNotFoundException("Block executor not register for type " + blockType);
 		}
 		try {
+
+			BlockExecutor be = null;
+
 			Constructor<? extends BlockExecutor> cons = null;
 			if (blockValue.getBlock() != null) {
 				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 					cons = c.getConstructor(Block.class, DockerClient.class);
-					return cons.newInstance(blockValue.getBlock(), this.dependencyRepo.getDockerClient());
+					be = cons.newInstance(blockValue.getBlock(), this.dependencyRepo.getDockerClient());
 				} else {
 					cons = c.getConstructor(Block.class);
-					return cons.newInstance(blockValue.getBlock());
+					be = cons.newInstance(blockValue.getBlock());
 				}
 			} else {
 				if (ClassUtils.isAssignable(c, DockerBlockExecutor.class)) {
 					cons = c.getConstructor(BlockValue.class, DockerClient.class);
-					return cons.newInstance(blockValue, this.dependencyRepo.getDockerClient());
+					be = cons.newInstance(blockValue, this.dependencyRepo.getDockerClient());
 				} else {
 					cons = c.getConstructor(BlockValue.class);
-					return cons.newInstance(blockValue);
+					be = cons.newInstance(blockValue);
 				}
-
 			}
+
+			assignExecutorCapabilities(c, be);
+
+			return be;
+
 		} catch (Exception e) {
 			throw new InvalidBlockExecutorException(e.getMessage(), e);
+		}
+	}
+
+	private void assignExecutorCapabilities(Class<?> c, BlockExecutor be) {
+
+		if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
+			((CustomResourcePathLoaderSupport) be)
+					.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
+		}
+
+		if (ClassUtils.isAssignable(c, RabbitMQEventSupport.class)) {
+			((RabbitMQEventSupport) be).setRabbitAdmin(this.dependencyRepo.getRabbitAdmin());
+			((RabbitMQEventSupport) be).setEventExchange(this.dependencyRepo.getEventExchange());
 		}
 	}
 

@@ -4,6 +4,7 @@
 package org.teapotech.block.executor.file;
 
 import java.io.File;
+import java.io.FileFilter;
 
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
@@ -13,6 +14,7 @@ import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Field;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
+import org.teapotech.block.util.BlockExecutorUtils;
 import org.teapotech.taskforce.entity.FileSystemPath;
 
 /**
@@ -48,7 +50,23 @@ public class FilePathBlockExecutor extends AbstractBlockExecutor implements Cust
 		if (!path.exists()) {
 			throw new BlockExecutionException("File path does not exist. " + path.getAbsolutePath());
 		}
-		return path.listFiles();
+
+		String include = ".*";
+		BlockValue includeBV = this.block.getBlockValueByName("include", null);
+		if (includeBV != null) {
+			include = (String) BlockExecutorUtils.execute(includeBV, context);
+		}
+
+		final String pattern = include;
+		File[] files = path.listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.getName().matches(pattern);
+			}
+		});
+
+		return files;
 	}
 
 	@Override

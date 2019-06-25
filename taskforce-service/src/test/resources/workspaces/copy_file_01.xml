@@ -1,15 +1,44 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
-	<block id="NFM%2--uTXCU!A;.SCoj" type="copy_files" x="90" y="90">
-		<field name="customFilePathId">8aa07d8f6abe7273016abe75bb1b0000</field>
-		<value name="files">
-			<block id="K2^Eug)_sSfz9JmrPx{h" type="file_path">
-				<field name="customFilePathId">8ad4d20a6b2b8938016b2b89407b0000</field>
+	<variables>
+		<variable id="{0}r0-8`V=QxmS}98g:3" type="">file</variable>
+	</variables>
+	<block id=",bbT4Ip-DSx_*7x/uTHH" type="loop_file" x="410" y="70">
+		<value name="file">
+			<block id="8D3%;f1T$5OzhJLG7q=E" type="variables_get">
+				<field id="{0}r0-8`V=QxmS}98g:3" name="VAR" variabletype="">file</field>
+			</block>
+		</value>
+		<value name="filePath">
+			<block id="=w)SCmmN%-1=:g7Bgx]f" type="file_path">
+				<field name="customFilePathId">8aa07d8f6abe7273016abe75bb1b0000</field>
 				<value name="include">
-					<shadow id="AMoujw`-aM:y%u,Qv2:{" type="text">
+					<shadow id="}-aEZxDjo?{WO#i_Z:dJ" type="text">
 						<field name="TEXT">*.*</field>
 					</shadow>
 				</value>
 			</block>
 		</value>
+		<statement name="actions">
+			<block id="a[F6)S]CS7RF49C4?{yE" type="copy_files">
+				<field name="customFilePathId">8ad4d20a6b2b8938016b2b89407b0000</field>
+				<value name="files">
+					<block id="tK}.:uOGP2aw7t.ocNj!" type="variables_get">
+						<field id="{0}r0-8`V=QxmS}98g:3" name="VAR" variabletype="">file</field>
+					</block>
+				</value>
+			</block>
+		</statement>
+	</block>
+	<block id="xf_6Xxruf_iw(9XY9:+%" type="handle_file_event" x="90" y="190">
+		<field name="NAME">Create</field>
+		<next>
+			<block id="$hYqqer;aZ)KEsfr.e*d" type="text_print">
+				<value name="TEXT">
+					<block id="U$|~W.1%K/tGsi?E{gcK" type="text">
+						<field name="TEXT">File is created</field>
+					</block>
+				</value>
+			</block>
+		</next>
 	</block>
 </xml>

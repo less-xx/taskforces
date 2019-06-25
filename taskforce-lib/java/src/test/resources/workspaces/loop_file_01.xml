@@ -9,7 +9,7 @@
 				<field name="customFilePathId">id0</field>
 				<value name="include">
 					<shadow id="a;wjd8;qaS;-9S2EUF_3" type="text">
-						<field name="TEXT">*.*</field>
+						<field name="TEXT">.*</field>
 					</shadow>
 				</value>
 			</block>

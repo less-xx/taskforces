@@ -66,7 +66,7 @@ public class BlockXmlUtils {
 
 	public static Block loadToolboxBlock(InputStream in) throws JAXBException {
 		Workspace tbw = (Workspace) BLOCK_UNMARSHALLER.unmarshal(in);
-		if (tbw == null) {
+		if (tbw == null || tbw.getBlocks() == null || tbw.getBlocks().isEmpty()) {
 			return null;
 		}
 		return tbw.getBlocks().get(0);

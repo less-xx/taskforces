@@ -12,9 +12,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.block.executor.DefaultBlockExecutionContext;
@@ -23,6 +25,8 @@ import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
+import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.DiskFileStorageProvider;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.InMemoryKeyValueStorageProvider;
@@ -32,6 +36,7 @@ import org.teapotech.taskforce.provider.KeyValueStorageProvider;
  * @author jiangl
  *
  */
+@ExtendWith(MockitoExtension.class)
 public class TestWorkspaceRunner {
 
 	private static BlockExecutorFactory factory;
@@ -39,32 +44,31 @@ public class TestWorkspaceRunner {
 	private static KeyValueStorageProvider kvStorageProvider = new InMemoryKeyValueStorageProvider();
 	private static FileStorageProvider fileStorageProvider = new DiskFileStorageProvider("/tmp/taskforce/test");
 
+	@Mock
+	BlockEventDispatcher blockEventDispatcher;
+
+	@Mock
+	WorkspaceEventDispatcher workspaceEventDispatcher;
+
 	@BeforeAll
 	static void init() throws Exception {
 		registryManager = new BlockRegistryManager();
 		final Map<String, FileSystemPath> filePaths = new HashMap<>();
 		filePaths.put("id0", new FileSystemPath("id0", "Test file system path 0"));
-		filePaths.put("id1", new FileSystemPath("id1", "Test file system path 1"));
-		filePaths.put("id2", new FileSystemPath("id2", "Test file system path 2"));
-
-		for (FileSystemPath filePath : filePaths.values()) {
-			File tmpPath = new File("/tmp/" + filePath.getId());
-			if (tmpPath.exists()) {
-				try {
-					FileUtils.deleteDirectory(tmpPath);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			tmpPath.mkdirs();
-			filePath.setPath(tmpPath.getAbsolutePath());
-		}
+		filePaths.put("id0", new FileSystemPath("id1", "Test file system path 1"));
+		filePaths.put("id0", new FileSystemPath("id2", "Test file system path 2"));
 
 		final CustomResourcePathLoader pathLoader = new CustomResourcePathLoader() {
 
 			@Override
 			public FileSystemPath getFileSystemPathById(String id) {
-				return filePaths.get(id);
+				FileSystemPath filePath = filePaths.get(id);
+				File tmpPath = new File("/tmp/" + id);
+				if (!tmpPath.exists()) {
+					tmpPath.mkdirs();
+				}
+				filePath.setPath(tmpPath.getAbsolutePath());
+				return filePath;
 			}
 
 			@Override
@@ -72,6 +76,7 @@ public class TestWorkspaceRunner {
 				return filePaths.values();
 			}
 		};
+
 		registryManager.setCustomResourcePathLoader(pathLoader);
 		registryManager.loadBlockRegistries();
 		factory = BlockExecutorFactory.build(registryManager);
@@ -141,6 +146,29 @@ public class TestWorkspaceRunner {
 		assertNotNull(files);
 		assertTrue(files.length > 0);
 		System.out.println(files[0]);
+		f1.delete();
+	}
+
+	@Test
+	public void testLoopFile() throws Exception {
+
+		FileSystemPath p1 = registryManager.getCustomResourcePathLoader().getFileSystemPathById("id0");
+		File pf1 = new File(p1.getPath());
+		File f1 = new File(pf1, "test_file_01.txt");
+		f1.createNewFile();
+
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/loop_file_01.xml");) {
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			context.setBlockEventDispatcher(blockEventDispatcher);
+			context.setWorkspaceEventDispatcher(workspaceEventDispatcher);
+			context.setKeyValueStorageProvider(kvStorageProvider);
+			context.setFileStorageProvider(fileStorageProvider);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.executeAndWait();
+
+		}
+
 		f1.delete();
 	}
 

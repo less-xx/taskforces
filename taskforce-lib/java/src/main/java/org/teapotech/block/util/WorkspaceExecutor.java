@@ -70,6 +70,32 @@ public class WorkspaceExecutor {
 		monitoringThread.start();
 	}
 
+	public void executeAndWait() throws InterruptedException {
+		context.getWorkspaceEventDispatcher()
+				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Running));
+
+		List<Variable> variables = workspace.getVariables();
+		if (variables != null) {
+			variables.stream().forEach(v -> {
+				context.setVariable(v.getValue(), "");
+				LOG.debug("Added variable: {}", v.getValue());
+			});
+		}
+
+		List<Block> startBlocks = workspace.getBlocks();
+		blockExecutionThreads = new BlockExecutionThread[startBlocks.size()];
+
+		for (int i = 0; i < blockExecutionThreads.length; i++) {
+			BlockExecutionThread bt = new BlockExecutionThread(startBlocks.get(i), this.threadGroup);
+			blockExecutionThreads[i] = bt;
+			bt.start();
+			bt.join();
+		}
+
+		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + context.getWorkspaceId());
+		monitoringThread.start();
+	}
+
 	public void stop() {
 		context.getWorkspaceEventDispatcher()
 				.dispatchWorkspaceExecutionEvent(

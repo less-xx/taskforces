@@ -1,0 +1,13 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+	<block type="loop_file">
+		<statement name="actions">
+			<block type="text_print">
+				<value name="TEXT">
+					<block type="variables_get">
+						<field name="VAR" variabletype="">file</field>
+					</block>
+				</value>
+			</block>
+		</statement>
+	</block>
+</xml>
