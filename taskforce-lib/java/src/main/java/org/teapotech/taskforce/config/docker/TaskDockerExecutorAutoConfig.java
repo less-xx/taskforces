@@ -4,10 +4,7 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +17,7 @@ import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.executor.docker.DockerBlockManager;
 import org.teapotech.block.support.CustomResourcePathLoader;
+import org.teapotech.taskforce.event.BlockEventListenerFactory;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 
 import com.spotify.docker.client.DockerClient;
@@ -40,24 +38,19 @@ public class TaskDockerExecutorAutoConfig {
 	CustomResourcePathLoader customResourcePathLoader;
 
 	@Autowired
-	RabbitAdmin rabbitAdmin;
-
-	@Autowired
-	@Qualifier("taskforce-event-exchange")
-	TopicExchange eventExchange;
+	BlockEventListenerFactory blockEventListenerFactory;
 
 	@Bean
 	DependencyRepository dependencyRepository() {
 		DependencyRepository dr = new DependencyRepository();
 		dr.setDockerClient(dockerClient);
-		dr.setRabbitAdmin(rabbitAdmin);
-		dr.setEventExchange(eventExchange);
 		return dr;
 	}
 
 	@Bean
 	BlockExecutorFactory blockExecutorFactory() throws InvalidBlockException {
-		BlockExecutorFactory fac = BlockExecutorFactory.build(blockRegistryManager(), dependencyRepository());
+		BlockExecutorFactory fac = BlockExecutorFactory.build(blockRegistryManager(), dependencyRepository(),
+				blockEventListenerFactory);
 		LOG.info("BlockExecutorFactory initialized.");
 		return fac;
 	}

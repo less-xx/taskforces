@@ -13,8 +13,7 @@ import java.util.Map;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
-import org.teapotech.taskforce.event.BlockEventDispatcher;
-import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
+import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -29,8 +28,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	private final String workspaceId;
 	private final KeyValueStorageProvider kvStorageProvider;
 	private final FileStorageProvider fileStorageProvider;
-	private final BlockEventDispatcher blockEventDispatcher;
-	private final WorkspaceEventDispatcher workspaceEventDispatcher;
+	private final EventDispatcher eventDispatcher;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
 	private boolean stopped;
@@ -38,14 +36,12 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider,
 			FileStorageProvider fileStorageProvider,
-			BlockEventDispatcher blockEventDispatcher,
-			WorkspaceEventDispatcher workspaceEventDispatcher) {
+			EventDispatcher eventDispatcher) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
 		this.kvStorageProvider = kvStorageProvider;
 		this.fileStorageProvider = fileStorageProvider;
-		this.blockEventDispatcher = blockEventDispatcher;
-		this.workspaceEventDispatcher = workspaceEventDispatcher;
+		this.eventDispatcher = eventDispatcher;
 	}
 
 	@Override
@@ -110,8 +106,8 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	}
 
 	@Override
-	public BlockEventDispatcher getBlockEventDispatcher() {
-		return this.blockEventDispatcher;
+	public EventDispatcher getEventDispatcher() {
+		return this.eventDispatcher;
 	}
 
 	public ContainerSettings getContainerSettings() {
@@ -120,11 +116,6 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 	public ExecutionConfig getExecutionConfig() {
 		return executionConfig;
-	}
-
-	@Override
-	public WorkspaceEventDispatcher getWorkspaceEventDispatcher() {
-		return this.workspaceEventDispatcher;
 	}
 
 	@Override

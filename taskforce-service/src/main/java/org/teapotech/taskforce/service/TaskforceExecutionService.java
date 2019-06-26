@@ -29,7 +29,7 @@ import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.TaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 import org.teapotech.taskforce.entity.TaskforceExecution.Status;
-import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -63,7 +63,7 @@ public class TaskforceExecutionService {
 	BlockExecutorFactory factory;
 
 	@Autowired
-	BlockEventDispatcher blockEvtDispatcher;
+	EventDispatcher blockEvtDispatcher;
 
 	@Autowired
 	WorkspaceEventDispatcher workspaceEventDispatcher;

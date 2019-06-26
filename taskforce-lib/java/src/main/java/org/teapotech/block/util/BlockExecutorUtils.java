@@ -21,10 +21,12 @@ public class BlockExecutorUtils {
 	public static Object execute(Block block, BlockExecutionContext context)
 			throws InvalidBlockException, BlockExecutionException, InvalidBlockExecutorException,
 			BlockExecutorNotFoundException {
-		Object result = context.getBlockExecutorFactory().createBlockExecutor(block).execute(context);
+		Object result = context.getBlockExecutorFactory().createBlockExecutor(context.getWorkspaceId(), block)
+				.execute(context);
 		Next next = block.getNext();
 		while (next != null) {
-			result = context.getBlockExecutorFactory().createBlockExecutor(next.getBlock()).execute(context);
+			result = context.getBlockExecutorFactory().createBlockExecutor(context.getWorkspaceId(), next.getBlock())
+					.execute(context);
 			if ("BREAK".equals(result)) {
 				break;
 			} else if ("CONTINUE".equals(result)) {
@@ -38,6 +40,6 @@ public class BlockExecutorUtils {
 	public static Object execute(BlockValue bValue, BlockExecutionContext context)
 			throws InvalidBlockException, BlockExecutionException, InvalidBlockExecutorException,
 			BlockExecutorNotFoundException {
-		return context.getBlockExecutorFactory().createBlockExecutor(bValue).execute(context);
+		return context.getBlockExecutorFactory().createBlockExecutor(context.getWorkspaceId(), bValue).execute(context);
 	}
 }

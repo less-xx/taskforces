@@ -46,7 +46,7 @@ public class WorkspaceExecutor {
 
 	public void execute() {
 
-		context.getWorkspaceEventDispatcher()
+		context.getEventDispatcher()
 				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Running));
 
 		List<Variable> variables = workspace.getVariables();
@@ -71,7 +71,7 @@ public class WorkspaceExecutor {
 	}
 
 	public void executeAndWait() throws InterruptedException {
-		context.getWorkspaceEventDispatcher()
+		context.getEventDispatcher()
 				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Running));
 
 		List<Variable> variables = workspace.getVariables();
@@ -97,7 +97,7 @@ public class WorkspaceExecutor {
 	}
 
 	public void stop() {
-		context.getWorkspaceEventDispatcher()
+		context.getEventDispatcher()
 				.dispatchWorkspaceExecutionEvent(
 						new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopping));
 		this.context.setStopped(true);
@@ -151,7 +151,7 @@ public class WorkspaceExecutor {
 				}
 			}
 			LOG.info("All block execution threads are stopped.");
-			context.getWorkspaceEventDispatcher()
+			context.getEventDispatcher()
 					.dispatchWorkspaceExecutionEvent(
 							new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopped));
 			if (!context.isStopped()) {

@@ -17,8 +17,9 @@ import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.executor.docker.DockerBlockExecutor;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.block.support.BlockEventListenerSupport;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
-import org.teapotech.block.support.RabbitMQEventSupport;
+import org.teapotech.taskforce.event.BlockEventListenerFactory;
 
 import com.spotify.docker.client.DockerClient;
 
@@ -33,15 +34,18 @@ public class BlockExecutorFactory {
 	private final Map<String, Class<? extends BlockExecutor>> blockExecutors = new HashMap<>();
 	private final DependencyRepository dependencyRepo;
 	private final BlockRegistryManager blockRegistryManager;
+	private final BlockEventListenerFactory blockEventListenerFactory;
 
 	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager) {
-		return build(blockRegistryManager, null);
+		return build(blockRegistryManager, null, null);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static BlockExecutorFactory build(BlockRegistryManager blockRegistryManager,
-			DependencyRepository dependencyRepo) {
-		BlockExecutorFactory fac = new BlockExecutorFactory(blockRegistryManager, dependencyRepo);
+			DependencyRepository dependencyRepo,
+			BlockEventListenerFactory blockEventListenerFactory) {
+		BlockExecutorFactory fac = new BlockExecutorFactory(blockRegistryManager, dependencyRepo,
+				blockEventListenerFactory);
 
 		for (BlockRegistry br : fac.blockRegistryManager.getBlockRegistries()) {
 			try {
@@ -57,15 +61,17 @@ public class BlockExecutorFactory {
 	}
 
 	private BlockExecutorFactory(BlockRegistryManager blockRegistryManager) {
-		this(blockRegistryManager, null);
+		this(blockRegistryManager, null, null);
 	}
 
-	private BlockExecutorFactory(BlockRegistryManager blockRegistryManager, DependencyRepository dependencyRepo) {
+	private BlockExecutorFactory(BlockRegistryManager blockRegistryManager, DependencyRepository dependencyRepo,
+			BlockEventListenerFactory blockEventListenerFactory) {
 		this.blockRegistryManager = blockRegistryManager;
 		this.dependencyRepo = dependencyRepo;
+		this.blockEventListenerFactory = blockEventListenerFactory;
 	}
 
-	public BlockExecutor createBlockExecutor(Block block)
+	public BlockExecutor createBlockExecutor(String workspaceId, Block block)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		Class<? extends BlockExecutor> c = blockExecutors.get(block.getType());
 		if (c == null) {
@@ -83,7 +89,15 @@ public class BlockExecutorFactory {
 				be = cons.newInstance(block);
 			}
 
-			assignExecutorCapabilities(c, be);
+			if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
+				((CustomResourcePathLoaderSupport) be)
+						.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
+			}
+
+			if (ClassUtils.isAssignable(c, BlockEventListenerSupport.class)) {
+				((BlockEventListenerSupport) be)
+						.setBlockEventListener(blockEventListenerFactory.createBlockEventListener(workspaceId, block));
+			}
 
 			return be;
 
@@ -92,7 +106,7 @@ public class BlockExecutorFactory {
 		}
 	}
 
-	public BlockExecutor createBlockExecutor(BlockValue blockValue)
+	public BlockExecutor createBlockExecutor(String workspaceId, BlockValue blockValue)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		String blockType = null;
 		if (blockValue.getBlock() != null) {
@@ -130,25 +144,15 @@ public class BlockExecutorFactory {
 				}
 			}
 
-			assignExecutorCapabilities(c, be);
+			if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
+				((CustomResourcePathLoaderSupport) be)
+						.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
+			}
 
 			return be;
 
 		} catch (Exception e) {
 			throw new InvalidBlockExecutorException(e.getMessage(), e);
-		}
-	}
-
-	private void assignExecutorCapabilities(Class<?> c, BlockExecutor be) {
-
-		if (ClassUtils.isAssignable(c, CustomResourcePathLoaderSupport.class)) {
-			((CustomResourcePathLoaderSupport) be)
-					.setCustomResourcePathLoader(this.blockRegistryManager.getCustomResourcePathLoader());
-		}
-
-		if (ClassUtils.isAssignable(c, RabbitMQEventSupport.class)) {
-			((RabbitMQEventSupport) be).setRabbitAdmin(this.dependencyRepo.getRabbitAdmin());
-			((RabbitMQEventSupport) be).setEventExchange(this.dependencyRepo.getEventExchange());
 		}
 	}
 

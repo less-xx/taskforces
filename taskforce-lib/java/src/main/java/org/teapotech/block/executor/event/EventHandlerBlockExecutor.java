@@ -4,29 +4,23 @@
 package org.teapotech.block.executor.event;
 
 import org.springframework.amqp.AmqpException;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.teapotech.block.event.BlockEvent;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Block.Next;
 import org.teapotech.block.model.BlockValue;
-import org.teapotech.block.support.RabbitMQEventSupport;
+import org.teapotech.block.support.BlockEventListenerSupport;
 import org.teapotech.block.util.BlockExecutorUtils;
+import org.teapotech.taskforce.event.BlockEventListener;
 
 /**
  * @author jiangl
  *
  */
-public class EventHandlerBlockExecutor extends AbstractBlockExecutor implements RabbitMQEventSupport {
+public class EventHandlerBlockExecutor extends AbstractBlockExecutor implements BlockEventListenerSupport {
 
-	private RabbitAdmin rabbitAdmin;
-	private TopicExchange eventExchange;
+	private BlockEventListener blockEventListener;
 
 	public EventHandlerBlockExecutor(Block block) {
 		super(block);
@@ -37,35 +31,18 @@ public class EventHandlerBlockExecutor extends AbstractBlockExecutor implements 
 	}
 
 	@Override
-	public void setRabbitAdmin(RabbitAdmin rabbitAdmin) {
-		this.rabbitAdmin = rabbitAdmin;
-	}
-
-	@Override
-	public void setEventExchange(TopicExchange eventExchange) {
-		this.eventExchange = eventExchange;
+	public void setBlockEventListener(BlockEventListener listener) {
+		this.blockEventListener = listener;
 	}
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
-		String workspaceId = context.getWorkspaceId();
-		String blockType = this.block.getType();
-		String blockId = this.block.getId();
-		// TODO
-		String queueName = "workspace." + workspaceId + "." + blockType + "." + blockId;
-		Queue eventQueue = new Queue(queueName);
-		rabbitAdmin.declareQueue(eventQueue);
-		String routingKey = queueName;
-		// TODO routingkey is not correct.
-		Binding binding = BindingBuilder.bind(eventQueue).to(eventExchange).with(routingKey);
-		rabbitAdmin.declareBinding(binding);
-		LOG.info("Event binding: {}", binding);
 
-		RabbitTemplate rabbitTemplate = rabbitAdmin.getRabbitTemplate();
+		blockEventListener.initialize();
 
 		try {
 			while (!context.isStopped()) {
-				BlockEvent evt = (BlockEvent) rabbitTemplate.receiveAndConvert(queueName, 5000L);
+				BlockEvent evt = blockEventListener.receive();
 				if (evt == null) {
 					continue;
 				}
@@ -78,8 +55,8 @@ public class EventHandlerBlockExecutor extends AbstractBlockExecutor implements 
 			}
 		} catch (AmqpException ie) {
 			LOG.error(ie.getMessage());
-			rabbitAdmin.deleteQueue(queueName);
 		}
+		blockEventListener.destroy();
 		return null;
 	}
 

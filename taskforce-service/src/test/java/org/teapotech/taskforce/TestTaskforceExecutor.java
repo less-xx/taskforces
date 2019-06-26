@@ -23,7 +23,7 @@ import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
-import org.teapotech.taskforce.event.BlockEventDispatcher;
+import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
@@ -51,7 +51,7 @@ public class TestTaskforceExecutor {
 	BlockExecutorFactory factory;
 
 	@Autowired
-	BlockEventDispatcher blockEvtDispatcher;
+	EventDispatcher blockEvtDispatcher;
 
 	@Autowired
 	TaskforceExecutionService taskforceExecService;

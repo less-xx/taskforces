@@ -16,17 +16,21 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.teapotech.taskforce.event.BlockEventDispatcher;
-import org.teapotech.taskforce.event.BlockEventRabbitMQDispatcher;
-import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
-import org.teapotech.taskforce.event.WorkspaceEventRabbitMQDispatcher;
+import org.teapotech.taskforce.annotation.ConditionalOnPropertyNotEmpty;
+import org.teapotech.taskforce.event.BlockEventListenerFactory;
+import org.teapotech.taskforce.event.EventDispatcher;
+import org.teapotech.taskforce.event.RabbitMQBlockEventListenerFactory;
+import org.teapotech.taskforce.event.RabbitMQEventDispatcher;
 
 @Configuration
-public class WorkspaceEventRabbitMQAutoConfig {
+@ConditionalOnClass(ConnectionFactory.class)
+@ConditionalOnPropertyNotEmpty("taskforce.event.rabbitmq.exchange")
+public class RabbitMQEventAutoConfig {
 
-	private static Logger LOG = LoggerFactory.getLogger(WorkspaceEventRabbitMQAutoConfig.class);
+	private static Logger LOG = LoggerFactory.getLogger(RabbitMQEventAutoConfig.class);
 
 	@Value("${taskforce.event.rabbitmq.exchange}")
 	String taskforceEventExchangeName;
@@ -84,20 +88,20 @@ public class WorkspaceEventRabbitMQAutoConfig {
 	}
 
 	@Bean
-	BlockEventDispatcher blockEventDispatcher(final ConnectionFactory connectionFactory,
+	EventDispatcher blockEventDispatcher(final ConnectionFactory connectionFactory,
 			Jackson2JsonMessageConverter converter) {
-		return new BlockEventRabbitMQDispatcher(rabbitTemplate(connectionFactory, converter));
-	}
-
-	@Bean
-	WorkspaceEventDispatcher workspaceEventDispatcher(final ConnectionFactory connectionFactory,
-			Jackson2JsonMessageConverter converter) {
-		return new WorkspaceEventRabbitMQDispatcher(rabbitTemplate(connectionFactory, converter));
+		return new RabbitMQEventDispatcher(rabbitTemplate(connectionFactory, converter));
 	}
 
 	@Bean
 	Queue workspaceExecutionEventQueue() {
-		return new Queue(WorkspaceEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT);
+		return new Queue(RabbitMQEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT);
+	}
+
+	@Bean
+	BlockEventListenerFactory blockEventListenerFactory(RabbitAdmin rabbitAdmin, TopicExchange eventExchange) {
+		RabbitMQBlockEventListenerFactory factory = new RabbitMQBlockEventListenerFactory(rabbitAdmin, eventExchange);
+		return factory;
 	}
 
 }

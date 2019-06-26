@@ -25,8 +25,7 @@ import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
-import org.teapotech.taskforce.event.BlockEventDispatcher;
-import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
+import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.DiskFileStorageProvider;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.InMemoryKeyValueStorageProvider;
@@ -45,10 +44,7 @@ public class TestWorkspaceRunner {
 	private static FileStorageProvider fileStorageProvider = new DiskFileStorageProvider("/tmp/taskforce/test");
 
 	@Mock
-	BlockEventDispatcher blockEventDispatcher;
-
-	@Mock
-	WorkspaceEventDispatcher workspaceEventDispatcher;
+	EventDispatcher blockEventDispatcher;
 
 	@BeforeAll
 	static void init() throws Exception {
