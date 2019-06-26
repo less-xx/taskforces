@@ -1,8 +1,12 @@
 package org.teapotech.taskforce.event;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.teapotech.block.event.BlockEvent;
 
 public class SimpleBlockEventListener implements BlockEventListener {
+
+	private static Logger LOG = LoggerFactory.getLogger(SimpleBlockEventListener.class);
 
 	private BlockEvent event;
 	private String id;
@@ -47,6 +51,7 @@ public class SimpleBlockEventListener implements BlockEventListener {
 				}
 			}
 			_evt = this.event;
+			LOG.info("Received event {}", _evt);
 			this.event = null;
 		}
 		return _evt;

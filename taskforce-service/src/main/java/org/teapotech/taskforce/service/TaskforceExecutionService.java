@@ -30,7 +30,7 @@ import org.teapotech.taskforce.entity.TaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 import org.teapotech.taskforce.entity.TaskforceExecution.Status;
 import org.teapotech.taskforce.event.EventDispatcher;
-import org.teapotech.taskforce.event.WorkspaceEventDispatcher;
+import org.teapotech.taskforce.event.RabbitMQEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.repo.TaskforceExecutionRepo;
@@ -64,9 +64,6 @@ public class TaskforceExecutionService {
 
 	@Autowired
 	EventDispatcher blockEvtDispatcher;
-
-	@Autowired
-	WorkspaceEventDispatcher workspaceEventDispatcher;
 
 	@Autowired
 	TaskforceExecutionRepo tfExecRepo;
@@ -117,8 +114,8 @@ public class TaskforceExecutionService {
 	}
 
 	public BlockExecutionContext createWorkspaceExecutionContext(String taskforceId) {
-		return new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider, blockEvtDispatcher, workspaceEventDispatcher);
+		return new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider, fileStorageProvider,
+				blockEvtDispatcher);
 	}
 
 	public void executeWorkspace(Workspace workspace, BlockExecutionContext context) {
@@ -151,7 +148,7 @@ public class TaskforceExecutionService {
 		LOG.info("Received event: {}", event);
 	}
 
-	@RabbitListener(queues = WorkspaceEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT)
+	@RabbitListener(queues = RabbitMQEventDispatcher.QUEUE_WORKSPACE_EXECUTION_EVENT)
 	public void handleWorkspaceExecutionEvent(final WorkspaceExecutionEvent event) {
 		LOG.info("Workspace event. ID: {}, Status: {}", event.getWorkspaceId(), event.getStatus());
 

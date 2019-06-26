@@ -12,10 +12,16 @@ import org.teapotech.block.event.WorkspaceExecutionEvent;
  */
 public class SimpleEventDispatcher implements EventDispatcher {
 
+	private final SimpleEventExchange eventExchange;
+
+	public SimpleEventDispatcher(SimpleEventExchange eventExchange) {
+		this.eventExchange = eventExchange;
+	}
+
 	@Override
 	public void dispatchBlockEvent(BlockEvent event) {
-		// TODO Auto-generated method stub
-
+		String routingKey = "workspace." + event.getWorkspaceId() + ".block." + event.getBlockId();
+		eventExchange.dispatch(routingKey, event);
 	}
 
 	@Override

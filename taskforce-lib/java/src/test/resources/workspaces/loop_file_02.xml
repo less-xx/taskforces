@@ -1,0 +1,36 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+	<variables>
+		<variable id="VcQ!^3d,Iq_Pa65tB{?." type="">file</variable>
+	</variables>
+	<block id="_M?mR_a5IZ8HOFlTp5Rf" type="loop_file" x="330" y="30">
+		<field name="file">file</field>
+		<value name="filePath">
+			<block id="ZsA[lNKudG)(pxyrd{p*" type="file_path">
+				<field name="customFilePathId">id0</field>
+				<value name="include">
+					<shadow id="a;wjd8;qaS;-9S2EUF_3" type="text">
+						<field name="TEXT">.*</field>
+					</shadow>
+				</value>
+			</block>
+		</value>
+		<statement name="actions">
+			<block id="LxR?Ma2UhGK_8o1{6H9J" type="text_print">
+				<value name="TEXT">
+					<block id="8GXe5.uD07F9iz`*1{Wu" type="variables_get">
+						<field id="VcQ!^3d,Iq_Pa65tB{?." name="VAR" variabletype="">file</field>
+					</block>
+				</value>
+				<next>
+					<block id="|yX@fh_AHxtbzd}/9-^?" type="text_print">
+						<value name="TEXT">
+							<block id="1(%d|%7-e~i@n%5JoPlm" type="text">
+								<field name="TEXT">ok</field>
+							</block>
+						</value>
+					</block>
+				</next>
+			</block>
+		</statement>
+	</block>
+</xml>
