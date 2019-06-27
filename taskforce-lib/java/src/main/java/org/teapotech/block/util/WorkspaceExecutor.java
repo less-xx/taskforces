@@ -70,32 +70,6 @@ public class WorkspaceExecutor {
 		monitoringThread.start();
 	}
 
-	public void executeAndWait() throws InterruptedException {
-		context.getEventDispatcher()
-				.dispatchWorkspaceExecutionEvent(new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Running));
-
-		List<Variable> variables = workspace.getVariables();
-		if (variables != null) {
-			variables.stream().forEach(v -> {
-				context.setVariable(v.getValue(), "");
-				LOG.debug("Added variable: {}", v.getValue());
-			});
-		}
-
-		List<Block> startBlocks = workspace.getBlocks();
-		blockExecutionThreads = new BlockExecutionThread[startBlocks.size()];
-
-		for (int i = 0; i < blockExecutionThreads.length; i++) {
-			BlockExecutionThread bt = new BlockExecutionThread(startBlocks.get(i), this.threadGroup);
-			blockExecutionThreads[i] = bt;
-			bt.start();
-			bt.join();
-		}
-
-		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + context.getWorkspaceId());
-		monitoringThread.start();
-	}
-
 	public void stop() {
 		context.getEventDispatcher()
 				.dispatchWorkspaceExecutionEvent(
@@ -144,7 +118,7 @@ public class WorkspaceExecutor {
 					break;
 				}
 				try {
-					Thread.sleep(2000L);
+					Thread.sleep(1000L);
 				} catch (InterruptedException e) {
 					LOG.warn("Block monitoring thread is interrupted.");
 					break;
@@ -157,7 +131,6 @@ public class WorkspaceExecutor {
 			if (!context.isStopped()) {
 				context.setStopped(true);
 			}
-			threadGroup.destroy();
 			context.destroy();
 		}
 	}

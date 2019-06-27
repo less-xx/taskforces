@@ -8,7 +8,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.NamedBlockEvent;
 
 public class RabbitMQBlockEventListener implements BlockEventListener {
 
@@ -34,24 +34,21 @@ public class RabbitMQBlockEventListener implements BlockEventListener {
 		return id;
 	}
 
-	public void setRoutingKey(String routingKey) {
-		this.routingKey = routingKey;
-	}
-
 	@Override
 	public String getRoutingKey() {
 		return this.routingKey;
 	}
 
 	@Override
-	public BlockEvent receive() {
+	public NamedBlockEvent receive(int timeoutSeconds) throws InterruptedException {
 		RabbitTemplate rabbitTemplate = rabbitAdmin.getRabbitTemplate();
-		BlockEvent evt = (BlockEvent) rabbitTemplate.receiveAndConvert(this.id, 5000L);
+		NamedBlockEvent evt = (NamedBlockEvent) rabbitTemplate.receiveAndConvert(this.id, timeoutSeconds * 1000L);
 		return evt;
 	}
 
 	@Override
-	public void initialize() {
+	public void initialize(String routingKey) {
+		this.routingKey = routingKey;
 		Queue eventQueue = new Queue(this.id);
 		rabbitAdmin.declareQueue(eventQueue);
 		this.binding = BindingBuilder.bind(eventQueue).to(eventExchange).with(routingKey);

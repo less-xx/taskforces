@@ -15,22 +15,34 @@
 			</block>
 		</value>
 		<statement name="actions">
-			<block id="LxR?Ma2UhGK_8o1{6H9J" type="text_print">
-				<value name="TEXT">
-					<block id="8GXe5.uD07F9iz`*1{Wu" type="variables_get">
-						<field id="VcQ!^3d,Iq_Pa65tB{?." name="VAR" variabletype="">file</field>
-					</block>
+			<block id="GcB!ckpE8Wj(qDnC|nv@" type="dispatch_event">
+				<value name="eventName">
+					<shadow id="ahs)t|si=!KQ9us=ku~R" type="text">
+						<field name="TEXT">event1</field>
+					</shadow>
 				</value>
 				<next>
-					<block id="|yX@fh_AHxtbzd}/9-^?" type="text_print">
+					<block id="LxR?Ma2UhGK_8o1{6H9J" type="text_print">
 						<value name="TEXT">
-							<block id="1(%d|%7-e~i@n%5JoPlm" type="text">
-								<field name="TEXT">ok</field>
+							<block id="8GXe5.uD07F9iz`*1{Wu" type="variables_get">
+								<field id="VcQ!^3d,Iq_Pa65tB{?." name="VAR" variabletype="">file</field>
 							</block>
 						</value>
 					</block>
 				</next>
 			</block>
 		</statement>
+	</block>
+	<block id="xf_6Xxruf_iw(9XY9:+%" type="handle_event" x="90" y="190">
+		<field name="eventName">event1</field>
+		<next>
+			<block id="$hYqqer;aZ)KEsfr.e*d" type="text_print">
+				<value name="TEXT">
+					<block id="99GXe5.uD07F9iz*1{Wu" type="variables_get">
+						<field id="ddQ!^3d,Iq_Pa65tB{?" name="VAR" variabletype="">file</field>
+					</block>
+				</value>
+			</block>
+		</next>
 	</block>
 </xml>

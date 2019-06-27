@@ -19,7 +19,9 @@ import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
+import org.teapotech.taskforce.event.BlockEventListenerFactory;
 import org.teapotech.taskforce.event.EventDispatcher;
+import org.teapotech.taskforce.event.SimpleBlockEventListenerFactory;
 import org.teapotech.taskforce.event.SimpleEventDispatcher;
 import org.teapotech.taskforce.event.SimpleEventExchange;
 import org.teapotech.taskforce.provider.DiskFileStorageProvider;
@@ -39,6 +41,7 @@ public class TestWorkspaceRunner {
 	private static FileStorageProvider fileStorageProvider = new DiskFileStorageProvider("/tmp/taskforce/test");
 	private static SimpleEventExchange eventExchange = new SimpleEventExchange();
 	private static EventDispatcher eventDispatcher = new SimpleEventDispatcher(eventExchange);
+	private static BlockEventListenerFactory blockEventListenerFac = new SimpleBlockEventListenerFactory(eventExchange);
 
 	@BeforeAll
 	static void init() throws Exception {
@@ -69,7 +72,7 @@ public class TestWorkspaceRunner {
 
 		registryManager.setCustomResourcePathLoader(pathLoader);
 		registryManager.loadBlockRegistries();
-		factory = BlockExecutorFactory.build(registryManager);
+		factory = BlockExecutorFactory.build(registryManager, null, blockEventListenerFac);
 	}
 
 	@Test
@@ -117,7 +120,7 @@ public class TestWorkspaceRunner {
 	}
 
 	@Test
-	public void testLoopFile() throws Exception {
+	public void testLoopFile_01() throws Exception {
 
 		FileSystemPath p1 = registryManager.getCustomResourcePathLoader().getFileSystemPathById("id0");
 		File pf1 = new File(p1.getPath());
@@ -131,11 +134,37 @@ public class TestWorkspaceRunner {
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
-			wExecutor.executeAndWait();
-
+			wExecutor.execute();
 		}
 
 		f1.delete();
+	}
+
+	@Test
+	public void testLoopFile_02() throws Exception {
+
+		FileSystemPath p1 = registryManager.getCustomResourcePathLoader().getFileSystemPathById("id0");
+		File pf1 = new File(p1.getPath());
+		File f1 = new File(pf1, "test_file_02.txt");
+		f1.createNewFile();
+
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/loop_file_02.xml");) {
+			Workspace w = BlockXmlUtils.loadWorkspace(in);
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			context.setEventDispatcher(eventDispatcher);
+			context.setKeyValueStorageProvider(kvStorageProvider);
+			context.setFileStorageProvider(fileStorageProvider);
+			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
+			wExecutor.execute();
+
+			Thread.sleep(2000L);
+
+			wExecutor.stop();
+
+		}
+		Thread.sleep(2000L);
+		f1.delete();
+
 	}
 
 }

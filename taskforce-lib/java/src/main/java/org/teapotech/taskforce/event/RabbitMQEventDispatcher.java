@@ -6,7 +6,7 @@ package org.teapotech.taskforce.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 
 /**
@@ -26,7 +26,7 @@ public class RabbitMQEventDispatcher implements EventDispatcher {
 	}
 
 	@Override
-	public void dispatchBlockEvent(BlockEvent event) {
+	public void dispatchBlockEvent(NamedBlockEvent event) {
 		try {
 			String routingKey = "workspace." + event.getWorkspaceId() + ".block."
 					+ event.getBlockId();

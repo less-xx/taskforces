@@ -3,7 +3,7 @@
  */
 package org.teapotech.taskforce.event;
 
-import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 
 /**
@@ -19,8 +19,8 @@ public class SimpleEventDispatcher implements EventDispatcher {
 	}
 
 	@Override
-	public void dispatchBlockEvent(BlockEvent event) {
-		String routingKey = "workspace." + event.getWorkspaceId() + ".block." + event.getBlockId();
+	public void dispatchBlockEvent(NamedBlockEvent event) {
+		String routingKey = "workspace." + event.getWorkspaceId() + "." + event.getEventName();
 		eventExchange.dispatch(routingKey, event);
 	}
 

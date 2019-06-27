@@ -4,15 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
-import org.teapotech.block.executor.event.DispatchEventBlockExecutor;
+import org.teapotech.block.executor.event.HandleEventBlockExecutor;
 
-public class DispatchEventBlock extends CustomBlockDefinition {
+public class HandleEventBlock extends CustomBlockDefinition {
 
-	private final static Logger LOG = LoggerFactory.getLogger(DispatchEventBlock.class);
+	private final static Logger LOG = LoggerFactory.getLogger(HandleEventBlock.class);
 
 	@Override
 	public String getBlockType() {
-		return "dispatch_event";
+		return "handle_event";
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class DispatchEventBlock extends CustomBlockDefinition {
 
 	@Override
 	public Class<? extends BlockExecutor> getExecutorClass() {
-		return DispatchEventBlockExecutor.class;
+		return HandleEventBlockExecutor.class;
 	}
 
 }

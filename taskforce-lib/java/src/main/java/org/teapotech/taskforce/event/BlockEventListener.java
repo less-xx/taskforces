@@ -1,6 +1,6 @@
 package org.teapotech.taskforce.event;
 
-import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.NamedBlockEvent;
 
 public interface BlockEventListener {
 
@@ -8,9 +8,9 @@ public interface BlockEventListener {
 
 	String getRoutingKey();
 
-	BlockEvent receive();
+	NamedBlockEvent receive(int timeoutSeconds) throws InterruptedException;
 
-	void initialize();
+	void initialize(String routingKey);
 
 	void destroy();
 }

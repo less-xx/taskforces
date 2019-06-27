@@ -3,7 +3,7 @@
  */
 package org.teapotech.taskforce.event;
 
-import org.teapotech.block.event.BlockEvent;
+import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 
 /**
@@ -12,7 +12,7 @@ import org.teapotech.block.event.WorkspaceExecutionEvent;
  */
 public interface EventDispatcher {
 
-	void dispatchBlockEvent(BlockEvent event);
+	void dispatchBlockEvent(NamedBlockEvent event);
 
 	void dispatchWorkspaceExecutionEvent(WorkspaceExecutionEvent event);
 }

@@ -26,10 +26,6 @@ public class RabbitMQBlockEventListenerFactory implements BlockEventListenerFact
 		RabbitMQBlockEventListener listener = new RabbitMQBlockEventListener(rabbitAdmin, eventExchange);
 		String id = "workspace." + workspaceId + ".queue." + block.getId();
 		listener.setId(id);
-
-		String routingKey = "workspace." + workspaceId + ".block." + block.getId();
-		listener.setRoutingKey(routingKey);
-		// TODO get routing key from block field
 		return listener;
 	}
 

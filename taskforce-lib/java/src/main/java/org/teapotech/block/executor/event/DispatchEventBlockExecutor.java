@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.executor.event;
 
+import org.apache.commons.lang3.StringUtils;
 import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
@@ -28,14 +29,18 @@ public class DispatchEventBlockExecutor extends AbstractBlockExecutor {
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 
-		BlockValue bv = block.getBlockValueByName("messageName", null);
-		String messageName = (String) BlockExecutorUtils.execute(bv, context);
-		if (messageName == null) {
-			throw new BlockExecutionException("Missing message name.");
+		BlockValue bv = block.getBlockValueByName("eventName", null);
+		if (bv == null) {
+			throw new BlockExecutionException("Missing event name block value.");
+		}
+		String eventName = (String) BlockExecutorUtils.execute(bv, context);
+		if (StringUtils.isBlank(eventName)) {
+			throw new BlockExecutionException("Missing event name.");
 		}
 		NamedBlockEvent evt = new NamedBlockEvent(context.getWorkspaceId(), this.block.getType(), this.block.getId());
+		evt.setEventName(eventName);
 		context.getEventDispatcher().dispatchBlockEvent(evt);
-		LOG.info("Dispatched block event. Name: {}", messageName);
+		LOG.info("Dispatched block event. Name: {}", eventName);
 
 		return null;
 	}
