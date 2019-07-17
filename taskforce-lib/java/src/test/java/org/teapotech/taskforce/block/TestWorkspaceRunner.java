@@ -145,8 +145,12 @@ public class TestWorkspaceRunner {
 
 		FileSystemPath p1 = registryManager.getCustomResourcePathLoader().getFileSystemPathById("id0");
 		File pf1 = new File(p1.getPath());
-		File f1 = new File(pf1, "test_file_02.txt");
+		File f1 = new File(pf1, "test_file_01.txt");
 		f1.createNewFile();
+		File f2 = new File(pf1, "test_file_02.txt");
+		f2.createNewFile();
+		File f3 = new File(pf1, "test_file_03.txt");
+		f3.createNewFile();
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/loop_file_02.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
@@ -164,7 +168,8 @@ public class TestWorkspaceRunner {
 		}
 		Thread.sleep(2000L);
 		f1.delete();
-
+		f2.delete();
+		f3.delete();
 	}
 
 }

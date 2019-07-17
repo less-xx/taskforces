@@ -3,6 +3,7 @@
  */
 package org.teapotech.taskforce.service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -113,6 +114,13 @@ public class TaskforceExecutionService {
 		return tfExec;
 	}
 
+	public void stopTaskfroceExecution(TaskforceExecution taskExec) {
+		WorkspaceExecutor wExecutor = workspaceExecutors.get(taskExec.getId());
+		if (wExecutor != null) {
+			wExecutor.stop();
+		}
+	}
+
 	public BlockExecutionContext createWorkspaceExecutionContext(String taskforceId) {
 		return new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider, fileStorageProvider,
 				blockEvtDispatcher);
@@ -142,6 +150,12 @@ public class TaskforceExecutionService {
 	@Transactional
 	public TaskforceExecution getTaskforceExecutionById(String id) {
 		return tfExecRepo.findById(id).orElse(null);
+	}
+
+	@Transactional
+	public TaskforceExecution getAliveTaskforceExecutionByTaskforce(TaskforceEntity taskforce) {
+		return tfExecRepo.findOneByTaskforceAndStatusIn(taskforce,
+				Arrays.asList(Status.Waiting, Status.Running, Status.Stopping));
 	}
 
 	public void handleEvent(BlockEvent event) {

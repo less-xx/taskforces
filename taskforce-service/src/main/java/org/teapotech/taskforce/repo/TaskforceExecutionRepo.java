@@ -3,6 +3,8 @@
  */
 package org.teapotech.taskforce.repo;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,6 +24,8 @@ public interface TaskforceExecutionRepo
 		extends JpaRepository<TaskforceExecution, String>, JpaSpecificationExecutor<TaskforceExecution> {
 
 	Page<TaskforceExecution> findByTaskforce(TaskforceEntity taskforce, Pageable pageable);
+
+	TaskforceExecution findOneByTaskforceAndStatusIn(TaskforceEntity taskforce, List<Status> statusList);
 
 	@Transactional
 	@Modifying

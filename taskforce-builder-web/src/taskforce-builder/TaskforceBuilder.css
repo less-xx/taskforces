@@ -7,3 +7,20 @@
 #blocklyDiv {
     height: 100%;
 }
+
+#workspaceContralPanel {
+    height: 50px;
+    width: 200px;
+    position: absolute;
+    z-index: 9999;
+    top: 2px;
+    right: 0px;
+    background-color: rgb(230, 230, 230);
+    opacity: 0.9;
+    padding: 8px;
+}
+
+.controlButton {
+    margin: 0px 10px 0px 10px;
+    cursor: pointer;
+}

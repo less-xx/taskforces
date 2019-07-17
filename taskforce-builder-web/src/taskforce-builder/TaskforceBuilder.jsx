@@ -5,7 +5,7 @@ import './TaskforceBuilder.css';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
-import CategoryStyles from "./CategoryStyles";
+import { MdPlayArrow, MdStop } from 'react-icons/md';
 
 class TaskforceBuilder extends Component {
 
@@ -145,7 +145,10 @@ class TaskforceBuilder extends Component {
                     }
                 }} />
                 <div id="blocklyDiv">
-
+                </div>
+                <div id="workspaceContralPanel">
+                    <MdPlayArrow size='2em' onClick={this.runWorkspace} className='controlButton'/>
+                    <MdStop size='2em' className='controlButton'/>
                 </div>
             </div>
         );
@@ -194,6 +197,10 @@ class TaskforceBuilder extends Component {
         } else {
             this.toSaveList[0] = xmlStr;
         }
+    }
+
+    runWorkspace() {
+        console.log("run");
     }
 }
 

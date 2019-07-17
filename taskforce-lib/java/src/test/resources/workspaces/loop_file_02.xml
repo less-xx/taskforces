@@ -1,31 +1,31 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
 	<variables>
-		<variable id="VcQ!^3d,Iq_Pa65tB{?." type="">file</variable>
+		<variable type="" id="uLh0su8}VH2D[$R=bab;">file</variable>
 	</variables>
-	<block id="_M?mR_a5IZ8HOFlTp5Rf" type="loop_file" x="330" y="30">
+	<block type="loop_file" id="eB#3n!K;IAo?_1x@c[tG" x="190" y="30">
 		<field name="file">file</field>
 		<value name="filePath">
-			<block id="ZsA[lNKudG)(pxyrd{p*" type="file_path">
+			<block type="file_path" id=".vP=DCGAVv1}Mg,g;pGd">
 				<field name="customFilePathId">id0</field>
 				<value name="include">
-					<shadow id="a;wjd8;qaS;-9S2EUF_3" type="text">
+					<shadow type="text" id="0%j%jNq`j$)_zrp#o?s3">
 						<field name="TEXT">.*</field>
 					</shadow>
 				</value>
 			</block>
 		</value>
 		<statement name="actions">
-			<block id="GcB!ckpE8Wj(qDnC|nv@" type="dispatch_event">
+			<block type="dispatch_event" id="2!InXNj.(}K41Q0L58TZ">
 				<value name="eventName">
-					<shadow id="ahs)t|si=!KQ9us=ku~R" type="text">
+					<shadow type="text" id="N)_a{,U,:Q)$6D39qW_[">
 						<field name="TEXT">event1</field>
 					</shadow>
 				</value>
 				<next>
-					<block id="LxR?Ma2UhGK_8o1{6H9J" type="text_print">
+					<block type="text_print" id="i=|bKza,,K*TPrbVv0Q@">
 						<value name="TEXT">
-							<block id="8GXe5.uD07F9iz`*1{Wu" type="variables_get">
-								<field id="VcQ!^3d,Iq_Pa65tB{?." name="VAR" variabletype="">file</field>
+							<block type="variables_get" id="@y(Wj{D|_UPJRbVHFTe3">
+								<field name="VAR" id="uLh0su8}VH2D[$R=bab;" variabletype="">file</field>
 							</block>
 						</value>
 					</block>
@@ -33,13 +33,17 @@
 			</block>
 		</statement>
 	</block>
-	<block id="xf_6Xxruf_iw(9XY9:+%" type="handle_event" x="90" y="190">
-		<field name="eventName">event1</field>
+	<block type="handle_event" id="6#T2[;:Sa@6rH},Ff(3!" x="190" y="250">
+		<value name="eventName">
+			<block type="text" id="|;f=st6IC45+{TN+s-S-">
+				<field name="TEXT">event1</field>
+			</block>
+		</value>
 		<next>
-			<block id="$hYqqer;aZ)KEsfr.e*d" type="text_print">
+			<block type="text_print" id="#z62r,mUftxuHKP1UT^e">
 				<value name="TEXT">
-					<block id="99GXe5.uD07F9iz*1{Wu" type="variables_get">
-						<field id="ddQ!^3d,Iq_Pa65tB{?" name="VAR" variabletype="">file</field>
+					<block type="text" id="8[r`+Ifawopp](c8HrDJ">
+						<field name="TEXT">Hello</field>
 					</block>
 				</value>
 			</block>

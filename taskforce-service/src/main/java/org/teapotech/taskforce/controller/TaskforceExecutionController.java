@@ -22,6 +22,7 @@ import org.teapotech.taskforce.service.TaskforceDataStoreService;
 import org.teapotech.taskforce.service.TaskforceExecutionService;
 import org.teapotech.taskforce.web.RestResponse;
 import org.teapotech.taskforce.web.TaskforceExecutionRequest;
+import org.teapotech.taskforce.web.TaskforceExecutionRequest.Action;
 
 /**
  * @author jiangl
@@ -47,9 +48,22 @@ public class TaskforceExecutionController extends LogonUserController {
 			throw new TaskforceDataStoreException("Cannot find taskfoce by id [" + taskforce + "].");
 		}
 
-		TaskforceExecution te = tfExecutionService.executeWorkspace(taskforce);
+		if (request.getAction() == Action.start) {
+			TaskforceExecution te = tfExecutionService.getAliveTaskforceExecutionByTaskforce(taskforce);
+			if (te != null) {
+				return RestResponse.ok(te);
+			}
+			te = tfExecutionService.executeWorkspace(taskforce);
+			return RestResponse.ok(te);
+		} else {
+			TaskforceExecution te = tfExecutionService.getAliveTaskforceExecutionByTaskforce(taskforce);
+			if (te == null) {
+				throw new TaskforceExecutionException("No alive execution for taskforce " + taskforce.getId());
+			}
+			tfExecutionService.stopTaskfroceExecution(te);
+			return RestResponse.ok(te);
+		}
 
-		return RestResponse.ok(te);
 	}
 
 	@GetMapping("/taskforce-executions/{id}")

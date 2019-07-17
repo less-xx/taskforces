@@ -8,6 +8,7 @@
 			"check": "String"
 		}
 	],
+	"inputsInline": true,
 	"nextStatement": null,
 	"colour": 230,
 	"tooltip": "",
