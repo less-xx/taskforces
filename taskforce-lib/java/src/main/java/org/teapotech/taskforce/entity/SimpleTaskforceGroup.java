@@ -1,21 +1,25 @@
-package org.teapotech.taskforce.web;
+package org.teapotech.taskforce.entity;
 
-import org.teapotech.taskforce.entity.TaskforceGroup;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.annotations.Immutable;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity
+@Table(name = "tf_group")
+@Immutable
 public class SimpleTaskforceGroup {
 
+	@Id
+	@Column(name = "id")
 	private String id;
+
+	@Column(name = "name")
 	private String name;
 
 	public SimpleTaskforceGroup() {
-	}
-
-	public SimpleTaskforceGroup(TaskforceGroup group) {
-		this.id = group.getId();
-		this.name = group.getName();
 	}
 
 	public String getId() {

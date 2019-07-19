@@ -147,8 +147,8 @@ class TaskforceBuilder extends Component {
                 <div id="blocklyDiv">
                 </div>
                 <div id="workspaceContralPanel">
-                    <MdPlayArrow size='2em' onClick={this.runWorkspace} className='controlButton'/>
-                    <MdStop size='2em' className='controlButton'/>
+                    <MdPlayArrow size='2em' onClick={this.runWorkspace} className='controlButton active'/>
+                    <MdStop size='2em' className='controlButton disabled' />
                 </div>
             </div>
         );

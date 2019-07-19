@@ -1,37 +1,50 @@
 /**
  * 
  */
-package org.teapotech.taskforce.web;
+package org.teapotech.taskforce.entity;
 
 import java.util.Date;
 
-import org.teapotech.taskforce.entity.TaskforceEntity;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.hibernate.annotations.Immutable;
 
 /**
  * @author jiangl
  *
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Entity
+@Table(name = "tf_entity")
+@Immutable
 public class SimpleTaskforceEntity {
+
+	@Id
+	@Column(name = "id")
 	private String id;
+
+	@Column(name = "name")
 	private String name;
+
+	@Column(name = "description")
 	private String description;
+
+	@Column(name = "last_updated")
 	private Date lastUpdatedTime;
+
+	@Column(name = "updated_by")
 	private String updatedBy;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "group_id")
 	private SimpleTaskforceGroup group;
 
 	public SimpleTaskforceEntity() {
-	}
-
-	public SimpleTaskforceEntity(TaskforceEntity taskforce) {
-		this.id = taskforce.getId();
-		this.name = taskforce.getName();
-		this.description = taskforce.getDescription();
-		this.lastUpdatedTime = taskforce.getLastUpdatedTime();
-		this.updatedBy = taskforce.getUpdatedBy();
-		this.group = new SimpleTaskforceGroup(taskforce.getGroup());
 	}
 
 	public String getId() {

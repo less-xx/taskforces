@@ -81,4 +81,10 @@ public class TaskforceGroup {
 		this.updatedBy = updatedBy;
 	}
 
+	public SimpleTaskforceGroup toSimple() {
+		SimpleTaskforceGroup g = new SimpleTaskforceGroup();
+		g.setId(this.id);
+		g.setName(this.name);
+		return g;
+	}
 }

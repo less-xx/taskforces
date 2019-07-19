@@ -1,15 +1,12 @@
 package org.teapotech.taskforce.controller;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
+import org.teapotech.taskforce.entity.SimpleTaskforceGroup;
 import org.teapotech.taskforce.entity.TaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceGroup;
 import org.teapotech.taskforce.exception.TaskforceDataStoreException;
 import org.teapotech.taskforce.service.TaskforceDataStoreService;
 import org.teapotech.taskforce.web.RestResponse;
-import org.teapotech.taskforce.web.SimpleTaskforceEntity;
-import org.teapotech.taskforce.web.SimpleTaskforceGroup;
 import org.teapotech.taskforce.web.TaskforceGroupRequest;
 import org.teapotech.taskforce.web.TaskforceRequest;
 
@@ -60,7 +57,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		group.setLastUpdatedTime(new Date());
 		group.setUpdatedBy(getLogonUser(httpRequest).getName());
 		group = tfDataStoreService.saveTaskforceGroup(group);
-		return new RestResponse<SimpleTaskforceGroup>(new SimpleTaskforceGroup(group));
+		return new RestResponse<SimpleTaskforceGroup>(group.toSimple());
 
 	}
 
@@ -85,7 +82,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		group.setLastUpdatedTime(new Date());
 		group.setUpdatedBy(getLogonUser(httpRequest).getName());
 		group = tfDataStoreService.saveTaskforceGroup(group);
-		return new RestResponse<SimpleTaskforceGroup>(new SimpleTaskforceGroup(group));
+		return new RestResponse<SimpleTaskforceGroup>(group.toSimple());
 
 	}
 
@@ -99,11 +96,8 @@ public class TaskforceDataStoreController extends LogonUserController {
 			HttpServletRequest httpRequest)
 			throws TaskforceDataStoreException {
 
-		Page<TaskforceEntity> result = tfDataStoreService.query(id, name, groupId, pageable);
-		List<SimpleTaskforceEntity> entities = result.getContent().stream().map(t -> new SimpleTaskforceEntity(t))
-				.collect(Collectors.toList());
-		return new RestResponse<Page<SimpleTaskforceEntity>>(
-				new PageImpl<>(entities, pageable, result.getTotalElements()));
+		Page<SimpleTaskforceEntity> result = tfDataStoreService.query(id, name, groupId, pageable);
+		return new RestResponse<Page<SimpleTaskforceEntity>>(result);
 	}
 
 	@PostMapping("/taskforces")
@@ -128,7 +122,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		t.setLastUpdatedTime(new Date());
 		t.setUpdatedBy(getLogonUser(httpRequest).getName());
 		t = tfDataStoreService.saveTaskforceEntity(t);
-		return new RestResponse<SimpleTaskforceEntity>(new SimpleTaskforceEntity(t));
+		return new RestResponse<SimpleTaskforceEntity>(t.toSimple());
 	}
 
 	@PutMapping("/taskforces/{id}")
@@ -172,7 +166,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		existedTaskfoce.setLastUpdatedTime(new Date());
 		existedTaskfoce.setUpdatedBy(getLogonUser(httpRequest).getName());
 		existedTaskfoce = tfDataStoreService.saveTaskforceEntity(existedTaskfoce);
-		return new RestResponse<SimpleTaskforceEntity>(new SimpleTaskforceEntity(existedTaskfoce));
+		return new RestResponse<SimpleTaskforceEntity>(existedTaskfoce.toSimple());
 	}
 
 	@GetMapping("/taskforces/{id}")

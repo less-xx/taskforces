@@ -4,6 +4,7 @@
 package org.teapotech.taskforce.service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,6 +17,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teapotech.block.BlockExecutorFactory;
@@ -34,6 +37,7 @@ import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.event.RabbitMQEventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.repo.TaskforceExecutionQuerySpecs;
 import org.teapotech.taskforce.repo.TaskforceExecutionRepo;
 
 /**
@@ -104,7 +108,7 @@ public class TaskforceExecutionService {
 
 		TaskforceExecution tfExec = new TaskforceExecution();
 		tfExec.setCreatedTime(new Date());
-		tfExec.setTaskforce(taskforce);
+		tfExec.setTaskforce(taskforce.toSimple());
 		tfExec = saveTaskforceExecution(tfExec);
 
 		Workspace w = getWorkspace(taskforce);
@@ -156,6 +160,14 @@ public class TaskforceExecutionService {
 	public TaskforceExecution getAliveTaskforceExecutionByTaskforce(TaskforceEntity taskforce) {
 		return tfExecRepo.findOneByTaskforceAndStatusIn(taskforce,
 				Arrays.asList(Status.Waiting, Status.Running, Status.Stopping));
+	}
+
+	@Transactional
+	public Page<TaskforceExecution> query(String id, String taskforceId, Collection<Status> status,
+			Date createdTime, String createdBy, Pageable pageable) {
+		return tfExecRepo.findAll(
+				TaskforceExecutionQuerySpecs.queryTaskforceExecution(id, taskforceId, status, createdTime, createdBy),
+				pageable);
 	}
 
 	public void handleEvent(BlockEvent event) {

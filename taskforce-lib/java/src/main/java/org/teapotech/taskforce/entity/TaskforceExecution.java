@@ -35,7 +35,7 @@ public class TaskforceExecution {
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "taskforce_id")
-	private TaskforceEntity taskforce;
+	private SimpleTaskforceEntity taskforce;
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -64,11 +64,11 @@ public class TaskforceExecution {
 		this.id = id;
 	}
 
-	public TaskforceEntity getTaskforce() {
+	public SimpleTaskforceEntity getTaskforce() {
 		return taskforce;
 	}
 
-	public void setTaskforce(TaskforceEntity taskforce) {
+	public void setTaskforce(SimpleTaskforceEntity taskforce) {
 		this.taskforce = taskforce;
 	}
 

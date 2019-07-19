@@ -129,6 +129,48 @@ const DataService = {
             .catch(error => handleError(error));
     },
 
+    runTaskforce: function (taskforceId, handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_POST_EXECUTE_TASKFORCE;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "taskforceId": taskforceId,
+                "action": "start"
+            })
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
+    queryTaskforceExecution: function (id, taskforceId, status, createdTime, createdBy,
+        handleTaskforceExecution, handleError) {
+        var url = process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION;
+        var params = {
+            "id": id,
+            "taskforce_id": taskforceId,
+            "status": status,
+            "created_time": createdTime,
+            "created_by": createdBy
+        }
+        url.search = new URLSearchParams(params)
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (handleTaskforceExecution) {
+                    handleTaskforceExecution(json.body);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
     fetchFileSystemPaths: function (handlePaths, handleError) {
         var url = process.env.REACT_APP_URL_GET_CUSTOM_FILE_PATHS;
         fetch(url)

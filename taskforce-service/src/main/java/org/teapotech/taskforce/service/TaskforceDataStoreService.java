@@ -3,6 +3,8 @@
  */
 package org.teapotech.taskforce.service;
 
+import static org.teapotech.taskforce.repo.TaskforceEntityQuerySpecs.querySimpleTaskforceEntity;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,9 +16,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
+import org.teapotech.taskforce.entity.SimpleTaskforceGroup;
 import org.teapotech.taskforce.entity.TaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceGroup;
-import org.teapotech.taskforce.repo.TaskforceEntityQuerySpecs;
+import org.teapotech.taskforce.repo.SimpleTaskforceEntityRepo;
+import org.teapotech.taskforce.repo.SimpleTaskforceGroupRepo;
 import org.teapotech.taskforce.repo.TaskforceEntityRepo;
 import org.teapotech.taskforce.repo.TaskforceGroupRepo;
 
@@ -34,7 +39,13 @@ public class TaskforceDataStoreService {
 	TaskforceEntityRepo taskforceEntityRepo;
 
 	@Autowired
+	SimpleTaskforceEntityRepo simpleTaskforceEntityRepo;
+
+	@Autowired
 	TaskforceGroupRepo groupRepo;
+
+	@Autowired
+	SimpleTaskforceGroupRepo simpleGroupRepo;
 
 	@PostConstruct
 	void init() {
@@ -74,13 +85,13 @@ public class TaskforceDataStoreService {
 		return taskforceEntityRepo.findByNameAndGroup(name, group);
 	}
 
-	public Page<TaskforceEntity> findByGroup(TaskforceGroup group, Pageable pageable) {
-		return taskforceEntityRepo.findByGroupOrderByName(group, pageable);
+	public Page<SimpleTaskforceEntity> findByGroup(SimpleTaskforceGroup group, Pageable pageable) {
+		return simpleTaskforceEntityRepo.findByGroupOrderByName(group, pageable);
 	}
 
-	public Page<TaskforceEntity> query(String id, String name, String groupId, Pageable pageable) {
-		TaskforceGroup group = findTaskforceGroupById(groupId);
-		return taskforceEntityRepo.findAll(TaskforceEntityQuerySpecs.queryTaskforceEntity(id, name, group), pageable);
+	public Page<SimpleTaskforceEntity> query(String id, String name, String groupId, Pageable pageable) {
+		SimpleTaskforceGroup group = findSimpleTaskforceGroupById(groupId);
+		return simpleTaskforceEntityRepo.findAll(querySimpleTaskforceEntity(id, name, group), pageable);
 	}
 
 	public Page<TaskforceGroup> getAllGroups(Pageable pageable) {
@@ -101,8 +112,19 @@ public class TaskforceDataStoreService {
 		return groupRepo.findById(id).orElse(null);
 	}
 
+	public SimpleTaskforceGroup findSimpleTaskforceGroupById(String id) {
+		if (StringUtils.isBlank(id)) {
+			return null;
+		}
+		return simpleGroupRepo.findById(id).orElse(null);
+	}
+
 	public TaskforceGroup findTaskforceGroupByName(String name) {
 		return groupRepo.findByName(name);
+	}
+
+	public SimpleTaskforceGroup findSimpleTaskforceGroupByName(String name) {
+		return simpleGroupRepo.findByName(name);
 	}
 
 }

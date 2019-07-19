@@ -22,5 +22,13 @@
 
 .controlButton {
     margin: 0px 10px 0px 10px;
+}
+
+.controlButton.active {
     cursor: pointer;
+}
+
+.controlButton.disabled {
+    opacity: 0.3;
+    pointer-events: none;
 }

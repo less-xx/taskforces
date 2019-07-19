@@ -119,4 +119,15 @@ public class TaskforceEntity {
 	public void setVersion(int version) {
 		this.version = version;
 	}
+
+	public SimpleTaskforceEntity toSimple() {
+		SimpleTaskforceEntity ste = new SimpleTaskforceEntity();
+		ste.setDescription(this.description);
+		ste.setGroup(this.group.toSimple());
+		ste.setId(this.id);
+		ste.setLastUpdatedTime(this.lastUpdatedTime);
+		ste.setName(this.name);
+		ste.setUpdatedBy(this.updatedBy);
+		return ste;
+	}
 }
