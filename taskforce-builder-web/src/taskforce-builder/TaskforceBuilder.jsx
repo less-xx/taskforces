@@ -1,11 +1,34 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
-import './TaskforceBuilder.css';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
-import { MdPlayArrow, MdStop } from 'react-icons/md';
+import { MdPlayArrow, MdStop, MdDehaze } from 'react-icons/md';
+import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import styled from 'styled-components';
+
+import './TaskforceBuilder.css';
+
+const Main = styled.main`
+    position: relative;
+    height: 100%;
+    padding: 0px;
+    margin-right: ${props => (props.expanded ? 240 : 48)}px;
+    border: 1px dotted gray;
+`;
+
+const NavHeader = styled.div`
+    display: ${props => (props.expanded ? 'block' : 'none')};
+    white-space: nowrap;
+    background-color: lightgray;
+    height:48px;
+`;
+
+const NavTitle = styled.div`
+    font-size: 1.2em;
+    padding: 12px 0 0 5px;
+`;
 
 class TaskforceBuilder extends Component {
 
@@ -17,9 +40,15 @@ class TaskforceBuilder extends Component {
             isLoaded: false,
             workspace: null,
             taskforce: null,
-            taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId")
+            taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId"),
+            isRunning: false,
+            showControlPanel: false
         };
         this.toSaveList = [];
+    }
+
+    componentDidUpdate() {
+        this.resizeWorkspace();
     }
 
     componentDidMount() {
@@ -28,9 +57,6 @@ class TaskforceBuilder extends Component {
             result.forEach(r => {
                 this.registerBlock(r.type, r.definition);
             });
-
-
-
         }, (error) => {
             console.log(error);
         });
@@ -43,7 +69,7 @@ class TaskforceBuilder extends Component {
                 var workspace = Blockly.inject('blocklyDiv', {
                     media: mediaUrl,
                     toolbox: result,
-                    grid:{
+                    grid: {
                         spacing: 20,
                         length: 3,
                         colour: '#ccc',
@@ -59,7 +85,6 @@ class TaskforceBuilder extends Component {
                     },
                     trashcan: true
                 });
-                
 
                 workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                 this.setState({
@@ -104,6 +129,18 @@ class TaskforceBuilder extends Component {
                     notify.show("Failed to save worksace ...", "error", 8000);
                 })
         }.bind(this), 10000);
+
+        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting"], null, null, (response) => {
+            console.log(response);
+            if (response.totalElements === 0) {
+                this.setState({ isRunning: false });
+            } else {
+                this.setState({ isRunning: true });
+            }
+        },
+            (error) => {
+                console.log(error);
+            });
     }
 
     registerBlock(blockType, blockDef) {
@@ -135,22 +172,52 @@ class TaskforceBuilder extends Component {
 
     render() {
         return (
-            <div id="blocklyContainer">
-                <Notifications options={{
-                    zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
-                        info: {
-                            color: "#999999",
-                            backgroundColor: '#FDFDFD'
-                        }
-                    }
-                }} />
-                <div id="blocklyDiv">
-                </div>
-                <div id="workspaceContralPanel">
-                    <MdPlayArrow size='2em' onClick={this.runWorkspace} className='controlButton active'/>
-                    <MdStop size='2em' className='controlButton disabled' />
-                </div>
+            <div id="container">
+                <SideNav onToggle={this.expandCollapseControlPanel.bind(this)} expanded={this.state.showControlPanel}>
+                    <Toggle />
+                    <NavHeader expanded={this.state.showControlPanel} id="controlPanelHeader">
+                        <NavTitle>Control Panel</NavTitle>
+                    </NavHeader>
+                    <Nav >
+                        <NavItem eventKey="controlPanel">
+                            <NavIcon>
+                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                            </NavIcon>
+                            <NavText title="Run/Stop">
+                                <div id="controlPanel">
+                                    <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
+                                    <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
+                                </div>
+                            </NavText>
+                        </NavItem>
+                        <NavItem eventKey="devices">
+                            <NavIcon>
+                                <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                            </NavIcon>
+                            <NavText style={{ paddingRight: 32 }} title="Devices">
+                                Devices
+                            </NavText>
+                        </NavItem>
+                    </Nav>
+                </SideNav>
+
+                <Main expanded={this.state.showControlPanel} id="workspaceContainer">
+                    <div>
+                        <Notifications options={{
+                            zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
+                                info: {
+                                    color: "#999999",
+                                    backgroundColor: '#FDFDFD'
+                                }
+                            }
+                        }} />
+                        <div id="blocklyDiv">
+                        </div>
+                        <div id="maskPanel" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
+                    </div>
+                </Main>
             </div>
+
         );
     }
 
@@ -159,7 +226,7 @@ class TaskforceBuilder extends Component {
         if (this.state.workspace == null) {
             return;
         }
-        var blocklyArea = document.getElementById('blocklyContainer');
+        var blocklyArea = document.getElementById('workspaceContainer');
         var blocklyDiv = document.getElementById('blocklyDiv');
         // Compute the absolute coordinates and dimensions of blocklyArea.
         var element = blocklyArea;
@@ -200,7 +267,16 @@ class TaskforceBuilder extends Component {
     }
 
     runWorkspace() {
-        console.log("run");
+        console.log("run workspace " + this.state.taskforceId);
+        this.setState({ isRunning: true });
+    }
+    stopWorkspace() {
+        console.log("stop workspace " + this.state.taskforceId);
+        this.setState({ isRunning: false });
+    }
+
+    expandCollapseControlPanel(expanded) {
+        this.setState({ showControlPanel: expanded });
     }
 }
 

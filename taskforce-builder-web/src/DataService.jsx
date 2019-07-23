@@ -150,16 +150,47 @@ const DataService = {
             .catch(error => handleError(error));
     },
 
+    stopTaskforce: function (taskforceId, handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_POST_EXECUTE_TASKFORCE;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "taskforceId": taskforceId,
+                "action": "stop"
+            })
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
     queryTaskforceExecution: function (id, taskforceId, status, createdTime, createdBy,
         handleTaskforceExecution, handleError) {
-        var url = process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION;
-        var params = {
-            "id": id,
-            "taskforce_id": taskforceId,
-            "status": status,
-            "created_time": createdTime,
-            "created_by": createdBy
+        var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION);
+        var params = {};
+        if (id != null) {
+            params['id'] = id;
         }
+        if (taskforceId != null) {
+            params['taskforce_id'] = taskforceId;
+        }
+        if (status != null) {
+            params['status'] = status;
+        }
+        if (createdTime != null) {
+            params['created_time'] = createdTime;
+        }
+        if (createdBy != null) {
+            params['created_by'] = createdBy;
+        }
+
         url.search = new URLSearchParams(params)
         fetch(url)
             .then(res => res.json())

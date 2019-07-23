@@ -1,10 +1,11 @@
+import 'bootstrap/dist/css/bootstrap.css';
+import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
 
 
 ReactDOM.render((
