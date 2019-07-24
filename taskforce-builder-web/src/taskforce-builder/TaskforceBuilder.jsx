@@ -4,7 +4,7 @@ import Blockly from 'node-blockly/browser';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
-import { MdPlayArrow, MdStop, MdDehaze } from 'react-icons/md';
+import { MdPlayArrow, MdStop, MdDirectionsRun } from 'react-icons/md';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import styled from 'styled-components';
 
@@ -27,7 +27,7 @@ const NavHeader = styled.div`
 
 const NavTitle = styled.div`
     font-size: 1.2em;
-    padding: 12px 0 0 5px;
+    padding: 13px 0 0 6px;
 `;
 
 class TaskforceBuilder extends Component {
@@ -136,6 +136,7 @@ class TaskforceBuilder extends Component {
                 this.setState({ isRunning: false });
             } else {
                 this.setState({ isRunning: true });
+                this.expandCollapseControlPanel(true);
             }
         },
             (error) => {
@@ -181,12 +182,14 @@ class TaskforceBuilder extends Component {
                     <Nav >
                         <NavItem eventKey="controlPanel">
                             <NavIcon>
-                                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
+                                <MdDirectionsRun size="2em" />
                             </NavIcon>
                             <NavText title="Run/Stop">
                                 <div id="controlPanel">
                                     <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
+                                    Run
                                     <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
+                                    Stop
                                 </div>
                             </NavText>
                         </NavItem>
@@ -194,8 +197,8 @@ class TaskforceBuilder extends Component {
                             <NavIcon>
                                 <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
                             </NavIcon>
-                            <NavText style={{ paddingRight: 32 }} title="Devices">
-                                Devices
+                            <NavText style={{ paddingLeft: 10 }} title="Logs">
+                                Logs
                             </NavText>
                         </NavItem>
                     </Nav>
@@ -213,7 +216,7 @@ class TaskforceBuilder extends Component {
                         }} />
                         <div id="blocklyDiv">
                         </div>
-                        <div id="maskPanel" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
+                        <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
                     </div>
                 </Main>
             </div>
@@ -267,12 +270,31 @@ class TaskforceBuilder extends Component {
     }
 
     runWorkspace() {
-        console.log("run workspace " + this.state.taskforceId);
+        //console.log("run workspace " + this.state.taskforceId);
         this.setState({ isRunning: true });
+        DataService.runTaskforce(this.state.taskforceId,
+            (taskforceExec) => {
+                console.log(taskforceExec);
+                if (taskforceExec.status == "Running" || taskforceExec.status == "Waiting") {
+                    this.setState({ isRunning: true });
+                }
+            }, (error) => {
+                console.log(error);
+            });
     }
     stopWorkspace() {
         console.log("stop workspace " + this.state.taskforceId);
-        this.setState({ isRunning: false });
+        DataService.stopTaskforce(this.state.taskforceId,
+            (taskforceExec) => {
+                console.log(taskforceExec);
+                if (taskforceExec.status == "Running" || taskforceExec.status == "Waiting") {
+                    this.setState({ isRunning: true });
+                }else{
+                    this.setState({ isRunning: false });
+                }
+            }, (error) => {
+                console.log(error);
+            });
     }
 
     expandCollapseControlPanel(expanded) {

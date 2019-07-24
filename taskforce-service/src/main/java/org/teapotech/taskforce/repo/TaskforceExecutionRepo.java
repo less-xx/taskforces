@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
-import org.teapotech.taskforce.entity.TaskforceEntity;
+import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 import org.teapotech.taskforce.entity.TaskforceExecution.Status;
 
@@ -23,9 +23,9 @@ import org.teapotech.taskforce.entity.TaskforceExecution.Status;
 public interface TaskforceExecutionRepo
 		extends JpaRepository<TaskforceExecution, String>, JpaSpecificationExecutor<TaskforceExecution> {
 
-	Page<TaskforceExecution> findByTaskforce(TaskforceEntity taskforce, Pageable pageable);
+	Page<TaskforceExecution> findByTaskforce(SimpleTaskforceEntity taskforce, Pageable pageable);
 
-	TaskforceExecution findOneByTaskforceAndStatusIn(TaskforceEntity taskforce, List<Status> statusList);
+	TaskforceExecution findOneByTaskforceAndStatusIn(SimpleTaskforceEntity taskforce, List<Status> statusList);
 
 	@Transactional
 	@Modifying

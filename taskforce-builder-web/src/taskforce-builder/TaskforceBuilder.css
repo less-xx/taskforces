@@ -12,8 +12,8 @@
     right: 0;
     left: auto;
     z-index: 1006;
-    min-width:48px;
-    background:transparent;
+    min-width: 48px;
+    background: transparent;
     transition: min-width 0.15s;
 }
 
@@ -24,14 +24,13 @@
     height: 48px;
     padding: 0;
     margin: 0;
-    background-color: lightgray;
-    background-image: none;
+    background: lightgray;
     border: 0;
     border-radius: 0;
     cursor: pointer;
 }
 
-.sidenav---sidenav-nav---3tvij > .sidenav---sidenav-navitem---uwIJ- > .sidenav---navitem---9uL5T .sidenav---navicon---3gCRo {
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo {
     display: block;
     float: left;
     width: 48px;
@@ -39,9 +38,50 @@
     margin-right: -6px;
     background-repeat: no-repeat;
     background-position: center center;
-    background-color: white;
     line-height: 50px;
     text-align: center;
+    color: gray;
+}
+
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>* {
+    color: gray;
+}
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>*,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f {
+    color: #333;
+}
+
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T::after,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after {
+    background: lightgray;
+    opacity: 0.15;
+}
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after {
+    background: #000;
+    opacity: 0.9;
+}
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u.sidenav---expanded---1KdUL>.sidenav---navitem---9uL5T::after,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u.sidenav---expanded---1KdUL>.sidenav---navitem---9uL5T::after {
+    background: #000;
+    opacity: 0.9;
+}
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f {
+    color: #333;
+}
+
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>*,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>*,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>*,
+.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>* {
     color: #333;
 }
 
@@ -60,7 +100,7 @@
     padding: 8px;
 }
 
-#maskPanel {
+#maskOverlay {
     height: 100%;
     width: 100%;
     position: absolute;
@@ -68,7 +108,7 @@
     top: 0px;
     right: 0px;
     background-color: rgb(230, 230, 230);
-    opacity: 0.2;
+    opacity: 0.3;
 }
 
 .controlButton {

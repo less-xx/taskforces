@@ -158,7 +158,7 @@ public class TaskforceExecutionService {
 
 	@Transactional
 	public TaskforceExecution getAliveTaskforceExecutionByTaskforce(TaskforceEntity taskforce) {
-		return tfExecRepo.findOneByTaskforceAndStatusIn(taskforce,
+		return tfExecRepo.findOneByTaskforceAndStatusIn(taskforce.toSimple(),
 				Arrays.asList(Status.Waiting, Status.Running, Status.Stopping));
 	}
 
