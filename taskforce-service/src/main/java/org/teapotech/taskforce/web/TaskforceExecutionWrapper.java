@@ -7,7 +7,7 @@ import org.teapotech.taskforce.entity.TaskforceExecution;
 
 public class TaskforceExecutionWrapper {
 
-	private String id;
+	private Long id;
 	private SimpleTaskforceEntity taskforce;
 	private String status;
 	private Date createdTime;
@@ -23,11 +23,11 @@ public class TaskforceExecutionWrapper {
 		this.lastUpdatedTime = taskExec.getLastUpdatedTime();
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

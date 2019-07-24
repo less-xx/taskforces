@@ -9,14 +9,15 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
@@ -28,10 +29,10 @@ public class TaskforceExecution {
 	}
 
 	@Id
-	@GeneratedValue(generator = "tf-exec-id-generator")
-	@GenericGenerator(name = "tf-exec-id-generator", strategy = "org.hibernate.id.UUIDGenerator")
-	@Column(name = "id")
-	private String id;
+	@SequenceGenerator(name = "task_execution_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "task_execution_id")
+	@Column(name = "id", columnDefinition = "serial")
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "taskforce_id")
@@ -56,11 +57,11 @@ public class TaskforceExecution {
 	@Column(name = "version", columnDefinition = "int DEFAULT 0", nullable = false)
 	private int version;
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

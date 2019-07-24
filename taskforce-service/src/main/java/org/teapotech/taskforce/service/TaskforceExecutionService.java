@@ -112,14 +112,16 @@ public class TaskforceExecutionService {
 		tfExec = saveTaskforceExecution(tfExec);
 
 		Workspace w = getWorkspace(taskforce);
-		BlockExecutionContext context = createWorkspaceExecutionContext(tfExec.getId());
+		String workspaceId = taskforce.getId() + "#" + tfExec.getId();
+		BlockExecutionContext context = createWorkspaceExecutionContext(workspaceId);
 
 		executeWorkspace(w, context);
 		return tfExec;
 	}
 
 	public void stopTaskfroceExecution(TaskforceExecution taskExec) {
-		WorkspaceExecutor wExecutor = workspaceExecutors.get(taskExec.getId());
+		String workspaceId = taskExec.getTaskforce().getId() + "#" + taskExec.getId();
+		WorkspaceExecutor wExecutor = workspaceExecutors.get(workspaceId);
 		if (wExecutor != null) {
 			wExecutor.stop();
 		}
@@ -147,12 +149,12 @@ public class TaskforceExecutionService {
 	}
 
 	@Transactional
-	private int updateTaskforceExecutionStatus(String taskforceId, Status status) {
-		return tfExecRepo.updateTaskforceExecution(taskforceId, status);
+	private int updateTaskforceExecutionStatus(Long taskforceExecId, Status status) {
+		return tfExecRepo.updateTaskforceExecution(taskforceExecId, status);
 	}
 
 	@Transactional
-	public TaskforceExecution getTaskforceExecutionById(String id) {
+	public TaskforceExecution getTaskforceExecutionById(Long id) {
 		return tfExecRepo.findById(id).orElse(null);
 	}
 
@@ -179,7 +181,7 @@ public class TaskforceExecutionService {
 		LOG.info("Workspace event. ID: {}, Status: {}", event.getWorkspaceId(), event.getStatus());
 
 		try {
-			updateTaskforceExecutionStatus(event.getWorkspaceId(), event.getStatus());
+			updateTaskforceExecutionStatus(event.getTaskforceExecutionId(), event.getStatus());
 
 			if (event.getStatus() == Status.Stopped) {
 				workspaceExecutors.remove(event.getWorkspaceId());

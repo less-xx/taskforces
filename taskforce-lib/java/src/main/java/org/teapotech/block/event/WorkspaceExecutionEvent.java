@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class WorkspaceExecutionEvent {
+	private String workspaceId;
+	private Status status;
+	private String taskforceId;
+	private Long taskforceExecutionId;
 
 	public WorkspaceExecutionEvent() {
 	}
@@ -13,10 +17,9 @@ public class WorkspaceExecutionEvent {
 	public WorkspaceExecutionEvent(String workspaceId, Status status) {
 		this.workspaceId = workspaceId;
 		this.status = status;
-	}
+		parseWorkspaceId(workspaceId);
 
-	private String workspaceId;
-	private Status status;
+	}
 
 	public String getWorkspaceId() {
 		return workspaceId;
@@ -24,6 +27,7 @@ public class WorkspaceExecutionEvent {
 
 	protected void setWorkspaceId(String workspaceId) {
 		this.workspaceId = workspaceId;
+		parseWorkspaceId(workspaceId);
 	}
 
 	public Status getStatus() {
@@ -34,4 +38,17 @@ public class WorkspaceExecutionEvent {
 		this.status = status;
 	}
 
+	public Long getTaskforceExecutionId() {
+		return taskforceExecutionId;
+	}
+
+	public String getTaskforceId() {
+		return taskforceId;
+	}
+
+	private void parseWorkspaceId(String workspaceId) {
+		String[] ss = workspaceId.split("#");
+		this.taskforceId = ss[0];
+		this.taskforceExecutionId = new Long(ss[1]);
+	}
 }

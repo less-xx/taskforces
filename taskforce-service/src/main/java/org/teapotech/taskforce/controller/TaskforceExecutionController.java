@@ -75,7 +75,7 @@ public class TaskforceExecutionController extends LogonUserController {
 	}
 
 	@GetMapping("/taskforce-executions/{id}")
-	public RestResponse<TaskforceExecution> queryById(@PathVariable("id") String id) {
+	public RestResponse<TaskforceExecution> queryById(@PathVariable("id") Long id) {
 		TaskforceExecution te = tfExecutionService.getTaskforceExecutionById(id);
 		if (te == null) {
 			throw new EntityNotFoundException("Cannot find taskforce execution by id: " + id);

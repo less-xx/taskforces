@@ -21,7 +21,7 @@ import org.teapotech.taskforce.entity.TaskforceExecution.Status;
  *
  */
 public interface TaskforceExecutionRepo
-		extends JpaRepository<TaskforceExecution, String>, JpaSpecificationExecutor<TaskforceExecution> {
+		extends JpaRepository<TaskforceExecution, Long>, JpaSpecificationExecutor<TaskforceExecution> {
 
 	Page<TaskforceExecution> findByTaskforce(SimpleTaskforceEntity taskforce, Pageable pageable);
 
@@ -30,5 +30,5 @@ public interface TaskforceExecutionRepo
 	@Transactional
 	@Modifying
 	@Query("update TaskforceExecution te set te.status=?2 where te.id=?1")
-	int updateTaskforceExecution(String id, Status status);
+	int updateTaskforceExecution(Long id, Status status);
 }
