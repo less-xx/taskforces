@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConditionalOnProperty(name = "taskforce.execution.driver", havingValue = "docker", matchIfMissing = false)
 @ConfigurationProperties("taskforce.execution.docker")
-public class TaskExecutionDockerDriverProperties {
+public class TaskforceExecutionDockerDriverProperties {
 
 	private String url;
 

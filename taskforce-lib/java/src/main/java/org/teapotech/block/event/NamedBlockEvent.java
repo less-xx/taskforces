@@ -26,4 +26,11 @@ public class NamedBlockEvent extends BlockEvent {
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("{workspaceId: ").append(workspaceId).append(", blockType: ").append(this.blockType)
+				.append(", blockId: ").append(this.blockId).append(", eventName: ").append(eventName)
+				.append("}").toString();
+	}
 }

@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.executor.docker;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
@@ -17,6 +19,12 @@ import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
 
 /**
  * @author jiangl
@@ -31,17 +39,49 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	private final EventDispatcher eventDispatcher;
 	private final ContainerSettings containerSettings = new ContainerSettings();
 	private final ExecutionConfig executionConfig = new ExecutionConfig();
+	private final TaskforceExecutionProperties executionProperties;
 	private boolean stopped;
+	private final Logger logger;
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider,
 			FileStorageProvider fileStorageProvider,
-			EventDispatcher eventDispatcher) {
+			EventDispatcher eventDispatcher,
+			TaskforceExecutionProperties execProperties) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
 		this.kvStorageProvider = kvStorageProvider;
 		this.fileStorageProvider = fileStorageProvider;
 		this.eventDispatcher = eventDispatcher;
+		this.executionProperties = execProperties;
+
+		this.logger = initializeLogger();
+
+		File homeDir = new File(this.executionProperties.getHomeDir() + File.separator + workspaceId);
+		if (!homeDir.exists()) {
+			homeDir.mkdirs();
+			logger.info("Created taskforce execution home dir {}", homeDir);
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Logger initializeLogger() {
+		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		FileAppender appender = new FileAppender<>();
+		appender.setContext(loggerContext);
+		appender.setName(this.workspaceId);
+		appender.setFile(this.executionProperties.getHomeDir() + "/" + this.workspaceId + "/logs/run.log");
+		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+		encoder.setContext(loggerContext);
+		encoder.setPattern(this.executionProperties.getLogPattern());
+		appender.setEncoder(encoder);
+		appender.start();
+
+		// attach the rolling file appender to the logger of your choice
+		Logger logbackLogger = loggerContext.getLogger("Main");
+		logbackLogger.addAppender(appender);
+		logbackLogger.info("Workspace execution logger initialized. workspaceId: {}", this.workspaceId);
+		return logbackLogger;
 	}
 
 	@Override
@@ -92,6 +132,9 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 			throw new BlockExecutionContextException("TaskforceStorageProvider is not configured.");
 		}
 		kvStorageProvider.destroy(workspaceId);
+		FileAppender<?> appender = (FileAppender<?>) this.logger.getAppender(workspaceId);
+		appender.stop();
+		appender.getEncoder().stop();
 	}
 
 	@Override
@@ -126,6 +169,16 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public void setStopped(boolean stopped) {
 		this.stopped = stopped;
+	}
+
+	@Override
+	public TaskforceExecutionProperties getExecutionProperties() {
+		return this.executionProperties;
+	}
+
+	@Override
+	public Logger getLogger() {
+		return this.logger;
 	}
 
 	/**

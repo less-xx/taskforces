@@ -26,6 +26,8 @@ taskforce:
 taskforce.execution:
   driver: docker
   networkName: ${TASKFORCE_NETWORK:}
+  homeDir: ${TASKROCE_EXECUTION_HOME:/tmp/taskforce/execution}
+  logPattern: "%r %thread %level - %msg%n"
   
 taskforce.event.rabbitmq:
   exchange: taskforce.block.event

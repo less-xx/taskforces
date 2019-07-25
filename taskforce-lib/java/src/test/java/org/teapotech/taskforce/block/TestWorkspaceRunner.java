@@ -28,6 +28,7 @@ import org.teapotech.taskforce.provider.DiskFileStorageProvider;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.InMemoryKeyValueStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
 
 /**
  * @author jiangl
@@ -42,6 +43,8 @@ public class TestWorkspaceRunner {
 	private static SimpleEventExchange eventExchange = new SimpleEventExchange();
 	private static EventDispatcher eventDispatcher = new SimpleEventDispatcher(eventExchange);
 	private static BlockEventListenerFactory blockEventListenerFac = new SimpleBlockEventListenerFactory(eventExchange);
+
+	private static String testWorkspaceId = "test-workspace-id#0";
 
 	@BeforeAll
 	static void init() throws Exception {
@@ -79,7 +82,11 @@ public class TestWorkspaceRunner {
 	public void testRunWorkspace_01() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+
+			TaskforceExecutionProperties execProperties = new TaskforceExecutionProperties();
+
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					execProperties);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
 			context.setEventDispatcher(eventDispatcher);
@@ -92,7 +99,9 @@ public class TestWorkspaceRunner {
 	public void testRunWorkspace_02() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			TaskforceExecutionProperties execProperties = new TaskforceExecutionProperties();
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					execProperties);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
 			context.setEventDispatcher(eventDispatcher);
@@ -105,7 +114,9 @@ public class TestWorkspaceRunner {
 	public void testRunWorkspace_04() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_04.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			TaskforceExecutionProperties execProperties = new TaskforceExecutionProperties();
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					execProperties);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
 			context.setEventDispatcher(eventDispatcher);
@@ -129,7 +140,9 @@ public class TestWorkspaceRunner {
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/loop_file_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			TaskforceExecutionProperties execProperties = new TaskforceExecutionProperties();
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					execProperties);
 			context.setEventDispatcher(eventDispatcher);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);
@@ -154,7 +167,9 @@ public class TestWorkspaceRunner {
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/loop_file_02.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			TaskforceExecutionProperties execProperties = new TaskforceExecutionProperties();
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId,
+					factory, execProperties);
 			context.setEventDispatcher(eventDispatcher);
 			context.setKeyValueStorageProvider(kvStorageProvider);
 			context.setFileStorageProvider(fileStorageProvider);

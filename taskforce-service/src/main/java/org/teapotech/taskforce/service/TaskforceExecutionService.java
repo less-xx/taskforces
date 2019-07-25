@@ -39,6 +39,7 @@ import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.repo.TaskforceExecutionQuerySpecs;
 import org.teapotech.taskforce.repo.TaskforceExecutionRepo;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
 
 /**
  * @author jiangl
@@ -72,6 +73,9 @@ public class TaskforceExecutionService {
 
 	@Autowired
 	TaskforceExecutionRepo tfExecRepo;
+
+	@Autowired
+	TaskforceExecutionProperties executionProperties;
 
 	private final ConcurrentHashMap<String, WorkspaceExecutor> workspaceExecutors = new ConcurrentHashMap<>();
 
@@ -129,7 +133,7 @@ public class TaskforceExecutionService {
 
 	public BlockExecutionContext createWorkspaceExecutionContext(String taskforceId) {
 		return new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider, fileStorageProvider,
-				blockEvtDispatcher);
+				blockEvtDispatcher, executionProperties);
 	}
 
 	public void executeWorkspace(Workspace workspace, BlockExecutionContext context) {

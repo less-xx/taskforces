@@ -4,7 +4,6 @@
 package org.teapotech.block.executor;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
@@ -15,8 +14,6 @@ import org.teapotech.block.model.Shadow;
  *
  */
 public abstract class AbstractBlockExecutor implements BlockExecutor {
-
-	protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
 	protected final Block block;
 	protected final Shadow shadow;
@@ -33,6 +30,7 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 
 	@Override
 	public final Object execute(BlockExecutionContext context) throws BlockExecutionException {
+		Logger LOG = context.getLogger();
 		if (context.isStopped()) {
 			LOG.info("Execution is stopped.");
 			return null;

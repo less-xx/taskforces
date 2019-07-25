@@ -4,6 +4,7 @@
 package org.teapotech.block.executor.event;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.amqp.AmqpException;
 import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.exception.BlockExecutionException;
@@ -52,7 +53,7 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 
 		String routingKey = "workspace." + context.getWorkspaceId() + "." + eventName;
 		blockEventListener.initialize(routingKey);
-
+		Logger LOG = context.getLogger();
 		try {
 			while (!context.isStopped()) {
 				NamedBlockEvent evt = null;

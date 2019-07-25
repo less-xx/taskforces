@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.teapotech.block.BlockExecutorFactory;
@@ -23,10 +24,11 @@ import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import com.spotify.docker.client.DockerClient;
 
 @Configuration
+@EnableConfigurationProperties(TaskforceExecutionDockerDriverProperties.class)
 @ConditionalOnProperty(name = "taskforce.execution.driver", havingValue = "docker", matchIfMissing = false)
-public class TaskDockerExecutorAutoConfig {
+public class TaskforceDockerExecutorAutoConfig {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TaskDockerExecutorAutoConfig.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TaskforceDockerExecutorAutoConfig.class);
 
 	@Autowired
 	DockerClient dockerClient;

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.teapotech.block.BlockExecutorFactory;
@@ -23,9 +24,10 @@ import org.teapotech.taskforce.provider.KeyValueStorageProvider;
  */
 @Configuration
 @ConditionalOnPropertyNotEmpty("taskforce.id")
-public class TaskAutoConfig {
+@EnableConfigurationProperties(TaskforceExecutionProperties.class)
+public class TaskforceAutoConfig {
 
-	private final static Logger LOG = LoggerFactory.getLogger(TaskAutoConfig.class);
+	private final static Logger LOG = LoggerFactory.getLogger(TaskforceAutoConfig.class);
 
 	@Value("${taskforce.id}")
 	String taskforceId;
@@ -33,12 +35,15 @@ public class TaskAutoConfig {
 	@Autowired
 	EventDispatcher eventDispatcher;
 
+	@Autowired
+	TaskforceExecutionProperties executionProperties;
+
 	@Bean
 	BlockExecutionContext blockExecutionContext(BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider,
 			FileStorageProvider fileStorageProvider) {
 		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider, eventDispatcher);
+				fileStorageProvider, eventDispatcher, executionProperties);
 		LOG.info("Initialized block execution context. Taskforce ID: {}", taskforceId);
 		return context;
 	}

@@ -6,9 +6,11 @@ package org.teapotech.block.executor;
 import java.io.InputStream;
 import java.util.Collection;
 
+import org.slf4j.Logger;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
 
 /**
  * @author jiangl
@@ -40,4 +42,7 @@ public interface BlockExecutionContext {
 
 	void setStopped(boolean stopped);
 
+	TaskforceExecutionProperties getExecutionProperties();
+
+	Logger getLogger();
 }

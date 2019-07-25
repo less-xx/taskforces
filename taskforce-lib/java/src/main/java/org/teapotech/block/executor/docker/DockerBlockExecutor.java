@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
 import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
@@ -73,6 +74,8 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 		if (td == null) {
 			throw new BlockExecutionException("Cannot find task " + blockType);
 		}
+
+		Logger LOG = context.getLogger();
 		DockerTaskExecutionResult result = executeDockerBlock((DockerBlockExecutionContext) context, td);
 		if (result.getOutputValue() != null) {
 			return result.getOutputValue();
@@ -90,6 +93,7 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 
 		ExecutionConfig execConf = context.getExecutionConfig();
 		executorService = Executors.newFixedThreadPool(execConf.getTaskWorkerNumber());
+		Logger LOG = context.getLogger();
 		LOG.info("Initialized task workers, count={}", execConf.getTaskWorkerNumber());
 		DockerTaskExecutionResult result = new DockerTaskExecutionResult();
 		result.setCreatedTime(new Date());

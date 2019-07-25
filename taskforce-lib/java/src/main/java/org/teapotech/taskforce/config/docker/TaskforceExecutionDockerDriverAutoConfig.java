@@ -17,12 +17,12 @@ import com.spotify.docker.client.messages.RegistryAuth;
 import com.spotify.docker.client.messages.RegistryConfigs;
 
 @Configuration
-@EnableConfigurationProperties(TaskExecutionDockerDriverProperties.class)
+@EnableConfigurationProperties(TaskforceExecutionDockerDriverProperties.class)
 @ConditionalOnProperty(name = "taskforce.execution.driver", havingValue = "docker", matchIfMissing = false)
-public class TaskExecutionDockerDriverAutoConfig {
+public class TaskforceExecutionDockerDriverAutoConfig {
 
 	@Autowired
-	TaskExecutionDockerDriverProperties dockerDriverProps;
+	TaskforceExecutionDockerDriverProperties dockerDriverProps;
 
 	@Bean
 	@ConditionalOnMissingBean

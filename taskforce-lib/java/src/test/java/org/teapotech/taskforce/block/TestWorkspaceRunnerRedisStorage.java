@@ -27,9 +27,15 @@ import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.entity.FileSystemPath;
+import org.teapotech.taskforce.event.BlockEventListenerFactory;
+import org.teapotech.taskforce.event.EventDispatcher;
+import org.teapotech.taskforce.event.SimpleBlockEventListenerFactory;
+import org.teapotech.taskforce.event.SimpleEventDispatcher;
+import org.teapotech.taskforce.event.SimpleEventExchange;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
 import org.teapotech.taskforce.provider.RedisKeyValueStorageProvider;
 import org.teapotech.taskforce.task.TaskExecutionUtil;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
 
 /**
  * @author jiangl
@@ -40,6 +46,11 @@ public class TestWorkspaceRunnerRedisStorage {
 	private static BlockExecutorFactory factory;
 	private static BlockRegistryManager registryManager;
 	private static KeyValueStorageProvider storageProvider;
+	private static SimpleEventExchange eventExchange = new SimpleEventExchange();
+	private static EventDispatcher eventDispatcher = new SimpleEventDispatcher(eventExchange);
+	private static BlockEventListenerFactory blockEventListenerFac = new SimpleBlockEventListenerFactory(eventExchange);
+
+	private static String testWorkspaceId = "test-workspace-id#0";
 
 	@BeforeAll
 	static void init() {
@@ -70,7 +81,7 @@ public class TestWorkspaceRunnerRedisStorage {
 		};
 		registryManager.setCustomResourcePathLoader(pathLoader);
 		registryManager.loadBlockRegistries();
-		factory = BlockExecutorFactory.build(registryManager);
+		factory = BlockExecutorFactory.build(registryManager, null, blockEventListenerFac);
 		String host = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_HOST);
 		String port = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PORT);
 		String password = TaskExecutionUtil.getEnv(TaskExecutionUtil.ENV_REDIS_PASSWORD);
@@ -100,8 +111,10 @@ public class TestWorkspaceRunnerRedisStorage {
 	public void testRunWorkspace_01() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					new TaskforceExecutionProperties());
 			context.setKeyValueStorageProvider(storageProvider);
+			context.setEventDispatcher(eventDispatcher);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
 			wExecutor.execute();
 		}
@@ -111,8 +124,10 @@ public class TestWorkspaceRunnerRedisStorage {
 	public void testRunWorkspace_02() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_02.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					new TaskforceExecutionProperties());
 			context.setKeyValueStorageProvider(storageProvider);
+			context.setEventDispatcher(eventDispatcher);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
 			wExecutor.execute();
 		}
@@ -122,8 +137,10 @@ public class TestWorkspaceRunnerRedisStorage {
 	public void testRunWorkspace_04() throws Exception {
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/workspace_04.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
-			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext("test-workspace-id", factory);
+			DefaultBlockExecutionContext context = new DefaultBlockExecutionContext(testWorkspaceId, factory,
+					new TaskforceExecutionProperties());
 			context.setKeyValueStorageProvider(storageProvider);
+			context.setEventDispatcher(eventDispatcher);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
 			wExecutor.execute();
 

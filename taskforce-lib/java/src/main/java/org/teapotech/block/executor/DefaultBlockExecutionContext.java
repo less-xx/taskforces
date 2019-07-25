@@ -6,12 +6,15 @@ package org.teapotech.block.executor;
 import java.io.InputStream;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.BlockRegistryManager;
 import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
 import org.teapotech.taskforce.provider.KeyValueStorageProvider;
+import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
 
 /**
  * @author jiangl
@@ -19,23 +22,29 @@ import org.teapotech.taskforce.provider.KeyValueStorageProvider;
  */
 public class DefaultBlockExecutionContext implements BlockExecutionContext {
 
+	private static Logger LOG = LoggerFactory.getLogger(DefaultBlockExecutionContext.class);
+
 	private final BlockExecutorFactory blockExecutorFactory;
 	private final String workspaceId;
 	private KeyValueStorageProvider kvStorageProvider;
 	private FileStorageProvider fileStorageProvider;
 	private EventDispatcher eventDispatcher;
 	private boolean stopped;
+	private final TaskforceExecutionProperties executionProperties;
 
-	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory) {
+	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory,
+			TaskforceExecutionProperties executionProperties) {
 		this.blockExecutorFactory = blockExecutorFactory;
 		this.workspaceId = workspaceId;
+		this.executionProperties = executionProperties;
 	}
 
-	public DefaultBlockExecutionContext(String workspaceId) {
+	public DefaultBlockExecutionContext(String workspaceId, TaskforceExecutionProperties executionProperties) {
 		BlockRegistryManager brm = new BlockRegistryManager();
 		brm.loadBlockRegistries();
 		this.blockExecutorFactory = BlockExecutorFactory.build(brm);
 		this.workspaceId = workspaceId;
+		this.executionProperties = executionProperties;
 	}
 
 	public void setKeyValueStorageProvider(KeyValueStorageProvider storageProvider) {
@@ -104,6 +113,16 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public EventDispatcher getEventDispatcher() {
 		return this.eventDispatcher;
+	}
+
+	@Override
+	public TaskforceExecutionProperties getExecutionProperties() {
+		return this.executionProperties;
+	}
+
+	@Override
+	public Logger getLogger() {
+		return LOG;
 	}
 
 }

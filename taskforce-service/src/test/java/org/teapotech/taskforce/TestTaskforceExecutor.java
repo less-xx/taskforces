@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootContextLoader;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,8 +20,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.executor.BlockExecutionContext;
-import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
+import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.util.BlockXmlUtils;
 import org.teapotech.block.util.WorkspaceExecutor;
 import org.teapotech.taskforce.event.EventDispatcher;
@@ -55,41 +56,34 @@ public class TestTaskforceExecutor {
 	@Autowired
 	TaskforceExecutionService taskforceExecService;
 
+	@Value("${taskforce.execution.homeDir}")
+	String taskforceExecutionHomeDir;
+
+	@Autowired
+	CustomResourcePathLoader custResourcePathLoader;
+
 	@BeforeAll
 	static void init() {
-		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id");
+		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id#0");
 	}
 
 	@Test
 	public void testRunResourceFetcher() throws Exception {
-		String taskforceId = "test-taskforce-id";
-		DockerBlockExecutionContext context = new DockerBlockExecutionContext(taskforceId, factory, kvStorageProvider,
-				fileStorageProvider, blockEvtDispatcher);
+		String taskforceId = "test-taskforce-id#0";
+
+		BlockExecutionContext context = taskforceExecService.createWorkspaceExecutionContext(taskforceId);
 
 		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/resource_fetcher_01.xml");) {
 			Workspace w = BlockXmlUtils.loadWorkspace(in);
 			WorkspaceExecutor wExecutor = new WorkspaceExecutor(w, context);
 			wExecutor.execute();
 
-			Object result = context.getVariable("result");
-			assertNotNull(result);
-			System.out.println(result);
-		}
-	}
-
-	@Test
-	public void testRunCopyFileTask() throws Exception {
-		String taskforceId = "test-copy-file";
-		try (InputStream in = getClass().getClassLoader().getResourceAsStream("workspaces/copy_file_01.xml");) {
-			Workspace w = BlockXmlUtils.loadWorkspace(in);
-
-			BlockExecutionContext context = taskforceExecService.createWorkspaceExecutionContext(taskforceId);
-			taskforceExecService.executeWorkspace(w, context);
-
+			Thread.sleep(5000L);
 			Object result = context.getVariable("result");
 			assertNotNull(result);
 			System.out.println(result);
 
 		}
 	}
+
 }
