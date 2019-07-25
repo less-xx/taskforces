@@ -130,7 +130,7 @@ class TaskforceBuilder extends Component {
                 })
         }.bind(this), 10000);
 
-        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting"], null, null, (response) => {
+        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting","Stopping"], null, null, (response) => {
             console.log(response);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });

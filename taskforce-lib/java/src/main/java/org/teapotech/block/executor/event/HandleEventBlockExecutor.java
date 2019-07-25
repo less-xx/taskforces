@@ -50,8 +50,8 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 		if (StringUtils.isBlank(eventName)) {
 			throw new BlockExecutionException("Missing event name");
 		}
-
-		String routingKey = "workspace." + context.getWorkspaceId() + "." + eventName;
+		String evtName = eventName.replace("\\s*", "_");
+		String routingKey = "workspace." + context.getWorkspaceId() + "." + evtName;
 		blockEventListener.initialize(routingKey);
 		Logger LOG = context.getLogger();
 		try {

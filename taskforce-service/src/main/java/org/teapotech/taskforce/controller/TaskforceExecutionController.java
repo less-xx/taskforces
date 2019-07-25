@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -97,6 +98,18 @@ public class TaskforceExecutionController extends LogonUserController {
 				.map(te -> new TaskforceExecutionWrapper(te)).collect(Collectors.toList());
 
 		return RestResponse.ok(new PageImpl<>(list, pageable, results.getTotalElements()));
+	}
+
+	@GetMapping("/taskforce-executions/{id}/logs")
+	public void readTaskforceExecutionLog(@PathVariable("id") Long id,
+			@RequestParam(name = "start", required = false, defaultValue = "0") int start,
+			@RequestParam(name = "lines", required = false, defaultValue = "100") int lineNum,
+			HttpServletResponse response) throws Exception {
+		TaskforceExecution te = tfExecutionService.getTaskforceExecutionById(id);
+		if (te == null) {
+			throw new EntityNotFoundException("Cannot find taskforce execution by id: " + id);
+		}
+		tfExecutionService.readLogFileContent(te, start, lineNum, response.getOutputStream());
 	}
 
 }

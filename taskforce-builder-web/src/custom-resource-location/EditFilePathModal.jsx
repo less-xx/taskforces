@@ -65,7 +65,7 @@ class EditFilePathModal extends Component {
                     <Modal.Body>
                         <Alert show={error} variant="danger">{errorMessage}</Alert>
                         <Form.Group controlId="filePathName">
-                            <Form.Label>Group Name</Form.Label>
+                            <Form.Label>Resource Name</Form.Label>
                             <Form.Control type="text" placeholder="Enter the name" required onChange={this.onChangeName.bind(this)} defaultValue={this.state.name} />
                             <Form.Text className="text-muted">
                                 The name should be unique.

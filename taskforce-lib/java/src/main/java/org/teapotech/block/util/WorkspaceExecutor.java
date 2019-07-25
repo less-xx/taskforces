@@ -34,6 +34,7 @@ public class WorkspaceExecutor {
 		this.workspace = workspace;
 		this.threadGroup = new ThreadGroup("group-" + context.getWorkspaceId());
 		this.threadGroup.setDaemon(true);
+		LOG.info("Created workspace executor. ID: {}", context.getWorkspaceId());
 	}
 
 	public BlockExecutionContext getBlockExecutionContext() {
@@ -66,6 +67,10 @@ public class WorkspaceExecutor {
 			bt.start();
 		}
 
+		startMonitoring();
+	}
+
+	public void startMonitoring() {
 		monitoringThread = new BlockExecutionMonitoringThread("monitoring-" + context.getWorkspaceId());
 		monitoringThread.start();
 	}
@@ -111,6 +116,10 @@ public class WorkspaceExecutor {
 		public void run() {
 			while (true) {
 				boolean running = false;
+				if (blockExecutionThreads == null) {
+					LOG.warn("The workspace executor is not running.");
+					break;
+				}
 				for (BlockExecutionThread t : blockExecutionThreads) {
 					running = running || t.isAlive();
 				}

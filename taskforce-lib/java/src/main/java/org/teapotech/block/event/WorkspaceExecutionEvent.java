@@ -47,7 +47,7 @@ public class WorkspaceExecutionEvent {
 	}
 
 	private void parseWorkspaceId(String workspaceId) {
-		String[] ss = workspaceId.split("#");
+		String[] ss = workspaceId.split("_");
 		this.taskforceId = ss[0];
 		this.taskforceExecutionId = new Long(ss[1]);
 	}

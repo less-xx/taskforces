@@ -28,9 +28,10 @@ public class RabbitMQEventDispatcher implements EventDispatcher {
 	@Override
 	public void dispatchBlockEvent(NamedBlockEvent event) {
 		try {
-			String routingKey = "workspace." + event.getWorkspaceId() + ".block."
-					+ event.getBlockId();
+			String evtName = event.getEventName().replace("\\s*", "_");
+			String routingKey = "workspace." + event.getWorkspaceId() + "." + evtName;
 			eventDispatcher.convertAndSend(routingKey, event);
+			LOG.info("Dispatched named block event, routing key: {}", routingKey);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
@@ -41,6 +42,7 @@ public class RabbitMQEventDispatcher implements EventDispatcher {
 		try {
 			String routingKey = "workspace.execution." + event.getWorkspaceId();
 			eventDispatcher.convertAndSend(routingKey, event);
+			LOG.info("Dispatched workspace execution event, routing key: {}", routingKey);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 		}
