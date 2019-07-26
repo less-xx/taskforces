@@ -8,6 +8,9 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.core.ParameterizedTypeReference;
 import org.teapotech.block.event.NamedBlockEvent;
 
 public class RabbitMQBlockEventListener implements BlockEventListener {
@@ -19,10 +22,14 @@ public class RabbitMQBlockEventListener implements BlockEventListener {
 	private final TopicExchange eventExchange;
 	private String id;
 	private String routingKey;
+	private final static MessageConverter messageConverter = new Jackson2JsonMessageConverter();
+	private final RabbitTemplate rabbitTemplate;
 
 	public RabbitMQBlockEventListener(RabbitAdmin rabbitAdmin, TopicExchange eventExchange) {
 		this.rabbitAdmin = rabbitAdmin;
 		this.eventExchange = eventExchange;
+		this.rabbitTemplate = rabbitAdmin.getRabbitTemplate();
+		this.rabbitTemplate.setMessageConverter(messageConverter);
 	}
 
 	public void setId(String id) {
@@ -41,8 +48,9 @@ public class RabbitMQBlockEventListener implements BlockEventListener {
 
 	@Override
 	public NamedBlockEvent receive(int timeoutSeconds) throws InterruptedException {
-		RabbitTemplate rabbitTemplate = rabbitAdmin.getRabbitTemplate();
-		NamedBlockEvent evt = (NamedBlockEvent) rabbitTemplate.receiveAndConvert(this.id, timeoutSeconds * 1000L);
+		NamedBlockEvent evt = rabbitTemplate.receiveAndConvert(this.id, timeoutSeconds * 1000L,
+				new ParameterizedTypeReference<NamedBlockEvent>() {
+				});
 		return evt;
 	}
 

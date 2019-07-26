@@ -5,9 +5,9 @@ import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.executor.event.HandleEventBlockExecutor;
 
-public class HandleEventBlock extends CustomBlockDefinition {
+public class ExitBlock extends CustomBlockDefinition {
 
-	public final static String TYPE = "handle_event";
+	public final static String TYPE = "exit";
 
 	@Override
 	public String getBlockType() {
@@ -16,7 +16,7 @@ public class HandleEventBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return Category.EVENT;
+		return Category.START_STOP;
 	}
 
 	@Override

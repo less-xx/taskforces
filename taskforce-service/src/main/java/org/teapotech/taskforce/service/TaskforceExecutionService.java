@@ -286,8 +286,10 @@ public class TaskforceExecutionService {
 
 		try {
 			updateTaskforceExecutionStatus(event.getTaskforceExecutionId(), event.getStatus());
-
-			if (event.getStatus() == Status.Stopped) {
+			if (event.getStatus() == Status.Stopping) {
+				WorkspaceExecutor we = workspaceExecutors.get(event.getWorkspaceId());
+				we.stop();
+			} else if (event.getStatus() == Status.Stopped) {
 				workspaceExecutors.remove(event.getWorkspaceId());
 			}
 		} catch (Exception e) {

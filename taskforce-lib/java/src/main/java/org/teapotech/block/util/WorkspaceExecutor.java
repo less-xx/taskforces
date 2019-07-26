@@ -8,6 +8,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
+import org.teapotech.block.def.event.HandleEventBlock;
+import org.teapotech.block.def.event.StartBlock;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
@@ -26,7 +28,6 @@ public class WorkspaceExecutor {
 	private final BlockExecutionContext context;
 	private final Workspace workspace;
 	private final ThreadGroup threadGroup;
-	private BlockExecutionThread[] blockExecutionThreads;
 	private BlockExecutionMonitoringThread monitoringThread;
 
 	public WorkspaceExecutor(Workspace workspace, BlockExecutionContext context) {
@@ -59,15 +60,26 @@ public class WorkspaceExecutor {
 		}
 
 		List<Block> startBlocks = workspace.getBlocks();
-		blockExecutionThreads = new BlockExecutionThread[startBlocks.size()];
+		// List<BlockExecutionThread> blockExecutionThreads = new ArrayList<>();
 
-		for (int i = 0; i < blockExecutionThreads.length; i++) {
-			BlockExecutionThread bt = new BlockExecutionThread(startBlocks.get(i), this.threadGroup);
-			blockExecutionThreads[i] = bt;
-			bt.start();
+		BlockExecutionThread entryPointThread = null;
+		for (Block block : startBlocks) {
+
+			if (block.getType().equals(StartBlock.TYPE)) {
+				entryPointThread = new BlockExecutionThread(block, this.threadGroup);
+				// blockExecutionThreads.add(entryPointThread);
+			} else if (block.getType().equals(HandleEventBlock.TYPE)) {
+				BlockExecutionThread bt = new BlockExecutionThread(block, this.threadGroup);
+				// blockExecutionThreads.add(bt);
+				bt.start();
+			}
 		}
 
 		startMonitoring();
+
+		if (entryPointThread != null) {
+			entryPointThread.start();
+		}
 	}
 
 	public void startMonitoring() {
@@ -76,9 +88,6 @@ public class WorkspaceExecutor {
 	}
 
 	public void stop() {
-		context.getEventDispatcher()
-				.dispatchWorkspaceExecutionEvent(
-						new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopping));
 		this.context.setStopped(true);
 		this.threadGroup.interrupt();
 	}
@@ -116,11 +125,16 @@ public class WorkspaceExecutor {
 		public void run() {
 			while (true) {
 				boolean running = false;
-				if (blockExecutionThreads == null) {
+				Thread[] blockExecutionThreads = new Thread[threadGroup.activeCount()];
+				threadGroup.enumerate(blockExecutionThreads);
+				if (blockExecutionThreads.length < 1) {
 					LOG.warn("The workspace executor is not running.");
 					break;
 				}
-				for (BlockExecutionThread t : blockExecutionThreads) {
+				for (Thread t : blockExecutionThreads) {
+					if (t.getName().equals(this.getName())) {
+						continue;
+					}
 					running = running || t.isAlive();
 				}
 				if (!running) {

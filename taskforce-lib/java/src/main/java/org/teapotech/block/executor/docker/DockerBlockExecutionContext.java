@@ -70,6 +70,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		FileAppender appender = new FileAppender<>();
 		appender.setContext(loggerContext);
 		appender.setName(this.workspaceId);
+		appender.setImmediateFlush(true);
 		appender.setFile(this.executionProperties.getHomeDir() + "/" + this.workspaceId + "/logs/run.log");
 		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
 		encoder.setContext(loggerContext);
@@ -79,6 +80,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 
 		// attach the rolling file appender to the logger of your choice
 		Logger logbackLogger = loggerContext.getLogger("Main");
+		logbackLogger.setAdditive(false);
 		logbackLogger.addAppender(appender);
 		logbackLogger.info("Workspace execution logger initialized. workspaceId: {}", this.workspaceId);
 		return logbackLogger;

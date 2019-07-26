@@ -1,14 +1,11 @@
 package org.teapotech.block.def.event;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.teapotech.block.def.Category;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.executor.event.DispatchEventBlockExecutor;
 
 public class DispatchEventBlock extends CustomBlockDefinition {
-
-	private final static Logger LOG = LoggerFactory.getLogger(DispatchEventBlock.class);
 
 	@Override
 	public String getBlockType() {
@@ -17,7 +14,7 @@ public class DispatchEventBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return "Events";
+		return Category.EVENT;
 	}
 
 	@Override
