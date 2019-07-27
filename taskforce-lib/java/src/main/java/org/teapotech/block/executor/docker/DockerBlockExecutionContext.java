@@ -71,14 +71,17 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Logger initializeLogger() {
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+		encoder.setContext(loggerContext);
+		encoder.setPattern(this.executionProperties.getLogPattern());
+		encoder.start();
+
 		FileAppender appender = new FileAppender<>();
 		appender.setContext(loggerContext);
 		appender.setName(this.workspaceId);
 		appender.setImmediateFlush(true);
 		appender.setFile(this.executionProperties.getHomeDir() + "/" + this.workspaceId + "/logs/run.log");
-		PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-		encoder.setContext(loggerContext);
-		encoder.setPattern(this.executionProperties.getLogPattern());
 		appender.setEncoder(encoder);
 		appender.start();
 
