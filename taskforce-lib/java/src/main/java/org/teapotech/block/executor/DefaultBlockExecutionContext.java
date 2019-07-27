@@ -5,6 +5,8 @@ package org.teapotech.block.executor;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,12 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	private EventDispatcher eventDispatcher;
 	private boolean stopped;
 	private final TaskforceExecutionProperties executionProperties;
+	private ThreadLocal<Map<String, Object>> localVariables = new ThreadLocal<Map<String, Object>>() {
+		@Override
+		protected Map<String, Object> initialValue() {
+			return new HashMap<>();
+		}
+	};
 
 	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory,
 			TaskforceExecutionProperties executionProperties) {
@@ -123,6 +131,17 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public Logger getLogger() {
 		return LOG;
+	}
+
+	@Override
+	public void setLocalVariable(String id, Object value) {
+		localVariables.get().put(id, value);
+
+	}
+
+	@Override
+	public Object getLocalVariable(String id) {
+		return localVariables.get().get(id);
 	}
 
 }

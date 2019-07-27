@@ -4,8 +4,8 @@
 	"args0": [
 		{
 			"type": "input_value",
-			"name": "eventName",
-			"check": "String"
+			"name": "event",
+			"check": "event_with_param"
 		}
 	],
 	"inputsInline": true,

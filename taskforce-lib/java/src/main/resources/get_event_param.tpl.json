@@ -1,6 +1,6 @@
 {
-	"type": "handle_event",
-	"message0": " when I receive %1",
+	"type": "get_event_param",
+	"message0": "get parameter from event %1",
 	"args0": [
 		{
 			"type": "field_input",
@@ -9,9 +9,7 @@
 		}
 	],
 	"inputsInline": true,
-	"nextStatement": null,
-	"colour": 230,
+	"output": null,
 	"tooltip": "",
-	"helpUrl": "",
-	"hat": "cap"
+	"helpUrl": ""
 }

@@ -145,6 +145,7 @@ class TaskforceBuilder extends Component {
     }
 
     registerBlock(blockType, blockDef) {
+        console.log(blockDef);
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
@@ -275,7 +276,7 @@ class TaskforceBuilder extends Component {
         DataService.runTaskforce(this.state.taskforceId,
             (taskforceExec) => {
                 console.log(taskforceExec);
-                if (taskforceExec.status == "Running" || taskforceExec.status == "Waiting") {
+                if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
                 }
             }, (error) => {
@@ -287,7 +288,7 @@ class TaskforceBuilder extends Component {
         DataService.stopTaskforce(this.state.taskforceId,
             (taskforceExec) => {
                 console.log(taskforceExec);
-                if (taskforceExec.status == "Running" || taskforceExec.status == "Waiting") {
+                if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
                 }else{
                     this.setState({ isRunning: false });

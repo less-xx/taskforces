@@ -3,11 +3,11 @@ package org.teapotech.block.def.event;
 import org.teapotech.block.def.Category;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
-import org.teapotech.block.executor.event.HandleEventBlockExecutor;
+import org.teapotech.block.executor.event.EventWithParamBlockExecutor;
 
-public class HandleEventBlock extends CustomBlockDefinition {
+public class EventWithParameterBlock extends CustomBlockDefinition {
 
-	public final static String TYPE = "handle_event";
+	public final static String TYPE = "event_with_param";
 
 	@Override
 	public String getBlockType() {
@@ -21,7 +21,7 @@ public class HandleEventBlock extends CustomBlockDefinition {
 
 	@Override
 	public Class<? extends BlockExecutor> getExecutorClass() {
-		return HandleEventBlockExecutor.class;
+		return EventWithParamBlockExecutor.class;
 	}
 
 }

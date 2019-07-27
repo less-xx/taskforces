@@ -28,6 +28,10 @@ public interface BlockExecutionContext {
 
 	void setVariable(String id, Object value);
 
+	void setLocalVariable(String id, Object value);
+
+	Object getLocalVariable(String id);
+
 	Collection<String> getAllVariableNames();
 
 	void destroy();

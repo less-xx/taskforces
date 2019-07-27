@@ -42,12 +42,16 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	private final TaskforceExecutionProperties executionProperties;
 	private boolean stopped;
 	private final Logger logger;
+	private ThreadLocal<Map<String, Object>> localVariables = new ThreadLocal<Map<String, Object>>() {
+		@Override
+		protected Map<String, Object> initialValue() {
+			return new HashMap<>();
+		}
+	};
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
-			KeyValueStorageProvider kvStorageProvider,
-			FileStorageProvider fileStorageProvider,
-			EventDispatcher eventDispatcher,
-			TaskforceExecutionProperties execProperties) {
+			KeyValueStorageProvider kvStorageProvider, FileStorageProvider fileStorageProvider,
+			EventDispatcher eventDispatcher, TaskforceExecutionProperties execProperties) {
 		this.blockExecutorFactory = factory;
 		this.workspaceId = workspaceId;
 		this.kvStorageProvider = kvStorageProvider;
@@ -181,6 +185,17 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public Logger getLogger() {
 		return this.logger;
+	}
+
+	@Override
+	public void setLocalVariable(String id, Object value) {
+		localVariables.get().put(id, value);
+
+	}
+
+	@Override
+	public Object getLocalVariable(String id) {
+		return localVariables.get().get(id);
 	}
 
 	/**

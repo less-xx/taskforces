@@ -1,13 +1,13 @@
-package org.teapotech.block.def.event;
+package org.teapotech.block.def.variable;
 
 import org.teapotech.block.def.Category;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
-import org.teapotech.block.executor.event.HandleEventBlockExecutor;
+import org.teapotech.block.executor.variable.LocalVariableGetBlockExecutor;
 
-public class ExitBlock extends CustomBlockDefinition {
+public class GetLocalVariableBlock extends CustomBlockDefinition {
 
-	public final static String TYPE = "exit";
+	public final static String TYPE = "get_local_variable";
 
 	@Override
 	public String getBlockType() {
@@ -16,12 +16,12 @@ public class ExitBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return Category.START_STOP;
+		return Category.VARIABLES;
 	}
 
 	@Override
 	public Class<? extends BlockExecutor> getExecutorClass() {
-		return HandleEventBlockExecutor.class;
+		return LocalVariableGetBlockExecutor.class;
 	}
 
 }

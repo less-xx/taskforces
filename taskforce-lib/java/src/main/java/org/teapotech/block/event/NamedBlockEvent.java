@@ -10,6 +10,7 @@ package org.teapotech.block.event;
 public class NamedBlockEvent extends BlockEvent {
 
 	private String eventName;
+	private String parameter;
 
 	public NamedBlockEvent() {
 		super();
@@ -27,10 +28,18 @@ public class NamedBlockEvent extends BlockEvent {
 		this.eventName = eventName;
 	}
 
+	public String getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
+	}
+
 	@Override
 	public String toString() {
 		return new StringBuilder("{workspaceId: ").append(workspaceId).append(", blockType: ").append(this.blockType)
-				.append(", blockId: ").append(this.blockId).append(", eventName: ").append(eventName)
-				.append("}").toString();
+				.append(", blockId: ").append(this.blockId).append(", eventName: ").append(eventName).append("}")
+				.toString();
 	}
 }

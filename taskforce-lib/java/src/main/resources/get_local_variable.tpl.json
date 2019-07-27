@@ -1,0 +1,16 @@
+{
+	"type": "get_local_variable",
+	"message0": "%1",
+	"args0": [
+		{
+			"type": "field_input",
+			"name": "var",
+			"text": "variable_name"
+		}
+	],
+	"inputsInline": true,
+	"output": null,
+	"colour": 230,
+	"tooltip": "",
+	"helpUrl": ""
+}

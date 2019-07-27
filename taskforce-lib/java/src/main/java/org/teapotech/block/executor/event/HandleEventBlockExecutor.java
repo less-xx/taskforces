@@ -13,6 +13,7 @@ import org.teapotech.block.executor.BlockExecutionContext;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Block.Next;
 import org.teapotech.block.model.BlockValue;
+import org.teapotech.block.model.Field;
 import org.teapotech.block.support.BlockEventListenerSupport;
 import org.teapotech.block.util.BlockExecutorUtils;
 import org.teapotech.taskforce.event.BlockEventListener;
@@ -43,9 +44,9 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 
 		String eventName = null;
-		BlockValue evtNameBlock = this.block.getBlockValueByName("eventName", null);
-		if (evtNameBlock != null) {
-			eventName = (String) BlockExecutorUtils.execute(evtNameBlock, context);
+		Field evtNameField = this.block.getFieldByName("event_name", null);
+		if (evtNameField != null) {
+			eventName = evtNameField.getValue();
 		}
 		if (StringUtils.isBlank(eventName)) {
 			throw new BlockExecutionException("Missing event name");
@@ -66,6 +67,8 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 					continue;
 				}
 				LOG.info("Received event: {}", evt);
+
+				context.setLocalVariable(evt.getEventName(), evt.getParameter());
 
 				Next next = this.block.getNext();
 				if (next != null && next.getBlock() != null) {

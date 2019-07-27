@@ -8,7 +8,7 @@ public class BlockRegistry {
 	String category;
 	String executorClass;
 	String definition;
-	Integer colour;
+	String colour;
 
 	public String getType() {
 		return type;
@@ -42,11 +42,11 @@ public class BlockRegistry {
 		return definition;
 	}
 
-	public Integer getColour() {
+	public String getColour() {
 		return colour;
 	}
 
-	public void setColour(Integer colour) {
+	public void setColour(String colour) {
 		this.colour = colour;
 	}
 

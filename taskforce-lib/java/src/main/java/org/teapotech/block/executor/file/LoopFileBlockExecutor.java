@@ -29,20 +29,20 @@ public class LoopFileBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
-		BlockValue filePathBLockValue = this.block.getBlockValueByName("filePath", null);
+		BlockValue filePathBLockValue = this.block.getBlockValueByName("path", null);
 		File[] files = (File[]) BlockExecutorUtils.execute(filePathBLockValue, context);
 		if (files == null) {
 			return null;
 		}
 
-		String paramName = "file";
-		Field paramNameField = this.block.getFieldByName("file", this.block.getFields().get(0));
-		if (paramNameField != null) {
-			paramName = paramNameField.getValue();
+		String var = "file";
+		Field varField = this.block.getFieldByName("var", this.block.getFields().get(0));
+		if (varField != null) {
+			var = varField.getValue();
 		}
 
 		for (File f : files) {
-			context.setVariable(paramName, f);
+			context.setLocalVariable(var, f.getAbsolutePath());
 			Statement stmt = this.block.getStatementByName("action", this.block.getStatements().get(0));
 			if (stmt != null) {
 				Block b = stmt.getBlock();

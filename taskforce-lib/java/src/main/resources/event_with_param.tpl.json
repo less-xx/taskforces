@@ -1,0 +1,19 @@
+{
+	"type": "event_with_param",
+	"message0": "%1 with parameter %2",
+	"args0": [
+		{
+			"type": "field_input",
+			"name": "event_name",
+			"text": "event name"
+		},
+		{
+			"type": "input_value",
+			"name": "parameter"
+		}
+	],
+	"inputsInline": true,
+	"output": null,
+	"tooltip": "",
+	"helpUrl": ""
+}

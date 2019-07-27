@@ -1,13 +1,20 @@
 const CategoryStyles = {
-  "basic": {
+	"basic": {
 		"colour": "#4a148c"
 	},
 	"custom": {
 		"colour": "#01579b"
 	},
-	"basic_variables": {
-		"colour": 130
+	"start | stop": {
+		"colour": "04E004"
+	},
+	"file operation": {
+		"colour": "#55AA80"
+	},
+	"resource": {
+		"colour": "#0280EE"
 	}
+
 }
 
 export default CategoryStyles;

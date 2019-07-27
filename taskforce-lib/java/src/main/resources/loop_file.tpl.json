@@ -1,20 +1,15 @@
 {
 	"type": "loop_file",
-	"message0": "for every file %1 in path %2 %3",
+	"message0": "for each %1 in %2 %3",
 	"args0": [
 		{
-			"type": "field_dropdown",
-			"name": "file",
-			"options": [
-				[
-					"file",
-					"file"
-				]
-			]
+			"type": "field_input",
+			"name": "var",
+			"text": "file"
 		},
 		{
 			"type": "input_value",
-			"name": "filePath",
+			"name": "path",
 			"check": [
 				"FileList",
 				"File"
