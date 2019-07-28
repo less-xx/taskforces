@@ -30,7 +30,7 @@ public class Workspace {
 
 	@XmlElement(name = "category")
 	@JacksonXmlElementWrapper(useWrapping = false)
-	private List<Category> categories = null;
+	private List<Category> categories = new ArrayList<>();
 
 	@XmlElement(name = "block")
 	private List<Block> blocks = null;
@@ -70,37 +70,18 @@ public class Workspace {
 		this.style = style;
 	}
 
-	public Category getCategoryByName(String name, boolean createIfNotExist) {
+	public Category findCategoryByName(String name) {
 		String[] cc = name.split("\\s*/\\s*");
-
 		Category cat = null;
-		if (this.categories == null) {
-			if (createIfNotExist) {
-				this.categories = new ArrayList<>();
-			} else {
-				return cat;
-			}
-		}
 		List<Category> cl = this.categories;
-		String style = "";
 		for (String cname : cc) {
 			Optional<Category> op = cl.stream().filter(c -> c.getName().equalsIgnoreCase(cname)).findFirst();
-			if (op.isPresent()) {
-				cat = op.get();
-				cl = cat.getCategories();
-			} else {
-				cat = new Category(cname);
-				style = style + "_" + cname.toLowerCase();
-				cat.setCategorystyle(style.substring(1));
-				cl.add(cat);
-				cl = cat.getCategories();
+			if (!op.isPresent()) {
+				return null;
 			}
-			if (cl == null && createIfNotExist) {
-				cl = new ArrayList<>();
-				cat.setCategories(cl);
-			}
+			cat = op.get();
+			cl = cat.getCategories();
 		}
 		return cat;
 	}
-
 }

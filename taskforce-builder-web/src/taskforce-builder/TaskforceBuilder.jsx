@@ -6,6 +6,7 @@ import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
 import { MdPlayArrow, MdStop, MdDirectionsRun } from 'react-icons/md';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import BlockStyles from './BlockStyles';
 import styled from 'styled-components';
 
 import './TaskforceBuilder.css';
@@ -149,7 +150,7 @@ class TaskforceBuilder extends Component {
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
-                this.setStyle('hat_blocks');
+                //this.setStyle('hat_blocks');
             }
         };
     }

@@ -1,0 +1,52 @@
+[
+	{
+		"id": "start_stop",
+		"name": "Start | Stop",
+		"style": "start_stop"
+	},
+	{
+		"id": "basic",
+		"name": "Basic",
+		"style": "basic"
+	},
+	{
+		"id": "logic",
+		"name": "Logic",
+		"style": "logic"
+	},
+	{
+		"id": "loop",
+		"name": "Loop",
+		"style": "loop"
+	},
+	{
+		"id": "text",
+		"name": "Text",
+		"style": "test"
+	},
+	{
+		"id": "math",
+		"name": "Math",
+		"style": "math"
+	},
+	{
+		"id": "variables",
+		"name": "Variables",
+		"style": "variables"
+	},
+	{
+		"id": "file_operation",
+		"name": "File Operation",
+		"style": "file_operation"
+	},
+	{
+		"id": "events",
+		"name": "Events",
+		"style": "events"
+	},
+	{
+		"id": "resources",
+		"name": "Resources",
+		"style": "resources"
+	}
+]

@@ -5,13 +5,13 @@ const CategoryStyles = {
 	"custom": {
 		"colour": "#01579b"
 	},
-	"start | stop": {
+	"start_stop": {
 		"colour": "04E004"
 	},
-	"file operation": {
+	"file_operation": {
 		"colour": "#55AA80"
 	},
-	"resource": {
+	"resources": {
 		"colour": "#0280EE"
 	}
 
