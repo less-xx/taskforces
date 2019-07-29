@@ -35,11 +35,6 @@
 		"style": "variables"
 	},
 	{
-		"id": "file_operation",
-		"name": "File Operation",
-		"style": "file_operation"
-	},
-	{
 		"id": "events",
 		"name": "Events",
 		"style": "events"
@@ -48,5 +43,10 @@
 		"id": "resources",
 		"name": "Resources",
 		"style": "resources"
+	},
+	{
+		"id": "file_operations",
+		"name": "File Operations",
+		"style": "file_operations"
 	}
 ]

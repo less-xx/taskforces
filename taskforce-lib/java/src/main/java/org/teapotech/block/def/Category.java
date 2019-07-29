@@ -2,20 +2,9 @@ package org.teapotech.block.def;
 
 public class Category {
 
-	public final static String EVENTS = "Events";
-	public final static String START_STOP = "Start | Stop";
-	public final static String RESOURCES = "Resources";
-	public final static String VARIABLES = "Variables";
-
-	public static String getColor(final String category) {
-		switch (category) {
-		case EVENTS:
-			return "#EDDD22";
-		case START_STOP:
-			return "#04E004";
-		case RESOURCES:
-			return "#0280EE";
-		}
-		return "#55AA80";
-	}
+	public final static String ID_EVENTS = "events";
+	public final static String ID_START_STOP = "start_stop";
+	public final static String ID_RESOURCES = "resources";
+	public final static String ID_VARIABLES = "variables";
+	public final static String ID_FILE_OPERATIONS = "file_operations";
 }

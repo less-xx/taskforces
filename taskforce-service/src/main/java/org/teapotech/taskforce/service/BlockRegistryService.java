@@ -47,7 +47,7 @@ public class BlockRegistryService {
 	@Autowired
 	BlockExecutorFactory blockFactory;
 
-	private Map<String, Category> defaultCategories = new HashMap<>();
+	private final Map<String, JsonNode> defaultCategories = new HashMap<>();
 
 	@PostConstruct
 	private void init() throws Exception {
@@ -77,22 +77,21 @@ public class BlockRegistryService {
 		Workspace toolbox = new Workspace();
 		blockRegistryManager.getBlockRegistries().stream().forEach(br -> {
 			String category = br.getCategory();
-			Category cat = toolbox.getCategoryByName(category, true);
-			// if (br.getColour() != null) {
-			// cat.setColour(String.valueOf(br.getColour()));
-			// }
-			try {
-				Block tb = blockRegistryManager.getToolboxConfig(br.getType());
-				if (tb == null) {
-					tb = new Block();
-					tb.setType(br.getType());
+			Category cat = findCategory(toolbox, category);
+			if (cat != null) {
+				try {
+					Block tb = blockRegistryManager.getToolboxConfig(br.getType());
+					if (tb == null) {
+						tb = new Block();
+						tb.setType(br.getType());
+					}
+					if (cat.getBlocks() == null) {
+						cat.setBlocks(new ArrayList<>());
+					}
+					cat.getBlocks().add(tb);
+				} catch (Exception e) {
+					LOG.error(e.getMessage(), e);
 				}
-				if (cat.getBlocks() == null) {
-					cat.setBlocks(new ArrayList<>());
-				}
-				cat.getBlocks().add(tb);
-			} catch (Exception e) {
-				LOG.error(e.getMessage(), e);
 			}
 		});
 		return toolbox;
@@ -104,46 +103,39 @@ public class BlockRegistryService {
 		Iterator<JsonNode> it = an.iterator();
 		while (it.hasNext()) {
 			JsonNode n = it.next();
-			Category c = new Category();
 			String id = n.get("id").asText();
-			c.setName(n.get("style").asText());
-			c.setCategorystyle(n.get("style").asText());
-			defaultCategories.put(id, c);
+			defaultCategories.put(id, n);
 		}
 	}
 
-	public Category getCategoryByName(String name, boolean createIfNotExist) {
-		String[] cc = name.split("\\s*/\\s*");
-
+	public Category findCategory(Workspace workspace, String idChain) {
+		String[] cc = idChain.split("\\s*/\\s*");
 		Category cat = null;
-		if (this.categories == null) {
-			if (createIfNotExist) {
-				this.categories = new ArrayList<>();
-			} else {
-				return cat;
-			}
-		}
-		List<Category> cl = this.categories;
-		String style = "";
-		for (String cname : cc) {
-			Optional<Category> op = cl.stream().filter(c -> c.getName().equalsIgnoreCase(cname)).findFirst();
+		List<Category> cl = workspace.getCategories();
+		for (String cid : cc) {
+			Optional<Category> op = cl.stream().filter(c -> c.getId().equalsIgnoreCase(cid)).findFirst();
 			if (op.isPresent()) {
 				cat = op.get();
 				cl = cat.getCategories();
 			} else {
-				cat = new Category(cname);
-				style = style + "_" + cname.toLowerCase();
-				cat.setCategorystyle(style.substring(1));
+				JsonNode n = this.defaultCategories.get(cid);
+				if (n == null) {
+					LOG.error("Cannot find category by ID: {}", cid);
+					continue;
+				}
+				cat = new Category();
+				cat.setId(cid);
+				cat.setName(n.get("name").asText());
+				cat.setCategorystyle(n.get("style").asText());
 				cl.add(cat);
 				cl = cat.getCategories();
 			}
-			if (cl == null && createIfNotExist) {
+			if (cl == null) {
 				cl = new ArrayList<>();
 				cat.setCategories(cl);
 			}
 		}
 		return cat;
 	}
-	
 
 }

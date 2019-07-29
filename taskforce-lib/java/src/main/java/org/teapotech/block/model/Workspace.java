@@ -70,12 +70,12 @@ public class Workspace {
 		this.style = style;
 	}
 
-	public Category findCategoryByName(String name) {
-		String[] cc = name.split("\\s*/\\s*");
+	public Category findCategoryById(String idChain) {
+		String[] cc = idChain.split("\\s*/\\s*");
 		Category cat = null;
 		List<Category> cl = this.categories;
-		for (String cname : cc) {
-			Optional<Category> op = cl.stream().filter(c -> c.getName().equalsIgnoreCase(cname)).findFirst();
+		for (String cid : cc) {
+			Optional<Category> op = cl.stream().filter(c -> c.getId().equalsIgnoreCase(cid)).findFirst();
 			if (!op.isPresent()) {
 				return null;
 			}

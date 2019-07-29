@@ -4,5 +4,6 @@
 	"nextStatement": null,
 	"tooltip": "",
 	"helpUrl": "",
-	"style": "start_stop"
+	"color": 130,
+	"hat": "cap"
 }

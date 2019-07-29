@@ -7,6 +7,7 @@ import Notifications, { notify } from 'react-notify-toast';
 import { MdPlayArrow, MdStop, MdDirectionsRun } from 'react-icons/md';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import BlockStyles from './BlockStyles';
+import CategoryStyles from './CategoryStyles';
 import styled from 'styled-components';
 
 import './TaskforceBuilder.css';
@@ -67,6 +68,7 @@ class TaskforceBuilder extends Component {
                 console.log(result);
                 var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
                 //console.log(mediaUrl);
+                var theme = Blockly.Theme(BlockStyles, CategoryStyles);
                 var workspace = Blockly.inject('blocklyDiv', {
                     media: mediaUrl,
                     toolbox: result,
@@ -84,6 +86,7 @@ class TaskforceBuilder extends Component {
                         minScale: 0.5,
                         scaleSpeed: 1.2
                     },
+                    theme: theme,
                     trashcan: true
                 });
 
@@ -150,7 +153,12 @@ class TaskforceBuilder extends Component {
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
-                //this.setStyle('hat_blocks');
+                if(blockDef.color){
+                    this.setColour(blockDef.color);
+                }
+                if(blockDef.hat){
+                    this.setHat(blockDef.hat);
+                }
             }
         };
     }

@@ -3,5 +3,6 @@
 	"message0": "exit taskforce",
 	"previousStatement": null,
 	"tooltip": "",
-	"helpUrl": ""
+	"helpUrl": "",
+	"color": 130
 }

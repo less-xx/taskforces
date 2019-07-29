@@ -5,6 +5,7 @@ package org.teapotech.block.def.file;
 
 import java.util.Collection;
 
+import org.teapotech.block.def.Category;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.executor.file.FilePathBlockExecutor;
@@ -56,7 +57,7 @@ public class FilePathBlock extends CustomBlockDefinition implements CustomResour
 
 	@Override
 	public String getCategory() {
-		return "File Operation";
+		return Category.ID_FILE_OPERATIONS;
 	}
 
 	@Override

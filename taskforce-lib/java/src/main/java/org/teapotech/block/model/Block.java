@@ -141,6 +141,11 @@ public class Block {
 				.orElse(orElse);
 	}
 
+	@Override
+	public String toString() {
+		return "Block, id: " + this.id + ", type: " + this.type;
+	}
+
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Next {
 

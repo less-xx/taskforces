@@ -1,8 +1,8 @@
 <xml xmlns="http://www.w3.org/1999/xhtml">
 	<block type="dispatch_event">
-		<value name="eventName">
-			<shadow type="text">
-				<field name="TEXT">event1</field>
+		<value name="event">
+			<shadow type="event_with_param">
+				<field name="event_name">event1</field>
 			</shadow>
 		</value>
 	</block>

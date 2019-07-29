@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.teapotech.block.def.Category;
 import org.teapotech.block.def.CustomBlockDefinition;
 import org.teapotech.block.executor.BlockExecutor;
 import org.teapotech.block.executor.file.CopyFileBlockExecutor;
@@ -54,7 +55,7 @@ public class CopyFileBlock extends CustomBlockDefinition implements CustomResour
 
 	@Override
 	public String getCategory() {
-		return "File Operation";
+		return Category.ID_FILE_OPERATIONS;
 	}
 
 	@Override

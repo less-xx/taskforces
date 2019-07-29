@@ -14,7 +14,6 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.teapotech.block.def.BlockDefinition;
-import org.teapotech.block.def.Category;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.support.CustomResourcePathLoader;
 import org.teapotech.block.support.CustomResourcePathLoaderSupport;
@@ -96,7 +95,6 @@ public class BlockRegistryManager {
 				reg.setType(blockDef.getBlockType());
 				reg.setCategory(blockDef.getCategory());
 				reg.setExecutorClass(blockDef.getExecutorClass().getName());
-				reg.setColour(Category.getColor(reg.getCategory()));
 				this.blockRegistries.add(reg);
 				LOG.info("Registered custom block, Type: {}, Executor class: {}", reg.getType(),
 						reg.getExecutorClass());

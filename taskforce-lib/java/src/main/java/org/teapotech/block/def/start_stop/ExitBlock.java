@@ -16,7 +16,7 @@ public class ExitBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return Category.START_STOP;
+		return Category.ID_START_STOP;
 	}
 
 	@Override

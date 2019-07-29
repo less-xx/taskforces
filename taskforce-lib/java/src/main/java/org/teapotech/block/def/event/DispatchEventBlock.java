@@ -14,7 +14,7 @@ public class DispatchEventBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return Category.EVENTS;
+		return Category.ID_EVENTS;
 	}
 
 	@Override

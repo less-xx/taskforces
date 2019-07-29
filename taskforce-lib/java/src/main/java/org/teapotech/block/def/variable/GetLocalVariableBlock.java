@@ -16,7 +16,7 @@ public class GetLocalVariableBlock extends CustomBlockDefinition {
 
 	@Override
 	public String getCategory() {
-		return Category.VARIABLES;
+		return Category.ID_VARIABLES;
 	}
 
 	@Override

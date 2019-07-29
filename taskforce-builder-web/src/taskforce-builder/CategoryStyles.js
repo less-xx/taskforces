@@ -6,13 +6,19 @@ const CategoryStyles = {
 		"colour": "#01579b"
 	},
 	"start_stop": {
-		"colour": "04E004"
+		"colour": "#04E004"
 	},
-	"file_operation": {
+	"file_operations": {
 		"colour": "#55AA80"
 	},
 	"resources": {
 		"colour": "#0280EE"
+	},
+	"math": {
+		"colour": "#028055"
+	},
+	"events": {
+		"colour": "#ffe030"
 	}
 
 }
