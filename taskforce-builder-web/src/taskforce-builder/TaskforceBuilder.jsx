@@ -134,7 +134,7 @@ class TaskforceBuilder extends Component {
                 })
         }.bind(this), 10000);
 
-        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting","Stopping"], null, null, (response) => {
+        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
             console.log(response);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });
@@ -153,12 +153,7 @@ class TaskforceBuilder extends Component {
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
-                if(blockDef.color){
-                    this.setColour(blockDef.color);
-                }
-                if(blockDef.hat){
-                    this.setHat(blockDef.hat);
-                }
+                
             }
         };
     }
@@ -299,7 +294,7 @@ class TaskforceBuilder extends Component {
                 console.log(taskforceExec);
                 if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
-                }else{
+                } else {
                     this.setState({ isRunning: false });
                 }
             }, (error) => {

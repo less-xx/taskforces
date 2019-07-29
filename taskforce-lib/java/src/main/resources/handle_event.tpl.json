@@ -10,8 +10,10 @@
 	],
 	"inputsInline": true,
 	"nextStatement": null,
-	"colour": 230,
 	"tooltip": "",
 	"helpUrl": "",
-	"hat": "cap"
+	"colour": 130,
+	"style": {
+		"hat": "cap"
+	}
 }

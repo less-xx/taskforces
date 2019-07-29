@@ -11,5 +11,8 @@
 	"inputsInline": true,
 	"output": null,
 	"tooltip": "",
-	"helpUrl": ""
+	"helpUrl": "",
+	"style": {
+		"color": 130
+	}
 }
