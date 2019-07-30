@@ -11,9 +11,7 @@
 	"inputsInline": true,
 	"previousStatement": null,
 	"nextStatement": null,
-	"style": {
-		"color": 130
-	},
+	"colour": 52,
 	"tooltip": "",
 	"helpUrl": ""
 }

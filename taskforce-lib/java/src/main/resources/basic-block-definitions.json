@@ -1,12 +1,12 @@
 [
 	{
 		"type": "variables_set",
-		"category": "basic/variables",
+		"category": "variables",
 		"executorClass": "org.teapotech.block.executor.variable.VariableSetBlockExecutor"
 	},
 	{
 		"type": "variables_get",
-		"category": "basic/variables",
+		"category": "variables",
 		"executorClass": "org.teapotech.block.executor.variable.VariableGetBlockExecutor"
 	},
 	{

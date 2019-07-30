@@ -47,6 +47,8 @@ class TaskforceBuilder extends Component {
             showControlPanel: false
         };
         this.toSaveList = [];
+        Blockly.HSV_SATURATION = 0.9;
+        Blockly.HSV_VALUE = 0.8;
     }
 
     componentDidUpdate() {
@@ -56,8 +58,12 @@ class TaskforceBuilder extends Component {
     componentDidMount() {
 
         DataService.fetchCustomBlockDefinitions((result) => {
+            console.log(result);
             result.forEach(r => {
+                console.log(r);
                 this.registerBlock(r.type, r.definition);
+                //var theme = Blockly.Theme(BlockStyles, CategoryStyles);
+                //Blockly.setTheme(theme);
             });
         }, (error) => {
             console.log(error);
@@ -67,8 +73,8 @@ class TaskforceBuilder extends Component {
             (result) => {
                 console.log(result);
                 var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
-                //console.log(mediaUrl);
-                var theme = Blockly.Theme(BlockStyles, CategoryStyles);
+                //console.log(mediaUrl); 
+
                 var workspace = Blockly.inject('blocklyDiv', {
                     media: mediaUrl,
                     toolbox: result,
@@ -86,7 +92,6 @@ class TaskforceBuilder extends Component {
                         minScale: 0.5,
                         scaleSpeed: 1.2
                     },
-                    theme: theme,
                     trashcan: true
                 });
 
@@ -106,6 +111,8 @@ class TaskforceBuilder extends Component {
             (error) => {
                 console.log(error);
             });
+
+
 
         window.addEventListener('resize', this.resizeWorkspace.bind(this), false);
 
@@ -153,7 +160,9 @@ class TaskforceBuilder extends Component {
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
-                
+                if(blockDef.hat){
+                    this.hat = blockDef.hat;
+                }
             }
         };
     }

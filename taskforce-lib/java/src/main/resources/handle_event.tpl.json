@@ -12,8 +12,6 @@
 	"nextStatement": null,
 	"tooltip": "",
 	"helpUrl": "",
-	"colour": 130,
-	"style": {
-		"hat": "cap"
-	}
+	"colour": 52,
+	"hat": "cap"
 }

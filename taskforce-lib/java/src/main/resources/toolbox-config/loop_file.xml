@@ -3,7 +3,7 @@
 		<statement name="actions">
 			<block type="text_print">
 				<value name="TEXT">
-					<block type="variables_get">
+					<block type="get_local_variable">
 						<field name="VAR" variabletype="">file</field>
 					</block>
 				</value>

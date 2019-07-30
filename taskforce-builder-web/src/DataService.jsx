@@ -5,7 +5,9 @@ const DataService = {
     fetchCustomBlockDefinitions: function (handleResponse, handleError) {
         var url = process.env.REACT_APP_URL_GET_CUSTOM_BLOCK_DEFS;
         fetch(url)
-            .then(res => res.json())
+            .then(res => {
+                return res.json();
+            })
             .then(
                 (result) => {
                     handleResponse(result);

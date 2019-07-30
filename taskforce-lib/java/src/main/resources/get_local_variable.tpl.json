@@ -5,12 +5,12 @@
 		{
 			"type": "field_input",
 			"name": "var",
-			"text": "variable_name"
+			"text": "dynamic_variable"
 		}
 	],
 	"inputsInline": true,
 	"output": null,
-	"colour": 230,
+	"colour": 32,
 	"tooltip": "",
 	"helpUrl": ""
 }
