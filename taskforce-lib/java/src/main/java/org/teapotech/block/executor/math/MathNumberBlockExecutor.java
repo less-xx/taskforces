@@ -7,6 +7,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Field;
@@ -27,6 +28,9 @@ public class MathNumberBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
+
+		updateBlockStatus(context, BlockStatus.Running);
+
 		if (this.block != null) {
 			Field field = this.block.getFieldByName("NUM", this.block.getFields().get(0));
 			String strValue = field.getValue();

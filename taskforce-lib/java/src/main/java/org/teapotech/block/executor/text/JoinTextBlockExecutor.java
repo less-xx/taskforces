@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.util.BlockExecutorUtils;
@@ -26,6 +27,8 @@ public class JoinTextBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
+
+		updateBlockStatus(context, BlockStatus.Running);
 
 		StringBuilder result = new StringBuilder();
 		List<BlockValue> values = this.block.getValues();

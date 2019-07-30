@@ -5,14 +5,13 @@
 		{
 			"type": "field_input",
 			"name": "event_name",
-			"text": "event name"
+			"text": "event_name"
 		},
 		{
 			"type": "input_value",
 			"name": "parameter"
 		}
 	],
-	"inputsInline": true,
 	"output": null,
 	"tooltip": "",
 	"helpUrl": "",

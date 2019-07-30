@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.teapotech.block.BlockExecutorFactory;
 import org.teapotech.block.exception.BlockExecutionContextException;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress;
 import org.teapotech.taskforce.event.EventDispatcher;
 import org.teapotech.taskforce.provider.FileStorageException;
 import org.teapotech.taskforce.provider.FileStorageProvider;
@@ -48,6 +49,7 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 			return new HashMap<>();
 		}
 	};
+	private final Map<String, BlockExecutionProgress> executionThreadInfo = new HashMap<>();
 
 	public DockerBlockExecutionContext(String workspaceId, BlockExecutorFactory factory,
 			KeyValueStorageProvider kvStorageProvider, FileStorageProvider fileStorageProvider,
@@ -193,7 +195,6 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public void setLocalVariable(String id, Object value) {
 		localVariables.get().put(id, value);
-
 	}
 
 	@Override
@@ -280,6 +281,11 @@ public class DockerBlockExecutionContext implements BlockExecutionContext {
 		public void setTaskWorkerNumber(int taskWorkerNumber) {
 			this.taskWorkerNumber = taskWorkerNumber;
 		}
+	}
+
+	@Override
+	public Map<String, BlockExecutionProgress> getBlockExecutionProgress() {
+		return this.executionThreadInfo;
 	}
 
 }

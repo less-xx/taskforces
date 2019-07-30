@@ -39,6 +39,7 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 			return new HashMap<>();
 		}
 	};
+	private final Map<String, BlockExecutionProgress> executionThreadInfo = new HashMap<>();
 
 	public DefaultBlockExecutionContext(String workspaceId, BlockExecutorFactory blockExecutorFactory,
 			TaskforceExecutionProperties executionProperties) {
@@ -142,6 +143,11 @@ public class DefaultBlockExecutionContext implements BlockExecutionContext {
 	@Override
 	public Object getLocalVariable(String id) {
 		return localVariables.get().get(id);
+	}
+
+	@Override
+	public Map<String, BlockExecutionProgress> getBlockExecutionProgress() {
+		return this.executionThreadInfo;
 	}
 
 }

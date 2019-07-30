@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockMutation;
 import org.teapotech.block.model.BlockValue;
@@ -27,6 +28,9 @@ public class ControlsIfBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
+
+		updateBlockStatus(context, BlockStatus.Running);
+
 		BlockMutation mut = this.block.getMutation();
 		List<BlockValue> values = this.block.getValues();
 		int idx = 0;

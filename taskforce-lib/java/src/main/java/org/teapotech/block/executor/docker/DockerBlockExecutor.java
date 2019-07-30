@@ -18,6 +18,7 @@ import org.teapotech.block.docker.DockerBlockDescriptor;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext.ContainerSettings;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext.ExecutionConfig;
 import org.teapotech.block.model.Block;
@@ -116,6 +117,8 @@ public class DockerBlockExecutor extends AbstractBlockExecutor {
 							// context.setVariable("task.id", containerId);
 							context.setVariable(blockKey, block);
 							LOG.info("set variable {}=block", blockKey);
+
+							updateBlockStatus(context, BlockStatus.Running);
 
 							dockerClient.startContainer(containerId);
 							LOG.info("Task container started, ID: {}", containerId);

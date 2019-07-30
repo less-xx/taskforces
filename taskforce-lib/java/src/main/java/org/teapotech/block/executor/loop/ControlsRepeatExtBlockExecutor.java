@@ -7,6 +7,7 @@ import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Statement;
@@ -27,6 +28,9 @@ public class ControlsRepeatExtBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
+
+		updateBlockStatus(context, BlockStatus.Running);
+
 		BlockValue timesBv = this.block.getValues().get(0);
 
 		Object times = BlockExecutorUtils.execute(timesBv, context);
@@ -36,7 +40,7 @@ public class ControlsRepeatExtBlockExecutor extends AbstractBlockExecutor {
 		}
 		int timesInt = ((Integer) times).intValue();
 		if (this.block.getStatements() == null || this.block.getStatements().isEmpty()) {
-			throw new InvalidBlockException(
+			throw new InvalidBlockException(this.block.getId(), this.block.getType(),
 					"Missing statements. Block type: " + this.block.getType() + ", id: " + this.block.getId());
 		}
 		Statement stmt = this.block.getStatements().get(0);

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.teapotech.block.docker.DockerBlockDescriptor;
-import org.teapotech.block.exception.InvalidBlockException;
+import org.teapotech.block.exception.DockerBlockException;
 
 import com.google.common.collect.ImmutableList;
 import com.spotify.docker.client.DockerClient;
@@ -32,7 +32,7 @@ public class DockerBlockManager {
 		this.dockerClient = dockerClient;
 	}
 
-	public Collection<DockerBlockDescriptor> getAllTaskDescriptors() throws InvalidBlockException {
+	public Collection<DockerBlockDescriptor> getAllTaskDescriptors() throws DockerBlockException {
 		List<Image> images;
 		try {
 			images = dockerClient.listImages(DockerClient.ListImagesParam.withLabel(LABEL_TASK_NAME),
@@ -83,20 +83,20 @@ public class DockerBlockManager {
 			}
 			return results.values();
 		} catch (DockerException | InterruptedException e) {
-			throw new InvalidBlockException(e.getMessage(), e);
+			throw new DockerBlockException(e.getMessage(), e);
 		}
 	}
 
-	public DockerBlockDescriptor getTaskDescriptorByName(String name) throws InvalidBlockException {
+	public DockerBlockDescriptor getTaskDescriptorByName(String name) throws DockerBlockException {
 		try {
 			List<Image> images = dockerClient.listImages(DockerClient.ListImagesParam.byName(name));
 			if (images == null || images.isEmpty()) {
-				throw new InvalidBlockException("Docker task image does not exist. Name: " + name);
+				throw new DockerBlockException("Docker task image does not exist. Name: " + name);
 			}
 			Image img = images.get(0);
 			return buildDescriptor(img);
 		} catch (DockerException | InterruptedException e) {
-			throw new InvalidBlockException(e.getMessage(), e);
+			throw new DockerBlockException(e.getMessage(), e);
 		}
 	}
 

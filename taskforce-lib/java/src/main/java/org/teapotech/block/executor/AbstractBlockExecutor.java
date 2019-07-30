@@ -5,6 +5,8 @@ package org.teapotech.block.executor;
 
 import org.slf4j.Logger;
 import org.teapotech.block.exception.BlockExecutionException;
+import org.teapotech.block.exception.InvalidBlockException;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Shadow;
@@ -51,9 +53,28 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 		} catch (Exception e) {
 			if (e instanceof BlockExecutionException) {
 				throw (BlockExecutionException) e;
+			} else if (e instanceof InvalidBlockException) {
+				InvalidBlockException ibe = (InvalidBlockException) e;
+				String msg = "id: " + ibe.getBlockId() + ", type: " + ibe.getBlockType() + ", error: " + e.getMessage();
+				throw new BlockExecutionException(msg, e);
 			}
 			throw new BlockExecutionException(e.getMessage(), e);
 		}
+	}
+
+	protected void updateBlockStatus(BlockExecutionContext context, BlockStatus status) {
+		if (this.block == null) {
+			return;
+		}
+		String name = Thread.currentThread().getName();
+		BlockExecutionProgress beg = context.getBlockExecutionProgress().get(name);
+		Logger LOG = context.getLogger();
+		if (beg == null) {
+			LOG.error("Cannot find block execution thread by name: {}", name);
+			return;
+		}
+		beg.setBlockStatus(status);
+		LOG.info("Update block status to [{}], id: [{}], type: [{}].", status, block.getId(), block.getType());
 	}
 
 	abstract protected Object doExecute(BlockExecutionContext context) throws Exception;

@@ -6,6 +6,7 @@ package org.teapotech.block.executor.math;
 import org.teapotech.block.exception.InvalidBlockException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.model.Field;
@@ -28,6 +29,8 @@ public class MathArithmeticBlockExecutor extends AbstractBlockExecutor {
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 
+		updateBlockStatus(context, BlockStatus.Running);
+
 		Field field = this.block.getFieldByName("OP", this.block.getFields().get(0));
 		String opValue = field.getValue();
 
@@ -46,7 +49,7 @@ public class MathArithmeticBlockExecutor extends AbstractBlockExecutor {
 		} else if (opValue.equalsIgnoreCase("DIVIDE")) {
 			return aValue.doubleValue() / bValue.doubleValue();
 		}
-		throw new InvalidBlockException("Unknown operator: " + opValue);
+		throw new InvalidBlockException(this.block.getId(), this.block.getType(), "Unknown operator: " + opValue);
 	}
 
 }

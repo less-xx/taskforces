@@ -109,12 +109,15 @@ public class BlockExecutorFactory {
 	public BlockExecutor createBlockExecutor(String workspaceId, BlockValue blockValue)
 			throws InvalidBlockException, BlockExecutorNotFoundException, InvalidBlockExecutorException {
 		String blockType = null;
+		String id = null;
 		if (blockValue.getBlock() != null) {
 			blockType = blockValue.getBlock().getType();
+			id = blockValue.getBlock().getId();
 		} else if (blockValue.getShadow() != null) {
 			blockType = blockValue.getShadow().getType();
+			id = blockValue.getShadow().getId();
 		} else {
-			throw new InvalidBlockException(
+			throw new InvalidBlockException(id, blockType,
 					"Block value should have either block or shadow, name: " + blockValue.getName());
 		}
 		Class<? extends BlockExecutor> c = blockExecutors.get(blockType);

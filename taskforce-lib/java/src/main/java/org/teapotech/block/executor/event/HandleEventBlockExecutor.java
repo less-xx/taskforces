@@ -10,6 +10,7 @@ import org.teapotech.block.event.NamedBlockEvent;
 import org.teapotech.block.exception.BlockExecutionException;
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Block.Next;
 import org.teapotech.block.model.BlockValue;
@@ -43,6 +44,8 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
 
+		updateBlockStatus(context, BlockStatus.Initializing);
+
 		String eventName = null;
 		Field evtNameField = this.block.getFieldByName("event_name", null);
 		if (evtNameField != null) {
@@ -57,6 +60,9 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 		Logger LOG = context.getLogger();
 		try {
 			while (!context.isStopped()) {
+
+				updateBlockStatus(context, BlockStatus.Running);
+
 				NamedBlockEvent evt = null;
 				try {
 					evt = blockEventListener.receive(DEFAULT_TIMEOUT_SECONDS);
@@ -68,7 +74,8 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 				}
 				LOG.info("Received event: {}", evt);
 
-				context.setLocalVariable(evt.getEventName(), evt.getParameter());
+				context.setLocalVariable(evt.getEventName(), evt);
+				LOG.info("Set local variable: {}", evt.getEventName());
 
 				Next next = this.block.getNext();
 				if (next != null && next.getBlock() != null) {

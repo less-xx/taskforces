@@ -5,6 +5,7 @@ package org.teapotech.block.executor.variable;
 
 import org.teapotech.block.executor.AbstractBlockExecutor;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.BlockValue;
 import org.teapotech.block.util.BlockExecutorUtils;
@@ -25,6 +26,8 @@ public class MathChangeBlockExecutor extends AbstractBlockExecutor {
 
 	@Override
 	protected Object doExecute(BlockExecutionContext context) throws Exception {
+
+		updateBlockStatus(context, BlockStatus.Running);
 
 		String var = this.block.getFieldByName("VAR", this.block.getFields().get(0)).getValue();
 		Number n = (Number) context.getVariable(var);

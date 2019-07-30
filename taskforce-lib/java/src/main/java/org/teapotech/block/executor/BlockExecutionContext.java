@@ -5,6 +5,7 @@ package org.teapotech.block.executor;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.teapotech.block.BlockExecutorFactory;
@@ -49,4 +50,6 @@ public interface BlockExecutionContext {
 	TaskforceExecutionProperties getExecutionProperties();
 
 	Logger getLogger();
+
+	Map<String, BlockExecutionProgress> getBlockExecutionProgress();
 }

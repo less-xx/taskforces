@@ -3,6 +3,7 @@
  */
 package org.teapotech.block.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.teapotech.block.def.event.HandleEventBlock;
 import org.teapotech.block.def.start_stop.StartBlock;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress;
+import org.teapotech.block.executor.BlockExecutionProgress.BlockStatus;
 import org.teapotech.block.model.Block;
 import org.teapotech.block.model.Variable;
 import org.teapotech.block.model.Workspace;
@@ -60,24 +63,46 @@ public class WorkspaceExecutor {
 		}
 
 		List<Block> startBlocks = workspace.getBlocks();
-		// List<BlockExecutionThread> blockExecutionThreads = new ArrayList<>();
 
 		BlockExecutionThread entryPointThread = null;
+
+		List<String> eventBlockThreadNames = new ArrayList<String>();
 		for (Block block : startBlocks) {
 
 			if (block.getType().equals(StartBlock.TYPE)) {
 				entryPointThread = new BlockExecutionThread(block, this.threadGroup);
-				// blockExecutionThreads.add(entryPointThread);
+				context.getBlockExecutionProgress().put(entryPointThread.getName(),
+						new BlockExecutionProgress(entryPointThread.getName()));
+
 			} else if (block.getType().equals(HandleEventBlock.TYPE)) {
 				BlockExecutionThread bt = new BlockExecutionThread(block, this.threadGroup);
-				// blockExecutionThreads.add(bt);
+				context.getBlockExecutionProgress().put(bt.getName(),
+						new BlockExecutionProgress(bt.getName()));
 				bt.start();
+				eventBlockThreadNames.add(bt.getName());
 			}
 		}
 
 		startMonitoring();
 
 		if (entryPointThread != null) {
+			boolean initialized = false;
+			while (!initialized) {
+				boolean b = true;
+				for (String tn : eventBlockThreadNames) {
+					BlockExecutionProgress beg = context.getBlockExecutionProgress().get(tn);
+					if (beg != null) {
+						b = b && (beg.getBlockStatus() == BlockStatus.Running);
+					}
+				}
+				initialized = b;
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					break;
+				}
+			}
+
 			entryPointThread.start();
 		}
 	}
@@ -110,6 +135,13 @@ public class WorkspaceExecutor {
 			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
+
+			String name = Thread.currentThread().getName();
+			BlockExecutionProgress beg = context.getBlockExecutionProgress().get(name);
+			if (beg == null) {
+				context.getLogger().error("Cannot find block execution thread by name: {}", name);
+			}
+			beg.setBlockStatus(BlockStatus.Stopped);
 			LOG.info("Block execution thread exited. Group: {}, Active: {}", threadGroup.getName(),
 					threadGroup.activeCount());
 		}
