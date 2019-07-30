@@ -58,10 +58,9 @@ public class HandleEventBlockExecutor extends AbstractBlockExecutor implements B
 		String routingKey = "workspace." + context.getWorkspaceId() + "." + evtName;
 		blockEventListener.initialize(routingKey);
 		Logger LOG = context.getLogger();
+		updateBlockStatus(context, BlockStatus.Running);
 		try {
 			while (!context.isStopped()) {
-
-				updateBlockStatus(context, BlockStatus.Running);
 
 				NamedBlockEvent evt = null;
 				try {

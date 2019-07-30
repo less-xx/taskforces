@@ -21,9 +21,8 @@ import org.teapotech.block.model.BlockValue;
  */
 public class BlockExecutorUtils {
 
-	public static Object execute(Block block, BlockExecutionContext context)
-			throws InvalidBlockException, BlockExecutionException, InvalidBlockExecutorException,
-			BlockExecutorNotFoundException {
+	public static Object execute(Block block, BlockExecutionContext context) throws InvalidBlockException,
+			BlockExecutionException, InvalidBlockExecutorException, BlockExecutorNotFoundException {
 
 		String name = Thread.currentThread().getName();
 		BlockExecutionProgress beg = context.getBlockExecutionProgress().get(name);
@@ -33,7 +32,8 @@ public class BlockExecutorUtils {
 		BlockExecutor executor = context.getBlockExecutorFactory().createBlockExecutor(context.getWorkspaceId(), block);
 		beg.setBlock(block);
 		beg.setBlockStatus(BlockStatus.Created);
-		context.getLogger().info("Updated block execution status to {}", beg.getBlockStatus());
+		context.getLogger().info("Block id: [{}], type: [{}] is [{}]", block.getId(), block.getType(),
+				beg.getBlockStatus());
 
 		Object result = executor.execute(context);
 
@@ -51,19 +51,23 @@ public class BlockExecutorUtils {
 		return result;
 	}
 
-	public static Object execute(BlockValue bValue, BlockExecutionContext context)
-			throws InvalidBlockException, BlockExecutionException, InvalidBlockExecutorException,
-			BlockExecutorNotFoundException {
+	public static Object execute(BlockValue bValue, BlockExecutionContext context) throws InvalidBlockException,
+			BlockExecutionException, InvalidBlockExecutorException, BlockExecutorNotFoundException {
 		BlockExecutor executor = context.getBlockExecutorFactory().createBlockExecutor(context.getWorkspaceId(),
 				bValue);
-		String name = Thread.currentThread().getName();
-		BlockExecutionProgress beg = context.getBlockExecutionProgress().get(name);
-		if (beg == null) {
-			context.getLogger().error("Cannot find block execution thread by name: {}", name);
+		Block block = bValue.getBlock();
+		if (block != null) {
+			String name = Thread.currentThread().getName();
+			BlockExecutionProgress beg = context.getBlockExecutionProgress().get(name);
+			if (beg == null) {
+				context.getLogger().error("Cannot find block execution thread by name: {}", name);
+			}
+			beg.setBlock(block);
+			beg.setBlockStatus(BlockStatus.Created);
+			context.getLogger().info("Block id: [{}], type: [{}] is [{}]", block.getId(), block.getType(),
+					beg.getBlockStatus());
 		}
-		beg.setBlockValue(bValue);
-		beg.setBlockStatus(BlockStatus.Created);
-		context.getLogger().info("Updated block execution status to {}", beg.getBlockStatus());
+
 		return executor.execute(context);
 	}
 }

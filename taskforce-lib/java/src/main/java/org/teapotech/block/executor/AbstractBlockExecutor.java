@@ -74,7 +74,7 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 			return;
 		}
 		beg.setBlockStatus(status);
-		LOG.info("Update block status to [{}], id: [{}], type: [{}].", status, block.getId(), block.getType());
+		context.getLogger().info("Block id: [{}], type: [{}] is [{}]", block.getId(), block.getType(), status);
 	}
 
 	abstract protected Object doExecute(BlockExecutionContext context) throws Exception;

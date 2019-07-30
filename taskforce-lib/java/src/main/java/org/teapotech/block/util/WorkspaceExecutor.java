@@ -76,8 +76,7 @@ public class WorkspaceExecutor {
 
 			} else if (block.getType().equals(HandleEventBlock.TYPE)) {
 				BlockExecutionThread bt = new BlockExecutionThread(block, this.threadGroup);
-				context.getBlockExecutionProgress().put(bt.getName(),
-						new BlockExecutionProgress(bt.getName()));
+				context.getBlockExecutionProgress().put(bt.getName(), new BlockExecutionProgress(bt.getName()));
 				bt.start();
 				eventBlockThreadNames.add(bt.getName());
 			}
@@ -122,7 +121,7 @@ public class WorkspaceExecutor {
 		private final Block startBlock;
 
 		public BlockExecutionThread(Block startBlock, ThreadGroup threadGroup) {
-			super(threadGroup, "block." + startBlock.getId());
+			super(threadGroup, "bet." + startBlock.getId());
 			this.startBlock = startBlock;
 			LOG.info("Created block execution thread. Block ID: {}, Type: {}, Group: {}", startBlock.getId(),
 					startBlock.getType(), threadGroup.getName());
@@ -130,6 +129,7 @@ public class WorkspaceExecutor {
 
 		@Override
 		public void run() {
+			context.getLogger().info("Thread {} start running.", getName());
 			try {
 				BlockExecutorUtils.execute(startBlock, context);
 			} catch (Exception e) {
@@ -142,6 +142,7 @@ public class WorkspaceExecutor {
 				context.getLogger().error("Cannot find block execution thread by name: {}", name);
 			}
 			beg.setBlockStatus(BlockStatus.Stopped);
+			context.getLogger().info("Thread {} stopped.", getName());
 			LOG.info("Block execution thread exited. Group: {}, Active: {}", threadGroup.getName(),
 					threadGroup.activeCount());
 		}
@@ -180,9 +181,8 @@ public class WorkspaceExecutor {
 				}
 			}
 			LOG.info("All block execution threads are stopped.");
-			context.getEventDispatcher()
-					.dispatchWorkspaceExecutionEvent(
-							new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopped));
+			context.getEventDispatcher().dispatchWorkspaceExecutionEvent(
+					new WorkspaceExecutionEvent(context.getWorkspaceId(), Status.Stopped));
 			if (!context.isStopped()) {
 				context.setStopped(true);
 			}
