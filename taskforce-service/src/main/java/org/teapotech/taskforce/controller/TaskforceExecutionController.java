@@ -5,6 +5,7 @@ package org.teapotech.taskforce.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.teapotech.block.exception.InvalidWorkspaceException;
+import org.teapotech.block.executor.BlockExecutionProgress;
 import org.teapotech.taskforce.entity.TaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 import org.teapotech.taskforce.entity.TaskforceExecution.Status;
@@ -48,7 +50,7 @@ public class TaskforceExecutionController extends LogonUserController {
 	TaskforceExecutionService tfExecutionService;
 
 	@PostMapping("/taskforce-executions")
-	public RestResponse<TaskforceExecution> runTaskforce(
+	public RestResponse<TaskforceExecutionWrapper> runTaskforce(
 			@RequestBody TaskforceExecutionRequest request, HttpServletRequest httpRequest)
 			throws InvalidWorkspaceException, TaskforceDataStoreException, TaskforceExecutionException {
 
@@ -59,29 +61,31 @@ public class TaskforceExecutionController extends LogonUserController {
 
 		if (request.getAction() == Action.start) {
 			TaskforceExecution te = tfExecutionService.getAliveTaskforceExecutionByTaskforce(taskforce);
-			if (te != null) {
-				return RestResponse.ok(te);
+			if (te == null) {
+				te = tfExecutionService.executeWorkspace(taskforce);
 			}
-			te = tfExecutionService.executeWorkspace(taskforce);
-			return RestResponse.ok(te);
+			Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+			return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 		} else {
 			TaskforceExecution te = tfExecutionService.getAliveTaskforceExecutionByTaskforce(taskforce);
 			if (te == null) {
 				throw new TaskforceExecutionException("No alive execution for taskforce " + taskforce.getId());
 			}
 			tfExecutionService.stopTaskfroceExecution(te);
-			return RestResponse.ok(te);
+			Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+			return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 		}
 
 	}
 
 	@GetMapping("/taskforce-executions/{id}")
-	public RestResponse<TaskforceExecution> queryById(@PathVariable("id") Long id) {
+	public RestResponse<TaskforceExecutionWrapper> queryById(@PathVariable("id") Long id) {
 		TaskforceExecution te = tfExecutionService.getTaskforceExecutionById(id);
 		if (te == null) {
 			throw new EntityNotFoundException("Cannot find taskforce execution by id: " + id);
 		}
-		return RestResponse.ok(te);
+		Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+		return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 	}
 
 	@GetMapping("/taskforce-executions")
@@ -95,7 +99,10 @@ public class TaskforceExecutionController extends LogonUserController {
 		Page<TaskforceExecution> results = tfExecutionService.query(id, taskforceId, status, createdTime, createdBy,
 				pageable);
 		List<TaskforceExecutionWrapper> list = results.getContent().stream()
-				.map(te -> new TaskforceExecutionWrapper(te)).collect(Collectors.toList());
+				.map(te -> {
+					Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+					return new TaskforceExecutionWrapper(te, progress);
+				}).collect(Collectors.toList());
 
 		return RestResponse.ok(new PageImpl<>(list, pageable, results.getTotalElements()));
 	}

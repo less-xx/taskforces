@@ -1,0 +1,16 @@
+.sidebar-container-right {
+    height: 100%;
+    border-left: 3px solid gray;
+}
+
+.sidebar-container-right.collapsed {
+    width: 2px;
+}
+
+.sidebar-container-right.expanded {
+    width: 150px;
+}
+
+.sidebar-navicon {
+    
+}

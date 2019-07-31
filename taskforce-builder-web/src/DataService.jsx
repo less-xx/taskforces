@@ -204,6 +204,18 @@ const DataService = {
             .catch(error => handleError(error));
     },
 
+    getTaskforceExecutionById: function (taskExecId, handleResponse, handleError) {
+        var url = process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION_BY_ID.replace(/\{.*\}/g, taskExecId);
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json.body);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
     fetchFileSystemPaths: function (handlePaths, handleError) {
         var url = process.env.REACT_APP_URL_GET_CUSTOM_FILE_PATHS;
         fetch(url)

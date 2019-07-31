@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
+import {
+    Card,
+} from 'react-bootstrap';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
-import { MdPlayArrow, MdStop, MdDirectionsRun } from 'react-icons/md';
+import { MdPlayArrow, MdStop, MdDirectionsRun, MdInsertChart } from 'react-icons/md';
 import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
-import BlockStyles from './BlockStyles';
-import CategoryStyles from './CategoryStyles';
 import styled from 'styled-components';
 
 import './TaskforceBuilder.css';
@@ -16,7 +17,7 @@ const Main = styled.main`
     position: relative;
     height: 100%;
     padding: 0px;
-    margin-right: ${props => (props.expanded ? 240 : 48)}px;
+    margin-right: ${props => (props.expanded ? 240 : 8)}px;
     border: 1px dotted gray;
 `;
 
@@ -44,11 +45,13 @@ class TaskforceBuilder extends Component {
             taskforce: null,
             taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId"),
             isRunning: false,
-            showControlPanel: false
+            showControlPanel: false,
+            taskExecutionProgress: null
         };
         this.toSaveList = [];
         Blockly.HSV_SATURATION = 0.9;
         Blockly.HSV_VALUE = 0.8;
+        this.taskExecMonitoringTimer = null;
     }
 
     componentDidUpdate() {
@@ -58,9 +61,9 @@ class TaskforceBuilder extends Component {
     componentDidMount() {
 
         DataService.fetchCustomBlockDefinitions((result) => {
-            console.log(result);
+            //console.log(result);
             result.forEach(r => {
-                console.log(r);
+                //console.log(r);
                 this.registerBlock(r.type, r.definition);
                 //var theme = Blockly.Theme(BlockStyles, CategoryStyles);
                 //Blockly.setTheme(theme);
@@ -71,7 +74,7 @@ class TaskforceBuilder extends Component {
 
         DataService.fetchTaskforceBlocks(
             (result) => {
-                console.log(result);
+                //console.log(result);
                 var mediaUrl = process.env.PUBLIC_URL + '/static/media/';
                 //console.log(mediaUrl); 
 
@@ -153,14 +156,36 @@ class TaskforceBuilder extends Component {
             (error) => {
                 console.log(error);
             });
+
+
+    }
+
+    startMonitor(taskforceExec) {
+        if (taskforceExec.status === "Waiting" ||
+            taskforceExec.status === "Running" ||
+            taskforceExec.status === "Stopping") {
+
+            this.taskExecMonitoringTimer = setInterval(function () {
+                DataService.getTaskforceExecutionById(taskforceExec.id, (response) => {
+                    this.setState({ taskExecutionProgress: response.progress });
+                }, (error) => {
+                    console.log(error);
+                });
+            }.bind(this), 2000);
+        } else {
+            if (this.taskExecMonitoringTimer) {
+                clearInterval(this.taskExecMonitoringTimer);
+            }
+        }
+
     }
 
     registerBlock(blockType, blockDef) {
-        console.log(blockDef);
+        //console.log(blockDef);
         Blockly.Blocks[blockType] = {
             init: function () {
                 this.jsonInit(blockDef);
-                if(blockDef.hat){
+                if (blockDef.hat) {
                     this.hat = blockDef.hat;
                 }
             }
@@ -195,9 +220,6 @@ class TaskforceBuilder extends Component {
                     </NavHeader>
                     <Nav >
                         <NavItem eventKey="controlPanel">
-                            <NavIcon>
-                                <MdDirectionsRun size="2em" />
-                            </NavIcon>
                             <NavText title="Run/Stop">
                                 <div id="controlPanel">
                                     <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
@@ -205,14 +227,6 @@ class TaskforceBuilder extends Component {
                                     <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
                                     Stop
                                 </div>
-                            </NavText>
-                        </NavItem>
-                        <NavItem eventKey="devices">
-                            <NavIcon>
-                                <i className="fa fa-fw fa-line-chart" style={{ fontSize: '1.75em', verticalAlign: 'middle' }} />
-                            </NavIcon>
-                            <NavText style={{ paddingLeft: 10 }} title="Logs">
-                                Logs
                             </NavText>
                         </NavItem>
                     </Nav>

@@ -1,7 +1,9 @@
 package org.teapotech.taskforce.web;
 
 import java.util.Date;
+import java.util.Map;
 
+import org.teapotech.block.executor.BlockExecutionProgress;
 import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 
@@ -13,14 +15,16 @@ public class TaskforceExecutionWrapper {
 	private Date createdTime;
 	private String createdBy;
 	private Date lastUpdatedTime;
+	private Map<String, BlockExecutionProgress> progress;
 
-	public TaskforceExecutionWrapper(TaskforceExecution taskExec) {
+	public TaskforceExecutionWrapper(TaskforceExecution taskExec, Map<String, BlockExecutionProgress> bep) {
 		this.id = taskExec.getId();
 		this.taskforce = taskExec.getTaskforce();
 		this.status = taskExec.getStatus().name();
 		this.createdTime = taskExec.getCreatedTime();
 		this.createdBy = taskExec.getCreatedBy();
 		this.lastUpdatedTime = taskExec.getLastUpdatedTime();
+		this.progress = bep;
 	}
 
 	public Long getId() {
@@ -71,4 +75,11 @@ public class TaskforceExecutionWrapper {
 		this.lastUpdatedTime = lastUpdatedTime;
 	}
 
+	public void setProgress(Map<String, BlockExecutionProgress> progress) {
+		this.progress = progress;
+	}
+
+	public Map<String, BlockExecutionProgress> getProgress() {
+		return progress;
+	}
 }

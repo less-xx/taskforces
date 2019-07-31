@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -35,6 +36,7 @@ import org.teapotech.block.event.BlockEvent;
 import org.teapotech.block.event.WorkspaceExecutionEvent;
 import org.teapotech.block.exception.InvalidWorkspaceException;
 import org.teapotech.block.executor.BlockExecutionContext;
+import org.teapotech.block.executor.BlockExecutionProgress;
 import org.teapotech.block.executor.docker.DockerBlockExecutionContext;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.block.util.BlockXmlUtils;
@@ -197,6 +199,15 @@ public class TaskforceExecutionService {
 		return tfExecRepo.findAll(
 				TaskforceExecutionQuerySpecs.queryTaskforceExecution(id, taskforceId, status, createdTime, createdBy),
 				pageable);
+	}
+
+	public Map<String, BlockExecutionProgress> getBlockExecutionProgress(TaskforceExecution taskExec) {
+		String workspaceId = buildWorkspaceId(taskExec);
+		WorkspaceExecutor we = workspaceExecutors.get(workspaceId);
+		if (we != null) {
+			return we.getBlockExecutionContext().getBlockExecutionProgress();
+		}
+		return null;
 	}
 
 	@Transactional
