@@ -15,7 +15,10 @@ class SideBar extends Component {
 
     render() {
         return (
-            <div className="sidebar-container-right">
+            <div className="sidebar-container-right expanded">
+                <div className="sidebar-navicon">
+                    <MdViewHeadline size="2em"/>
+                </div>
             </div>
         );
     }

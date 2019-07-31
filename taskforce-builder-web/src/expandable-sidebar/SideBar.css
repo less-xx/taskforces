@@ -12,5 +12,8 @@
 }
 
 .sidebar-navicon {
-    
+    top: 1px;
+    left: 1px;
+    height: 40px;
+    width: 40px;
 }
