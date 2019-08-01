@@ -7,9 +7,9 @@ import {
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
-import { MdPlayArrow, MdStop, MdDirectionsRun, MdInsertChart } from 'react-icons/md';
-import SideNav, { Toggle, Nav, NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
+import { MdPlayArrow, MdStop, } from 'react-icons/md';
 import styled from 'styled-components';
+import SideBar from '../expandable-sidebar/SideBar';
 
 import './TaskforceBuilder.css';
 
@@ -115,8 +115,6 @@ class TaskforceBuilder extends Component {
                 console.log(error);
             });
 
-
-
         window.addEventListener('resize', this.resizeWorkspace.bind(this), false);
 
         setInterval(function () {
@@ -157,7 +155,9 @@ class TaskforceBuilder extends Component {
                 console.log(error);
             });
 
-
+        var controlPanel = document.getElementById("controlPanel");
+        controlPanel.addEventListener("webkitAnimationEnd", this.onControlPanelAnimationEnd);
+        controlPanel.addEventListener("animationend", this.onControlPanelAnimationEnd);
     }
 
     startMonitor(taskforceExec) {
@@ -212,41 +212,30 @@ class TaskforceBuilder extends Component {
 
     render() {
         return (
-            <div id="container">
-                <SideNav onToggle={this.expandCollapseControlPanel.bind(this)} expanded={this.state.showControlPanel}>
-                    <Toggle />
-                    <NavHeader expanded={this.state.showControlPanel} id="controlPanelHeader">
-                        <NavTitle>Control Panel</NavTitle>
-                    </NavHeader>
-                    <Nav >
-                        <NavItem eventKey="controlPanel">
-                            <NavText title="Run/Stop">
-                                <div id="controlPanel">
-                                    <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
-                                    Run
-                                    <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
-                                    Stop
-                                </div>
-                            </NavText>
-                        </NavItem>
-                    </Nav>
-                </SideNav>
+            <div className="main-container" id="main-container">
 
-                <Main expanded={this.state.showControlPanel} id="workspaceContainer">
-                    <div>
-                        <Notifications options={{
-                            zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
-                                info: {
-                                    color: "#999999",
-                                    backgroundColor: '#FDFDFD'
-                                }
+                <div id="workspaceContainer">
+                    <Notifications options={{
+                        zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
+                            info: {
+                                color: "#999999",
+                                backgroundColor: '#FDFDFD'
                             }
-                        }} />
-                        <div id="blocklyDiv">
-                        </div>
-                        <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
+                        }
+                    }} />
+                    <div id="blocklyDiv">
                     </div>
-                </Main>
+                    <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
+                </div>
+
+                <SideBar id="controlPanel" onExpand={this.expandCollapseControlPanel.bind(this)}>
+                    <div >
+                        <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
+                        Run
+                        <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
+                        Stop
+                    </div>
+                </SideBar>
             </div>
 
         );
@@ -258,20 +247,19 @@ class TaskforceBuilder extends Component {
             return;
         }
         var blocklyArea = document.getElementById('workspaceContainer');
+        var container = document.getElementById('main-container');
+        var controlPanel = document.getElementById('controlPanel');
         var blocklyDiv = document.getElementById('blocklyDiv');
-        // Compute the absolute coordinates and dimensions of blocklyArea.
-        var element = blocklyArea;
-        var x = 0;
-        var y = 0;
-        do {
-            x += element.offsetLeft;
-            y += element.offsetTop;
-            element = element.offsetParent;
-        } while (element);
-        // Position blocklyDiv over blocklyArea.
+
+        //console.log(controlPanel.offsetWidth);
+        var x = blocklyArea.offsetLeft;
+        var y = blocklyArea.offsetTop;
+
         blocklyDiv.style.left = x + 'px';
         blocklyDiv.style.top = y + 'px';
-        blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+
+        var width = container.offsetWidth - controlPanel.offsetWidth;
+        blocklyDiv.style.width = width + 'px';
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
         Blockly.svgResize(this.state.workspace);
         //console.log(x+", "+y+", "+blocklyArea.offsetWidth+", "+blocklyArea.offsetHeight);
@@ -325,8 +313,16 @@ class TaskforceBuilder extends Component {
             });
     }
 
+    onControlPanelAnimationEnd() {
+        var controlPanel = document.getElementById('controlPanel');
+        console.log(controlPanel.offsetWidth);
+    }
+
     expandCollapseControlPanel(expanded) {
+        //console.log(expanded);
         this.setState({ showControlPanel: expanded });
+        //this.resizeWorkspace();
+
     }
 }
 

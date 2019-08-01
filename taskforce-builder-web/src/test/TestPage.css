@@ -1,7 +1,15 @@
 .main-container {
-    width: 100%;
     height: 100%;
-    padding: 0;
-    margin: 5px 0px 0px 0px;
+    width: 100%;
     background: lightgray;
+    padding: 0px;
+    display: flex;
+}
+
+.main-content {
+    height: 100%;
+    flex: 20;
+    border: 1px solid lightseagreen;
+    background: white;
+    margin: 1px;
 }

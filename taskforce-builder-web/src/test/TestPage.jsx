@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import {
-    Modal,
-    Button,
-    Form
-} from 'react-bootstrap';
 import './TestPage.css'
 import SideBar from '../expandable-sidebar/SideBar';
 
@@ -16,9 +11,20 @@ class TestPage extends Component {
     render() {
         return (
             <div className="main-container">
-                <SideBar />
+                <div className="main-content">content</div>
+                <SideBar onExpand={this.onExpand}>
+                    <div>
+                        SideBar content
+                    </div>
+                </SideBar>
+
+
             </div>
         );
+    }
+
+    onExpand(expanded) {
+        console.log(expanded);
     }
 }
 

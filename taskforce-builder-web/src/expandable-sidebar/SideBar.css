@@ -1,6 +1,10 @@
 .sidebar-container-right {
     height: 100%;
-    border-left: 3px solid gray;
+    flex-shrink: 0;
+    border-left: 3px solid rgb(180, 180, 180);
+    -webkit-transition: width 0.1s;
+    transition: width 0.1s;
+    margin: 0px;
 }
 
 .sidebar-container-right.collapsed {
@@ -8,12 +12,21 @@
 }
 
 .sidebar-container-right.expanded {
-    width: 150px;
+    width: 200px;
 }
 
-.sidebar-navicon {
-    top: 1px;
-    left: 1px;
-    height: 40px;
+.sidebar-navicon-right {
+    height: 38px;
     width: 40px;
+    padding: 0px;
+    cursor: pointer;
+    margin-left: -40px;
+    border-color: rgba(170, 170, 170, 1);
+    border-style: solid;
+    border-top-width: 2px;
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    position: relative;
+    z-index: 9999;
 }

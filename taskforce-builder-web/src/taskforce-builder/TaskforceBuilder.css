@@ -1,92 +1,14 @@
-#container {
-    width: 100%;
+.main-container {
     height: 100%;
-    padding: 0;
+    padding: 0px;
+    display: flex;
+    width: 100%;
     margin: 5px 0px 0px 0px;
-}
-
-.sidenav---sidenav---_2tBP {
-    position: absolute;
-    top: 6px;
-    bottom: 0;
-    right: 0;
-    left: auto;
-    z-index: 1006;
-    min-width: 48px;
-    background: transparent;
-    transition: min-width 0.15s;
-}
-
-.sidenav---sidenav-toggle---1KRjR {
-    position: relative;
-    float: left;
-    width: 48px;
-    height: 48px;
-    padding: 0;
-    margin: 0;
-    background: lightgray;
-    border: 0;
-    border-radius: 0;
-    cursor: pointer;
-}
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo {
-    display: block;
-    float: left;
-    width: 48px;
-    height: 50px;
-    margin-right: -6px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    line-height: 50px;
-    text-align: center;
-    color: gray;
-}
-
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>* {
-    color: gray;
-}
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>*,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ->.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f {
-    color: #333;
-}
-
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T::after,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after {
-    background: lightgray;
-    opacity: 0.15;
-}
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T::after {
-    background: #000;
-    opacity: 0.9;
-}
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u.sidenav---expanded---1KdUL>.sidenav---navitem---9uL5T::after,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover.sidenav---highlighted---oUx9u.sidenav---expanded---1KdUL>.sidenav---navitem---9uL5T::after {
-    background: #000;
-    opacity: 0.9;
-}
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f {
-    color: #333;
-}
-
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>*,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-:hover>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>*,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navicon---3gCRo>*,
-.sidenav---sidenav-nav---3tvij>.sidenav---sidenav-navitem---uwIJ-.sidenav---highlighted---oUx9u>.sidenav---navitem---9uL5T .sidenav---navtext---1AE_f>* {
-    color: #333;
 }
 
 #workspaceContainer {
     height: 100%;
+    flex: 20;
 }
 
 #blocklyDiv {
@@ -104,7 +26,7 @@
     height: 100%;
     width: 100%;
     position: absolute;
-    z-index: 9998;
+    z-index: 100;
     top: 0px;
     right: 0px;
     background-color: rgb(230, 230, 230);
