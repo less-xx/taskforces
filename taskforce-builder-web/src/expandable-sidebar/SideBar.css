@@ -1,3 +1,18 @@
+.sb-main-container {
+    height: 100%;
+    width: 100%;
+    background: lightgray;
+    padding: 0px;
+    display: flex;
+}
+
+.sb-main-content {
+    height: 100%;
+    flex: 20;
+    border: 1px solid lightseagreen;
+    background: white;
+    margin: 1px;
+}
 .sidebar-container-right {
     height: 100%;
     flex-shrink: 0;

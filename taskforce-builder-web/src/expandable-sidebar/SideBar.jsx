@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { MdViewHeadline, MdClose } from 'react-icons/md';
-import './SideBar.css'
+import './SideBar.css';
+import MainContent from './MainContent';
+import MainContainer from './MainContainer';
 
 class SideBar extends Component {
 
@@ -9,8 +11,17 @@ class SideBar extends Component {
         this.state = {
             expanded: true,
             onExpandHandler: props.onExpand,
-            id: props.id
+            size: null
         }
+        this.sideBarRef = React.createRef();
+    }
+
+    componentDidMount() {
+        console.log(this.domObject().offsetWidth);
+    }
+
+    componentDidUpdate() {
+        console.log(this.domObject().offsetWidth);
     }
 
     render() {
@@ -22,7 +33,7 @@ class SideBar extends Component {
             expandButton = <MdViewHeadline size="2em" onClick={this.expand.bind(this)} />
         }
         return (
-            <div className={"sidebar-container-right " + expandedClass} id={this.state.id}>
+            <div className={"sidebar-container-right " + expandedClass} ref={this.sideBarRef} id="test_side_bar">
                 <div className={"sidebar-navicon-right "}>
                     {expandButton}
                 </div>
@@ -31,21 +42,37 @@ class SideBar extends Component {
         );
     }
 
+    domObject() {
+        return this.sideBarRef.current;
+    }
+
+    getSize() {
+        const node = this.sideBarRef.current;
+        return { width: node.offsetWidth, height: node.offsetHeight };
+    }
+
     expand() {
-        var onExpandHandler = this.state.onExpandHandler;
-        this.setState({ expanded: true });
-        if (onExpandHandler) {
-            onExpandHandler(true);
-        }
+        this.setState({ expanded: true }, () => {
+            var onExpandHandler = this.state.onExpandHandler;
+            if (onExpandHandler) {
+                onExpandHandler(true);
+            }
+        });
+
     }
 
     collapse() {
-        var onExpandHandler = this.state.onExpandHandler;
-        this.setState({ expanded: false });
-        if (onExpandHandler) {
-            onExpandHandler(false);
-        }
+        this.setState({ expanded: false }, () => {
+            var onExpandHandler = this.state.onExpandHandler;
+            if (onExpandHandler) {
+                onExpandHandler(false);
+            }
+        });
     }
 }
+
+
+SideBar.Container = MainContainer;
+SideBar.Content = MainContent;
 
 export default SideBar;
