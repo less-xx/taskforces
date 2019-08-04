@@ -3,19 +3,22 @@
     width: 100%;
     background: lightgray;
     padding: 0px;
-    display: flex;
+    overflow: hidden;
 }
 
 .sb-main-content {
     height: 100%;
-    flex: 20;
+    float: left;
     border: 1px solid lightseagreen;
     background: white;
     margin: 1px;
 }
+
 .sidebar-container-right {
     height: 100%;
-    flex-shrink: 0;
+    position: absolute;
+    top: 0px;
+    right: 0px;
     border-left: 3px solid rgb(180, 180, 180);
     -webkit-transition: width 0.1s;
     transition: width 0.1s;

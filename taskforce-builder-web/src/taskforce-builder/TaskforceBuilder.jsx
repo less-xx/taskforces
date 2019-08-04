@@ -10,16 +10,7 @@ import Notifications, { notify } from 'react-notify-toast';
 import { MdPlayArrow, MdStop, } from 'react-icons/md';
 import styled from 'styled-components';
 import SideBar from '../expandable-sidebar/SideBar';
-
 import './TaskforceBuilder.css';
-
-const Main = styled.main`
-    position: relative;
-    height: 100%;
-    padding: 0px;
-    margin-right: ${props => (props.expanded ? 240 : 8)}px;
-    border: 1px dotted gray;
-`;
 
 const NavHeader = styled.div`
     display: ${props => (props.expanded ? 'block' : 'none')};
@@ -46,7 +37,10 @@ class TaskforceBuilder extends Component {
             taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId"),
             isRunning: false,
             showControlPanel: false,
-            taskExecutionProgress: null
+            taskExecutionProgress: null,
+            containerSize: null,
+            contentSize: null,
+            sideBarWidth: null
         };
         this.toSaveList = [];
         Blockly.HSV_SATURATION = 0.9;
@@ -55,10 +49,24 @@ class TaskforceBuilder extends Component {
     }
 
     componentDidUpdate() {
-        this.resizeWorkspace();
+        //this.resizeWorkspace();
     }
 
     componentDidMount() {
+
+        const node = this.refs.sideBarContainer;
+        const containerSize = node.getDefaultSize();
+        this.setState({ containerSize: containerSize });
+
+        const sideBarCmp = this.refs.sideBar;
+        const sideBarSize = sideBarCmp.getSize();
+        this.setState({
+            contentSize: {
+                width: containerSize.width - sideBarSize.width,
+                height: containerSize.height
+            },
+            sideBarWidth: sideBarSize.width
+        });
 
         DataService.fetchCustomBlockDefinitions((result) => {
             //console.log(result);
@@ -154,10 +162,6 @@ class TaskforceBuilder extends Component {
             (error) => {
                 console.log(error);
             });
-
-        var controlPanel = document.getElementById("controlPanel");
-        controlPanel.addEventListener("webkitAnimationEnd", this.onControlPanelAnimationEnd);
-        controlPanel.addEventListener("animationend", this.onControlPanelAnimationEnd);
     }
 
     startMonitor(taskforceExec) {
@@ -212,32 +216,34 @@ class TaskforceBuilder extends Component {
 
     render() {
         return (
-            <div className="main-container" id="main-container">
+            <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
 
-                <div id="workspaceContainer">
-                    <Notifications options={{
-                        zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
-                            info: {
-                                color: "#999999",
-                                backgroundColor: '#FDFDFD'
+                <SideBar.Content ref="sideBarContent" size={this.state.contentSize}>
+                    <div id="workspaceContainer">
+                        <Notifications options={{
+                            zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
+                                info: {
+                                    color: "#999999",
+                                    backgroundColor: '#FDFDFD'
+                                }
                             }
-                        }
-                    }} />
-                    <div id="blocklyDiv">
+                        }} />
+                        <div id="blocklyDiv">
+                        </div>
+                        <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
                     </div>
-                    <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
-                </div>
+                </SideBar.Content>
 
-                <SideBar id="controlPanel" onExpand={this.expandCollapseControlPanel.bind(this)}>
-                    <div >
+                <SideBar onExpand={this.expandCollapseControlPanel.bind(this)} ref="sideBar">
+                    <div>
                         <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
                         Run
                         <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
                         Stop
                     </div>
                 </SideBar>
-            </div>
 
+            </SideBar.Container>
         );
     }
 
@@ -247,8 +253,6 @@ class TaskforceBuilder extends Component {
             return;
         }
         var blocklyArea = document.getElementById('workspaceContainer');
-        var container = document.getElementById('main-container');
-        var controlPanel = document.getElementById('controlPanel');
         var blocklyDiv = document.getElementById('blocklyDiv');
 
         //console.log(controlPanel.offsetWidth);
@@ -258,12 +262,9 @@ class TaskforceBuilder extends Component {
         blocklyDiv.style.left = x + 'px';
         blocklyDiv.style.top = y + 'px';
 
-        var width = container.offsetWidth - controlPanel.offsetWidth;
-        blocklyDiv.style.width = width + 'px';
+        blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
         blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
         Blockly.svgResize(this.state.workspace);
-        //console.log(x+", "+y+", "+blocklyArea.offsetWidth+", "+blocklyArea.offsetHeight);
-
     }
 
     onChangeWorkspace(e) {
@@ -313,16 +314,32 @@ class TaskforceBuilder extends Component {
             });
     }
 
-    onControlPanelAnimationEnd() {
-        var controlPanel = document.getElementById('controlPanel');
-        console.log(controlPanel.offsetWidth);
-    }
-
-    expandCollapseControlPanel(expanded) {
+    expandCollapseControlPanel(expanded, sideBarWidth) {
         //console.log(expanded);
         this.setState({ showControlPanel: expanded });
-        //this.resizeWorkspace();
+        const { containerSize } = this.state;
+        this.setState({
+            contentSize: {
+                width: containerSize.width - sideBarWidth - 10,
+                height: containerSize.height
+            },
+            sideBarWidth: sideBarWidth
+        });
 
+    }
+
+    onSizeChange(width, height) {
+        var containerSize = { width: width, height: height };
+        var contentSize = {
+            width: containerSize.width - this.state.sideBarWidth,
+            height: containerSize.height
+        };
+
+        this.setState({
+            containerSize: containerSize,
+            contentSize: contentSize
+        });
+        this.resizeWorkspace();
     }
 }
 

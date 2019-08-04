@@ -11,51 +11,46 @@ class SideBar extends Component {
         this.state = {
             expanded: true,
             onExpandHandler: props.onExpand,
-            size: null
-        }
+            expandedWidth: 200,
+            collpasedWidth: 3
+        };
         this.sideBarRef = React.createRef();
     }
 
     componentDidMount() {
-        console.log(this.domObject().offsetWidth);
+        //this.state.expanded ? this.expand() : this.collapse();
     }
 
     componentDidUpdate() {
-        console.log(this.domObject().offsetWidth);
+
     }
 
     render() {
-        var expandedClass = this.state.expanded ? "expanded" : "collapsed";
+        //var expandedClass = this.state.expanded ? "expanded" : "collapsed";
         var expandButton;
         if (this.state.expanded) {
             expandButton = <MdClose size="2em" onClick={this.collapse.bind(this)} />
         } else {
             expandButton = <MdViewHeadline size="2em" onClick={this.expand.bind(this)} />
         }
+        var width = this.state.expanded ? this.state.expandedWidth : this.state.collpasedWidth;
         return (
-            <div className={"sidebar-container-right " + expandedClass} ref={this.sideBarRef} id="test_side_bar">
+            <div className="sidebar-container-right " style={{ width: width + "px" }} ref={this.sideBarRef} >
                 <div className={"sidebar-navicon-right "}>
                     {expandButton}
                 </div>
-                <div>{this.props.children}</div>
+                <div >{this.props.children}</div>
             </div>
         );
     }
 
-    domObject() {
-        return this.sideBarRef.current;
-    }
-
-    getSize() {
-        const node = this.sideBarRef.current;
-        return { width: node.offsetWidth, height: node.offsetHeight };
-    }
-
     expand() {
+
         this.setState({ expanded: true }, () => {
+
             var onExpandHandler = this.state.onExpandHandler;
             if (onExpandHandler) {
-                onExpandHandler(true);
+                onExpandHandler(true, this.state.expandedWidth);
             }
         });
 
@@ -65,12 +60,16 @@ class SideBar extends Component {
         this.setState({ expanded: false }, () => {
             var onExpandHandler = this.state.onExpandHandler;
             if (onExpandHandler) {
-                onExpandHandler(false);
+                onExpandHandler(false, this.state.collpasedWidth);
             }
         });
     }
-}
 
+    getSize() {
+        const node = this.sideBarRef.current;
+        return { width: node.offsetWidth, height: node.offsetHeight };
+    }
+}
 
 SideBar.Container = MainContainer;
 SideBar.Content = MainContent;

@@ -3,12 +3,11 @@
     width: 100%;
     background: lightgray;
     padding: 0px;
-    display: flex;
+    overflow: hidden;
 }
 
 .main-content {
     height: 100%;
-    flex: 20;
     border: 1px solid lightseagreen;
     background: white;
     margin: 1px;
