@@ -1,14 +1,12 @@
 .main-container {
     height: 100%;
     padding: 0px;
-    display: flex;
     width: 100%;
     margin: 5px 0px 0px 0px;
 }
 
 #workspaceContainer {
     height: 100%;
-    flex: 20;
 }
 
 #blocklyDiv {
@@ -24,7 +22,6 @@
 
 #maskOverlay {
     height: 100%;
-    width: 100%;
     position: absolute;
     z-index: 100;
     top: 0px;

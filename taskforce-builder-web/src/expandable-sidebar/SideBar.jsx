@@ -9,7 +9,7 @@ class SideBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expanded: true,
+            expanded: props.expanded == null ? true : props.expanded,
             onExpandHandler: props.onExpand,
             expandedWidth: 200,
             collpasedWidth: 3
@@ -18,7 +18,7 @@ class SideBar extends Component {
     }
 
     componentDidMount() {
-        //this.state.expanded ? this.expand() : this.collapse();
+
     }
 
     componentDidUpdate() {

@@ -316,11 +316,15 @@ class TaskforceBuilder extends Component {
 
     expandCollapseControlPanel(expanded, sideBarWidth) {
         //console.log(expanded);
+        if (sideBarWidth == null) {
+            var size = this.refs.sideBar.getSize();
+            sideBarWidth = size.width;
+        }
         this.setState({ showControlPanel: expanded });
         const { containerSize } = this.state;
         this.setState({
             contentSize: {
-                width: containerSize.width - sideBarWidth - 10,
+                width: containerSize.width - sideBarWidth,
                 height: containerSize.height
             },
             sideBarWidth: sideBarWidth
@@ -334,6 +338,9 @@ class TaskforceBuilder extends Component {
             width: containerSize.width - this.state.sideBarWidth,
             height: containerSize.height
         };
+        var maskOverlay = document.getElementById("maskOverlay");
+        maskOverlay.style.width = contentSize.width;
+        maskOverlay.style.height = contentSize.height;
 
         this.setState({
             containerSize: containerSize,
