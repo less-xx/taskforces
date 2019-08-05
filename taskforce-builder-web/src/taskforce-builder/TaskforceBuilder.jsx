@@ -1,28 +1,14 @@
 import React, { Component } from 'react';
 import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
-import {
-    Card,
-} from 'react-bootstrap';
 import DataService from '../DataService';
 import DataStore from '../DataStore';
 import Notifications, { notify } from 'react-notify-toast';
 import { MdPlayArrow, MdStop, } from 'react-icons/md';
-import styled from 'styled-components';
 import SideBar from '../expandable-sidebar/SideBar';
+import TaskExecutionCard from './TaskExecutionCard';
 import './TaskforceBuilder.css';
-
-const NavHeader = styled.div`
-    display: ${props => (props.expanded ? 'block' : 'none')};
-    white-space: nowrap;
-    background-color: lightgray;
-    height:48px;
-`;
-
-const NavTitle = styled.div`
-    font-size: 1.2em;
-    padding: 13px 0 0 6px;
-`;
+import BlockStyles from './BlockStyles';
 
 class TaskforceBuilder extends Component {
 
@@ -105,7 +91,7 @@ class TaskforceBuilder extends Component {
                     },
                     trashcan: true
                 });
-
+                //console.log(workspace);
                 workspace.addChangeListener(this.onChangeWorkspace.bind(this));
                 this.setState({
                     isLoaded: true,
@@ -149,20 +135,6 @@ class TaskforceBuilder extends Component {
                     notify.show("Failed to save worksace ...", "error", 8000);
                 })
         }.bind(this), 10000);
-
-        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
-            console.log(response);
-            if (response.totalElements === 0) {
-                this.setState({ isRunning: false });
-                this.expandCollapseControlPanel(false);
-            } else {
-                this.setState({ isRunning: true });
-                this.expandCollapseControlPanel(true);
-            }
-        },
-            (error) => {
-                console.log(error);
-            });
     }
 
     startMonitor(taskforceExec) {
@@ -209,7 +181,33 @@ class TaskforceBuilder extends Component {
                     isLoaded: true,
                     taskforce: taskforce
                 });
+
+                this.queryTaskforceExecutions();
+
+                var theme = Blockly.getTheme();
+                theme.setBlockStyle("highlighted", BlockStyles["hightlighted"]);
+                console.log(Blockly.getTheme());
             },
+            (error) => {
+                console.log(error);
+            });
+    }
+
+    queryTaskforceExecutions() {
+        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
+            //console.log(response);
+            if (response.totalElements === 0) {
+                this.setState({ isRunning: false });
+                this.expandCollapseControlPanel(false);
+            } else {
+                this.setState({ isRunning: true });
+                this.expandCollapseControlPanel(true);
+                const progress = response.content[0].progress;
+                this.setState({ taskExecutionProgress: progress });
+                //console.log(Blockly.mainWorkspace.getAllBlocks());
+
+            }
+        },
             (error) => {
                 console.log(error);
             });
@@ -241,6 +239,9 @@ class TaskforceBuilder extends Component {
                         Run
                         <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
                         Stop
+                    </div>
+                    <div>
+                        <TaskExecutionCard progress={this.state.taskExecutionProgress} onClickItem={this.onSelectProgressItem.bind(this)} />
                     </div>
                 </SideBar>
 
@@ -352,6 +353,15 @@ class TaskforceBuilder extends Component {
             contentSize: contentSize
         });
         //this.resizeWorkspace();
+    }
+
+    onSelectProgressItem(progressItem) {
+        console.log(progressItem);
+        const w = Blockly.mainWorkspace;
+        const startBlockId = progressItem.threadName.substring(4);
+        const block = Blockly.mainWorkspace.getBlockById(startBlockId);
+        //console.log(block.getColour());
+        block.setStyle("highlighted");
     }
 }
 

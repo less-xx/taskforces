@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PostConstruct;
@@ -201,11 +200,11 @@ public class TaskforceExecutionService {
 				pageable);
 	}
 
-	public Map<String, BlockExecutionProgress> getBlockExecutionProgress(TaskforceExecution taskExec) {
+	public Collection<BlockExecutionProgress> getBlockExecutionProgress(TaskforceExecution taskExec) {
 		String workspaceId = buildWorkspaceId(taskExec);
 		WorkspaceExecutor we = workspaceExecutors.get(workspaceId);
 		if (we != null) {
-			return we.getBlockExecutionContext().getBlockExecutionProgress();
+			return we.getBlockExecutionContext().getBlockExecutionProgress().values();
 		}
 		return null;
 	}

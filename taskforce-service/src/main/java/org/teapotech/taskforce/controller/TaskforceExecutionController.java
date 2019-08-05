@@ -3,9 +3,9 @@
  */
 package org.teapotech.taskforce.controller;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -64,7 +64,7 @@ public class TaskforceExecutionController extends LogonUserController {
 			if (te == null) {
 				te = tfExecutionService.executeWorkspace(taskforce);
 			}
-			Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+			Collection<BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
 			return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 		} else {
 			TaskforceExecution te = tfExecutionService.getAliveTaskforceExecutionByTaskforce(taskforce);
@@ -72,7 +72,7 @@ public class TaskforceExecutionController extends LogonUserController {
 				throw new TaskforceExecutionException("No alive execution for taskforce " + taskforce.getId());
 			}
 			tfExecutionService.stopTaskfroceExecution(te);
-			Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+			Collection<BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
 			return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 		}
 
@@ -84,7 +84,7 @@ public class TaskforceExecutionController extends LogonUserController {
 		if (te == null) {
 			throw new EntityNotFoundException("Cannot find taskforce execution by id: " + id);
 		}
-		Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+		Collection<BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
 		return RestResponse.ok(new TaskforceExecutionWrapper(te, progress));
 	}
 
@@ -100,7 +100,7 @@ public class TaskforceExecutionController extends LogonUserController {
 				pageable);
 		List<TaskforceExecutionWrapper> list = results.getContent().stream()
 				.map(te -> {
-					Map<String, BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
+					Collection<BlockExecutionProgress> progress = tfExecutionService.getBlockExecutionProgress(te);
 					return new TaskforceExecutionWrapper(te, progress);
 				}).collect(Collectors.toList());
 

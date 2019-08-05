@@ -21,7 +21,7 @@ class MainConent extends Component {
 
     render() {
         const size = this.state.size;
-        console.log(size);
+        //console.log(size);
         return (
             <div className="sb-main-content" ref={this.myRef} style={{ width: size.width, height: size.height }}>
                 {this.props.children}
