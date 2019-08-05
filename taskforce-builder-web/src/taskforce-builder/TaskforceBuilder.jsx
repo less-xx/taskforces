@@ -49,7 +49,7 @@ class TaskforceBuilder extends Component {
     }
 
     componentDidUpdate() {
-        //this.resizeWorkspace();
+        this.resizeWorkspace();
     }
 
     componentDidMount() {
@@ -154,6 +154,7 @@ class TaskforceBuilder extends Component {
             console.log(response);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });
+                this.expandCollapseControlPanel(false);
             } else {
                 this.setState({ isRunning: true });
                 this.expandCollapseControlPanel(true);
@@ -315,18 +316,21 @@ class TaskforceBuilder extends Component {
     }
 
     expandCollapseControlPanel(expanded, sideBarWidth) {
-        //console.log(expanded);
         if (sideBarWidth == null) {
             var size = this.refs.sideBar.getSize();
             sideBarWidth = size.width;
         }
+        //console.log(expanded + ", " + sideBarWidth);
         this.setState({ showControlPanel: expanded });
         const { containerSize } = this.state;
+        //console.log("container size: " + containerSize.width+", "+containerSize.height);
+        const contentSize = {
+            width: containerSize.width - sideBarWidth,
+            height: containerSize.height
+        };
+        //console.log("content size: " + contentSize.width+", "+contentSize.height);
         this.setState({
-            contentSize: {
-                width: containerSize.width - sideBarWidth,
-                height: containerSize.height
-            },
+            contentSize: contentSize,
             sideBarWidth: sideBarWidth
         });
 
@@ -338,6 +342,7 @@ class TaskforceBuilder extends Component {
             width: containerSize.width - this.state.sideBarWidth,
             height: containerSize.height
         };
+        //console.log("content size: " + contentSize);
         var maskOverlay = document.getElementById("maskOverlay");
         maskOverlay.style.width = contentSize.width;
         maskOverlay.style.height = contentSize.height;
@@ -346,7 +351,7 @@ class TaskforceBuilder extends Component {
             containerSize: containerSize,
             contentSize: contentSize
         });
-        this.resizeWorkspace();
+        //this.resizeWorkspace();
     }
 }
 
