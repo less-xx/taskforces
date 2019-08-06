@@ -46,11 +46,10 @@ class TaskforceBuilder extends Component {
 
         const node = this.refs.sideBarContainer;
         const containerSize = node.getDefaultSize();
-        this.setState({ containerSize: containerSize });
-
         const sideBarCmp = this.refs.sideBar;
         const sideBarSize = sideBarCmp.getSize();
         this.setState({
+            containerSize: containerSize,
             contentSize: {
                 width: containerSize.width - sideBarSize.width,
                 height: containerSize.height
@@ -131,7 +130,6 @@ class TaskforceBuilder extends Component {
             console.log(request);
             DataService.updateTaskforce(this.state.taskforce.id, request,
                 (taskforce) => {
-                    this.setState({ isLoaded: true });
                     notify.show("Worksapce saved ...", "info");
                 },
                 (error) => {
@@ -178,14 +176,18 @@ class TaskforceBuilder extends Component {
     }
 
     queryTaskforceExecutions() {
-        DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
-            //console.log(response.content);
+        DataService.queryTaskforceExecution({
+            taskforceId: this.state.taskforceId,
+            size: 1,
+            sort: ["createdTime,desc"]
+        }, (response) => {
+            console.log(response.content);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });
                 this.expandCollapseControlPanel(false);
             } else {
                 this.setState({
-                    isRunning: true,
+                    isRunning: response.content[0].status !== "Stopped",
                     taskExecution: response.content[0]
                 });
                 this.expandCollapseControlPanel(true);
@@ -198,7 +200,8 @@ class TaskforceBuilder extends Component {
 
     render() {
         var maskOverlaySize = this.state.contentSize == null ? { width: 0, height: 0 } : { width: this.state.contentSize.width - 20, height: this.state.contentSize.height - 20 };
-        const taskExecId = this.state.taskExecution != null ? this.state.taskExecution.id : null;
+        const taskExecution = this.state.taskExecution;
+        const taskExecId = taskExecution != null ? taskExecution.id : null;
         return (
             <>
                 <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
@@ -233,9 +236,10 @@ class TaskforceBuilder extends Component {
 
                         <div>
                             <TaskExecutionCard
-                                taskExecution={this.state.taskExecution}
+                                taskExecution={taskExecution}
                                 onClickItem={this.onSelectProgressItem.bind(this)}
-                                onViewLog={this.viewTaskExecLog.bind(this)} />
+                                onViewLog={this.viewTaskExecLog.bind(this)}
+                                onExecutionStopped={this.onExecutionStopped.bind(this)} />
                         </div>
                     </SideBar>
                 </SideBar.Container>
@@ -296,14 +300,12 @@ class TaskforceBuilder extends Component {
 
     runWorkspace() {
         //console.log("run workspace " + this.state.taskforceId);
-        this.setState({ isRunning: true });
+        //this.setState({ isRunning: true });
         DataService.runTaskforce(this.state.taskforceId,
             (taskforceExec) => {
-                console.log(taskforceExec);
-                if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
-                    this.setState({ isRunning: true });
-                }
+                // console.log(taskforceExec);
                 this.setState({
+                    isRunning: true,
                     taskExecution: taskforceExec
                 });
 
@@ -316,14 +318,20 @@ class TaskforceBuilder extends Component {
         DataService.stopTaskforce(this.state.taskforceId,
             (taskforceExec) => {
                 //console.log(taskforceExec);
-                if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
+                /*if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
                 } else {
                     this.setState({ isRunning: false });
-                }
+                }*/
             }, (error) => {
                 console.log(error);
             });
+    }
+
+    onExecutionStopped() {
+        this.setState({
+            isRunning: false
+        });
     }
 
     expandCollapseControlPanel(expanded, sideBarWidth) {
@@ -332,7 +340,6 @@ class TaskforceBuilder extends Component {
             sideBarWidth = size.width;
         }
         //console.log(expanded + ", " + sideBarWidth);
-        this.setState({ showControlPanel: expanded });
         const { containerSize } = this.state;
         //console.log("container size: " + containerSize.width+", "+containerSize.height);
         const contentSize = {
@@ -341,6 +348,7 @@ class TaskforceBuilder extends Component {
         };
 
         this.setState({
+            showControlPanel: expanded,
             contentSize: contentSize,
             sideBarWidth: sideBarWidth
         });

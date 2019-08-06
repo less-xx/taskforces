@@ -179,7 +179,7 @@ public class TaskforceExecutionService {
 
 	@Transactional
 	private int updateTaskforceExecutionStatus(Long taskforceExecId, Status status) {
-		return tfExecRepo.updateTaskforceExecution(taskforceExecId, status);
+		return tfExecRepo.updateTaskforceExecution(taskforceExecId, status, new Date());
 	}
 
 	@Transactional
@@ -194,8 +194,8 @@ public class TaskforceExecutionService {
 	}
 
 	@Transactional
-	public Page<TaskforceExecution> query(String id, String taskforceId, Collection<Status> status,
-			Date createdTime, String createdBy, Pageable pageable) {
+	public Page<TaskforceExecution> query(String id, String taskforceId, Collection<Status> status, Date createdTime,
+			String createdBy, Pageable pageable) {
 		return tfExecRepo.findAll(
 				TaskforceExecutionQuerySpecs.queryTaskforceExecution(id, taskforceId, status, createdTime, createdBy),
 				pageable);

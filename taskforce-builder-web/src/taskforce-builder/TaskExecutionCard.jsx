@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
     Card, ListGroup
 } from 'react-bootstrap';
+import Moment from 'react-moment';
 import DataService from '../DataService';
 
 class TaskExecutionCard extends Component {
@@ -9,29 +10,16 @@ class TaskExecutionCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            taskExecution: null
+            taskExecution: props.taskExecution
         }
         this.monitor = null;
     }
 
     componentWillReceiveProps(props) {
+        console.log(props);
         this.setState({
             taskExecution: props.taskExecution
         });
-        if (this.state.taskExecution != null && this.state.taskExecution.status !== "Stopped") {
-            if (this.monitor == null) {
-                this.monitorTaskExec();
-            }
-
-        }
-    }
-
-    componentWillUpdate() {
-        if (this.state.taskExecution != null && this.state.taskExecution.status === "Stopped") {
-            if (this.monitor != null) {
-                clearInterval(this.monitor);
-            }
-        }
     }
 
     render() {
@@ -39,13 +27,32 @@ class TaskExecutionCard extends Component {
             const { progress } = this.state.taskExecution;
 
             var items = progress.map((p, index) => {
-                return <ListGroup.Item eventKey={index} key={index}>{index}. {p.blockStatus}</ListGroup.Item>
+                return <ListGroup.Item eventKey={index} key={index}>Proc {index}: {p.blockStatus}</ListGroup.Item>
             });
+
+            var endTime = null;
+            if (this.state.taskExecution.status === "Stopped") {
+                endTime = <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.lastUpdatedTime)}</Moment>
+                if (this.monitor != null) {
+                    this.stopMonitorTaskExec();
+                }
+            } else {
+                if (this.monitor == null) {
+                    this.monitorTaskExec();
+                }
+            }
+
             return (
 
                 <Card>
                     <Card.Body>
-                        <Card.Title>Progress</Card.Title>
+                        <Card.Title>Execution Status</Card.Title>
+                        <Card.Text>Start: &nbsp;
+                            <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.createdTime)}</Moment>
+                        </Card.Text>
+                        <Card.Text>End: &nbsp;
+                            {endTime}
+                        </Card.Text>
                         <ListGroup variant="flush" onClick={this.onClickItem.bind(this)} style={{ cursor: "pointer" }}>
                             {items}
                         </ListGroup>
@@ -56,7 +63,7 @@ class TaskExecutionCard extends Component {
                 </Card>
             );
         }
-        return <div></div>;
+        return <></>;
     }
 
     onClickItem(evt) {
@@ -67,20 +74,42 @@ class TaskExecutionCard extends Component {
         }
     }
 
+    loadTaskExec(taskExecId) {
+        const _this = this;
+        DataService.getTaskforceExecutionById(taskExecId,
+            (taskExecution) => {
+                if (taskExecution.status === "Stopped") {
+                    _this.stopMonitorTaskExec();
+                    if (_this.props.onExecutionStopped) {
+                        _this.props.onExecutionStopped();
+                    }
+                }
+                this.setState({
+                    taskExecution: taskExecution
+                });
+            },
+            (error) => {
+                console.log(error);
+            });
+    }
+
     monitorTaskExec() {
-        if (this.monitor != null) {
-            clearInterval(this.monitor);
-            this.monitor = null;
-        }
-        if (this.state.taskExecution) {
-            //console.log(this.state.taskExecution);
-            const taskExecId = this.state.taskExecution.id;
-            console.log("start monitoring task execution, id: " + taskExecId);
+
+        const { taskExecution } = this.state;
+        const _this = this;
+        if (taskExecution) {
+
+            console.log("start monitoring task execution, id: " + taskExecution.id);
             this.monitor = setInterval(() => {
-                console.log("query task execution, id: " + taskExecId);
-                DataService.getTaskforceExecutionById(taskExecId,
+                console.log("query task execution, id: " + taskExecution.id);
+                DataService.getTaskforceExecutionById(taskExecution.id,
                     (taskExecution) => {
-                        console.log(taskExecution);
+                        if (taskExecution.status === "Stopped") {
+                            _this.stopMonitorTaskExec();
+                            if (_this.props.onExecutionStopped) {
+                                _this.props.onExecutionStopped();
+                            }
+                        }
                         this.setState({
                             taskExecution: taskExecution
                         });
@@ -88,10 +117,16 @@ class TaskExecutionCard extends Component {
                     (error) => {
                         console.log(error);
                     });
-            }, 5000);
+            }, 3000);
 
         }
+    }
 
+    stopMonitorTaskExec() {
+        if (this.monitor != null) {
+            clearInterval(this.monitor);
+            this.monitor = null;
+        }
     }
 
     viewLog() {

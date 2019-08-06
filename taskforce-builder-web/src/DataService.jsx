@@ -173,24 +173,33 @@ const DataService = {
             .catch(error => handleError(error));
     },
 
-    queryTaskforceExecution: function (id, taskforceId, status, createdTime, createdBy,
+    queryTaskforceExecution: function (request,
         handleTaskforceExecution, handleError) {
         var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION);
         var params = {};
-        if (id != null) {
-            params['id'] = id;
+        if (request.id != null) {
+            params['id'] = request.id;
         }
-        if (taskforceId != null) {
-            params['taskforce_id'] = taskforceId;
+        if (request.taskforceId != null) {
+            params['taskforce_id'] = request.taskforceId;
         }
-        if (status != null) {
-            params['status'] = status;
+        if (request.status != null) {
+            params['status'] = request.status;
         }
-        if (createdTime != null) {
-            params['created_time'] = createdTime;
+        if (request.createdTime != null) {
+            params['created_time'] = request.createdTime;
         }
-        if (createdBy != null) {
-            params['created_by'] = createdBy;
+        if (request.createdBy != null) {
+            params['created_by'] = request.createdBy;
+        }
+        if(request.sort!=null){
+            params['sort'] = request.sort;
+        }
+        if(request.page!=null){
+            params['page'] = request.page;
+        }
+        if(request.size!=null){
+            params['size'] = request.size;
         }
 
         url.search = new URLSearchParams(params)

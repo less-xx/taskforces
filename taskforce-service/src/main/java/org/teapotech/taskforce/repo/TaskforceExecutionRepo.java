@@ -3,6 +3,7 @@
  */
 package org.teapotech.taskforce.repo;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -29,6 +30,6 @@ public interface TaskforceExecutionRepo
 
 	@Transactional
 	@Modifying
-	@Query("update TaskforceExecution te set te.status=?2 where te.id=?1")
-	int updateTaskforceExecution(Long id, Status status);
+	@Query("update TaskforceExecution te set te.status=?2, te.lastUpdatedTime=?3 where te.id=?1")
+	int updateTaskforceExecution(Long id, Status status, Date updateTime);
 }
