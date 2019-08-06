@@ -50,6 +50,11 @@
     font-size: 0.8em;
 }
 
+.card-link {
+    margin-top: 10px;
+    text-align: right;
+}
+
 .list-group {
     cursor: pointer;
     font-size: 1em;

@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -206,7 +207,7 @@ public class TaskforceExecutionService {
 		if (we != null) {
 			return we.getBlockExecutionContext().getBlockExecutionProgress().values();
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Transactional

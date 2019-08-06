@@ -146,7 +146,7 @@ const DataService = {
         }).then(response => response.json())
             .then(json => {
                 if (handleResponse) {
-                    handleResponse(json);
+                    handleResponse(json.body);
                 }
             })
             .catch(error => handleError(error));
@@ -167,7 +167,7 @@ const DataService = {
         }).then(response => response.json())
             .then(json => {
                 if (handleResponse) {
-                    handleResponse(json);
+                    handleResponse(json.body);
                 }
             })
             .catch(error => handleError(error));
@@ -211,6 +211,29 @@ const DataService = {
             .then(json => {
                 if (handleResponse) {
                     handleResponse(json.body);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
+    getTaskforceExecutionLogsById: function (taskExecId, start, lines, handleResponse, handleError) {
+        var url = new URL(process.env.REACT_APP_URL_GET_TASKFORCE_EXECUTION_LOG_BY_ID.replace(/\{.*\}/g, taskExecId));
+        if (start === null) {
+            start = 0;
+        }
+        if (lines === null) {
+            lines = 100;
+        }
+        var params = {
+            "start": start,
+            "lines": lines
+        };
+        url.search = new URLSearchParams(params)
+        fetch(url)
+            .then(res => res.text())
+            .then(text => {
+                if (handleResponse) {
+                    handleResponse(text);
                 }
             })
             .catch(error => handleError(error));
@@ -274,7 +297,7 @@ const DataService = {
                 }
             })
             .catch(error => handleError(error));
-    },
+    }
 
 };
 export default DataService;

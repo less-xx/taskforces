@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Card, ListGroup
+    Card, Modal
 } from 'react-bootstrap';
 import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
@@ -12,6 +12,7 @@ import SideBar from '../expandable-sidebar/SideBar';
 import TaskExecutionCard from './TaskExecutionCard';
 import './TaskforceBuilder.css';
 import BlockStyles from './BlockStyles';
+import TaskExecutionLog from '../taskforces/TaskExecutionLog';
 
 class TaskforceBuilder extends Component {
 
@@ -26,15 +27,15 @@ class TaskforceBuilder extends Component {
             taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId"),
             isRunning: false,
             showControlPanel: false,
-            taskExecutionProgress: null,
+            taskExecution: null,
             containerSize: null,
             contentSize: null,
-            sideBarWidth: null
+            sideBarWidth: null,
+            showTaskExecLog: false
         };
         this.toSaveList = [];
         Blockly.HSV_SATURATION = 0.7;
         Blockly.HSV_VALUE = 0.7;
-        this.taskExecMonitoringTimer = null;
     }
 
     componentDidUpdate() {
@@ -140,26 +141,6 @@ class TaskforceBuilder extends Component {
         }.bind(this), 10000);
     }
 
-    startMonitor(taskforceExec) {
-        if (taskforceExec.status === "Waiting" ||
-            taskforceExec.status === "Running" ||
-            taskforceExec.status === "Stopping") {
-
-            this.taskExecMonitoringTimer = setInterval(function () {
-                DataService.getTaskforceExecutionById(taskforceExec.id, (response) => {
-                    this.setState({ taskExecutionProgress: response.progress });
-                }, (error) => {
-                    console.log(error);
-                });
-            }.bind(this), 2000);
-        } else {
-            if (this.taskExecMonitoringTimer) {
-                clearInterval(this.taskExecMonitoringTimer);
-            }
-        }
-
-    }
-
     registerBlock(blockType, blockDef) {
         //console.log(blockDef);
         Blockly.Blocks[blockType] = {
@@ -198,17 +179,16 @@ class TaskforceBuilder extends Component {
 
     queryTaskforceExecutions() {
         DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
-            console.log(response.content);
+            //console.log(response.content);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });
                 this.expandCollapseControlPanel(false);
             } else {
-                this.setState({ isRunning: true });
+                this.setState({
+                    isRunning: true,
+                    taskExecution: response.content[0]
+                });
                 this.expandCollapseControlPanel(true);
-                const progress = response.content[0].progress;
-                this.setState({ taskExecutionProgress: progress });
-                //console.log(Blockly.mainWorkspace.getAllBlocks());
-
             }
         },
             (error) => {
@@ -218,43 +198,60 @@ class TaskforceBuilder extends Component {
 
     render() {
         var maskOverlaySize = this.state.contentSize == null ? { width: 0, height: 0 } : { width: this.state.contentSize.width - 20, height: this.state.contentSize.height - 20 };
+        const taskExecId = this.state.taskExecution != null ? this.state.taskExecution.id : null;
         return (
-            <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
+            <>
+                <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
 
-                <SideBar.Content ref="sideBarContent" size={this.state.contentSize}>
-                    <div id="workspaceContainer">
-                        <Notifications options={{
-                            zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
-                                info: {
-                                    color: "#999999",
-                                    backgroundColor: '#FDFDFD'
+                    <SideBar.Content ref="sideBarContent" size={this.state.contentSize}>
+                        <div id="workspaceContainer">
+                            <Notifications options={{
+                                zIndex: 200, top: '60px', animationDuration: 200, timeout: 1000, colors: {
+                                    info: {
+                                        color: "#999999",
+                                        backgroundColor: '#FDFDFD'
+                                    }
                                 }
-                            }
-                        }} />
-                        <div id="blocklyDiv">
-                            <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none', width: maskOverlaySize.width, height: maskOverlaySize.height }}></div>
+                            }} />
+                            <div id="blocklyDiv">
+                                <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none', width: maskOverlaySize.width, height: maskOverlaySize.height }}></div>
+                            </div>
+
                         </div>
+                    </SideBar.Content>
 
-                    </div>
-                </SideBar.Content>
+                    <SideBar onExpand={this.expandCollapseControlPanel.bind(this)} ref="sideBar">
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>Run / Stop</Card.Title>
+                                <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
+                                <span>Run</span>
+                                <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
+                                <span>Stop</span>
+                            </Card.Body>
+                        </Card>
 
-                <SideBar onExpand={this.expandCollapseControlPanel.bind(this)} ref="sideBar">
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Run / Stop</Card.Title>
-                            <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
-                            <span>Run</span>
-                            <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
-                            <span>Stop</span>
-                        </Card.Body>
-                    </Card>
+                        <div>
+                            <TaskExecutionCard
+                                taskExecution={this.state.taskExecution}
+                                onClickItem={this.onSelectProgressItem.bind(this)}
+                                onViewLog={this.viewTaskExecLog.bind(this)} />
+                        </div>
+                    </SideBar>
+                </SideBar.Container>
 
-                    <div>
-                        <TaskExecutionCard progress={this.state.taskExecutionProgress} onClickItem={this.onSelectProgressItem.bind(this)} />
-                    </div>
-                </SideBar>
-
-            </SideBar.Container>
+                <Modal size="lg"
+                    scrollable
+                    show={this.state.showTaskExecLog}
+                    onHide={this.onCloseTaskExecLog.bind(this)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Execution Logs</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <TaskExecutionLog taskExecId={taskExecId} />
+                    </Modal.Body>
+                </Modal>
+            </>
         );
     }
 
@@ -306,6 +303,10 @@ class TaskforceBuilder extends Component {
                 if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
                 }
+                this.setState({
+                    taskExecution: taskforceExec
+                });
+
             }, (error) => {
                 console.log(error);
             });
@@ -314,7 +315,7 @@ class TaskforceBuilder extends Component {
         console.log("stop workspace " + this.state.taskforceId);
         DataService.stopTaskforce(this.state.taskforceId,
             (taskforceExec) => {
-                console.log(taskforceExec);
+                //console.log(taskforceExec);
                 if (taskforceExec.status === "Running" || taskforceExec.status === "Waiting") {
                     this.setState({ isRunning: true });
                 } else {
@@ -343,10 +344,6 @@ class TaskforceBuilder extends Component {
             contentSize: contentSize,
             sideBarWidth: sideBarWidth
         });
-
-        //var maskOverlay = document.getElementById("maskOverlay");
-        //maskOverlay.style.width = contentSize.width;
-        //maskOverlay.style.height = contentSize.height;
     }
 
     onSizeChange(width, height) {
@@ -375,6 +372,18 @@ class TaskforceBuilder extends Component {
         //const block = Blockly.mainWorkspace.getBlockById(startBlockId);
         //block.setStyle("highlighted");
         //block.setColour("#FF0000");
+    }
+
+    viewTaskExecLog() {
+        this.setState({
+            showTaskExecLog: true
+        });
+    }
+
+    onCloseTaskExecLog() {
+        this.setState({
+            showTaskExecLog: false
+        });
     }
 }
 
