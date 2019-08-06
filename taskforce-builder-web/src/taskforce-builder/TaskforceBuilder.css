@@ -24,10 +24,9 @@
     height: 100%;
     position: absolute;
     z-index: 100;
-    top: 0px;
-    right: 0px;
     background-color: rgb(230, 230, 230);
-    opacity: 0.3;
+    opacity: 0.1;
+    cursor: not-allowed;
 }
 
 .controlButton {
@@ -41,4 +40,17 @@
 .controlButton.disabled {
     opacity: 0.3;
     pointer-events: none;
+}
+
+.card-title {
+    font-size: 16px;
+}
+
+.card-body {
+    font-size: 0.8em;
+}
+
+.list-group {
+    cursor: pointer;
+    font-size: 1em;
 }

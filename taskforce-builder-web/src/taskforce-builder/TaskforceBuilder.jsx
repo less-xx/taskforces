@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import {
+    Card, ListGroup
+} from 'react-bootstrap';
 import Cookies from 'universal-cookie';
 import Blockly from 'node-blockly/browser';
 import DataService from '../DataService';
@@ -29,8 +32,8 @@ class TaskforceBuilder extends Component {
             sideBarWidth: null
         };
         this.toSaveList = [];
-        Blockly.HSV_SATURATION = 0.9;
-        Blockly.HSV_VALUE = 0.8;
+        Blockly.HSV_SATURATION = 0.7;
+        Blockly.HSV_VALUE = 0.7;
         this.taskExecMonitoringTimer = null;
     }
 
@@ -195,7 +198,7 @@ class TaskforceBuilder extends Component {
 
     queryTaskforceExecutions() {
         DataService.queryTaskforceExecution(null, this.state.taskforceId, ["Running", "Waiting", "Stopping"], null, null, (response) => {
-            //console.log(response);
+            console.log(response.content);
             if (response.totalElements === 0) {
                 this.setState({ isRunning: false });
                 this.expandCollapseControlPanel(false);
@@ -214,6 +217,7 @@ class TaskforceBuilder extends Component {
     }
 
     render() {
+        var maskOverlaySize = this.state.contentSize == null ? { width: 0, height: 0 } : { width: this.state.contentSize.width - 20, height: this.state.contentSize.height - 20 };
         return (
             <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
 
@@ -228,18 +232,23 @@ class TaskforceBuilder extends Component {
                             }
                         }} />
                         <div id="blocklyDiv">
+                            <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none', width: maskOverlaySize.width, height: maskOverlaySize.height }}></div>
                         </div>
-                        <div id="maskOverlay" style={{ display: this.state.isRunning ? 'block' : 'none' }}></div>
+
                     </div>
                 </SideBar.Content>
 
                 <SideBar onExpand={this.expandCollapseControlPanel.bind(this)} ref="sideBar">
-                    <div>
-                        <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
-                        Run
-                        <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
-                        Stop
-                    </div>
+                    <Card>
+                        <Card.Body>
+                            <Card.Title>Run / Stop</Card.Title>
+                            <MdPlayArrow size='2em' onClick={this.runWorkspace.bind(this)} className={+this.state.isRunning ? 'controlButton disabled' : 'controlButton active'} />
+                            <span>Run</span>
+                            <MdStop size='2em' onClick={this.stopWorkspace.bind(this)} className={this.state.isRunning ? 'controlButton active' : 'controlButton disabled'} />
+                            <span>Stop</span>
+                        </Card.Body>
+                    </Card>
+
                     <div>
                         <TaskExecutionCard progress={this.state.taskExecutionProgress} onClickItem={this.onSelectProgressItem.bind(this)} />
                     </div>
@@ -329,12 +338,15 @@ class TaskforceBuilder extends Component {
             width: containerSize.width - sideBarWidth,
             height: containerSize.height
         };
-        //console.log("content size: " + contentSize.width+", "+contentSize.height);
+
         this.setState({
             contentSize: contentSize,
             sideBarWidth: sideBarWidth
         });
 
+        //var maskOverlay = document.getElementById("maskOverlay");
+        //maskOverlay.style.width = contentSize.width;
+        //maskOverlay.style.height = contentSize.height;
     }
 
     onSizeChange(width, height) {
@@ -359,9 +371,10 @@ class TaskforceBuilder extends Component {
         console.log(progressItem);
         const w = Blockly.mainWorkspace;
         const startBlockId = progressItem.threadName.substring(4);
-        const block = Blockly.mainWorkspace.getBlockById(startBlockId);
-        //console.log(block.getColour());
-        block.setStyle("highlighted");
+        w.highlightBlock(startBlockId);
+        //const block = Blockly.mainWorkspace.getBlockById(startBlockId);
+        //block.setStyle("highlighted");
+        //block.setColour("#FF0000");
     }
 }
 

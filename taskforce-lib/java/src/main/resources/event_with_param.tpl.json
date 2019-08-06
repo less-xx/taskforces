@@ -12,6 +12,7 @@
 			"name": "parameter"
 		}
 	],
+	"inputsInline": true,
 	"output": null,
 	"tooltip": "",
 	"helpUrl": "",

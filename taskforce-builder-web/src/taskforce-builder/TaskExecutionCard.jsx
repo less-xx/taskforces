@@ -26,10 +26,12 @@ class TaskExecutionCard extends Component {
             return (
 
                 <Card>
-                    <Card.Header>Progress</Card.Header>
-                    <ListGroup variant="flush" onClick={this.onClickItem.bind(this)}>
-                        {items}
-                    </ListGroup>
+                    <Card.Body>
+                        <Card.Title>Progress</Card.Title>
+                        <ListGroup variant="flush" onClick={this.onClickItem.bind(this)} style={{ cursor: "pointer" }}>
+                            {items}
+                        </ListGroup>
+                    </Card.Body>
                 </Card>
             );
         }
