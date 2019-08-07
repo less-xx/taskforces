@@ -34,6 +34,12 @@ class EditTaskforceGroupModal extends Component {
                 groupName: newProps.group.name,
                 groupDesc: newProps.group.description,
             });
+        }else{
+            this.setState({
+                groupId: null,
+                groupName: null,
+                groupDesc: null,
+            });
         }
     }
 

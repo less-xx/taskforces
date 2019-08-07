@@ -66,7 +66,7 @@ const DataService = {
                     var pager = result.body.pageable;
                     DataStore.updateGroupTaskforces(groupId, taskforces, pager);
                     if (handleTaskforces) {
-                        console.log(taskforces);
+                        //console.log(taskforces);
                         handleTaskforces(taskforces, pager);
                     }
                 }

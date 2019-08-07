@@ -195,11 +195,13 @@ class Taskforces extends Component {
     }
 
     newTaskforce(group) {
+        console.log(group);
         this.setState({
             showEditTaskforceModal: true,
             showEditGroupModal: false,
             showTaskforceOpMenu: false,
-            selectedGroup: group
+            selectedGroup: group,
+            selectedTaskforce: null
         });
     }
 

@@ -58,7 +58,7 @@ class EditTaskforceModal extends Component {
         const tgid = this.state.taskforceGroupId;
         //console.log(tgid);
         const defaultGroup = groupOptions.filter(g => g.value === tgid);
-        
+
         const title = this.state.taskforce ? "Edit Taskforce" : "New Taskfoce";
         const { validated } = this.state;
         return (
@@ -87,7 +87,7 @@ class EditTaskforceModal extends Component {
 
                         <Form.Group controlId="taskforceGroup">
                             <Form.Label>Group</Form.Label>
-                            <Select options={groupOptions} defaultValue={groupOptions[0]} onChange={this.onChangeGroup.bind(this)} isDisabled={this.state.disableGroupSelection} />
+                            <Select options={groupOptions} defaultValue={defaultGroup} onChange={this.onChangeGroup.bind(this)} isDisabled={this.state.disableGroupSelection} />
                         </Form.Group>
 
                     </Modal.Body>
