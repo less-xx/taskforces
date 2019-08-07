@@ -132,6 +132,7 @@ public class WorkspaceExecutor {
 			try {
 				BlockExecutorUtils.execute(startBlock, context);
 			} catch (Exception e) {
+				context.getLogger().error(e.getMessage());
 				LOG.error(e.getMessage(), e);
 			}
 
