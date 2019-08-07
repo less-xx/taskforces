@@ -2,17 +2,13 @@ package org.teapotech.taskforce.entity;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -29,25 +25,33 @@ public class TaskforceExecution {
 	}
 
 	@Id
-	@SequenceGenerator(name = "task_execution_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "task_execution_id")
+	@SequenceGenerator(name = "task_execution_id_seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "task_execution_id_seq")
 	@Column(name = "id", columnDefinition = "serial")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-	@JoinColumn(name = "taskforce_id")
-	private SimpleTaskforceEntity taskforce;
+	@Column(name = "taskforce_id", nullable = false)
+	private String taskforceId;
 
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Status status = Status.Waiting;
 
-	@Column(name = "created_time")
+	@Column(name = "start_time", nullable = true)
 	@CreationTimestamp
-	private Date createdTime;
+	private Date startTime;
 
-	@Column(name = "created_by")
-	private String createdBy;
+	@Column(name = "end_time", nullable = true)
+	private Date endTime;
+
+	@Column(name = "start_by", nullable = true)
+	private String startBy;
+
+	@Column(name = "end_by", nullable = true)
+	private String endBy;
+
+	@Column(name = "message", nullable = true)
+	private String message;
 
 	@Column(name = "last_updated")
 	@UpdateTimestamp
@@ -65,12 +69,12 @@ public class TaskforceExecution {
 		this.id = id;
 	}
 
-	public SimpleTaskforceEntity getTaskforce() {
-		return taskforce;
+	public String getTaskforceId() {
+		return taskforceId;
 	}
 
-	public void setTaskforce(SimpleTaskforceEntity taskforce) {
-		this.taskforce = taskforce;
+	public void setTaskforceId(String taskforceId) {
+		this.taskforceId = taskforceId;
 	}
 
 	public Status getStatus() {
@@ -79,22 +83,6 @@ public class TaskforceExecution {
 
 	public void setStatus(Status status) {
 		this.status = status;
-	}
-
-	public Date getCreatedTime() {
-		return createdTime;
-	}
-
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
 	}
 
 	public Date getLastUpdatedTime() {
@@ -111,6 +99,46 @@ public class TaskforceExecution {
 
 	public void setVersion(int version) {
 		this.version = version;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getStartBy() {
+		return startBy;
+	}
+
+	public void setStartBy(String startBy) {
+		this.startBy = startBy;
+	}
+
+	public String getEndBy() {
+		return endBy;
+	}
+
+	public void setEndBy(String endBy) {
+		this.endBy = endBy;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

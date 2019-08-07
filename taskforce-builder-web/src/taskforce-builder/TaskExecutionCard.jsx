@@ -32,7 +32,7 @@ class TaskExecutionCard extends Component {
 
             var endTime = null;
             if (this.state.taskExecution.status === "Stopped") {
-                endTime = <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.lastUpdatedTime)}</Moment>
+                endTime = <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.endTime)}</Moment>
                 if (this.monitor != null) {
                     this.stopMonitorTaskExec();
                 }
@@ -48,7 +48,7 @@ class TaskExecutionCard extends Component {
                     <Card.Body>
                         <Card.Title>Execution Status</Card.Title>
                         <Card.Text>Start: &nbsp;
-                            <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.createdTime)}</Moment>
+                            <Moment format="MM-DD HH:mm">{new Date(this.state.taskExecution.startTime)}</Moment>
                         </Card.Text>
                         <Card.Text>End: &nbsp;
                             {endTime}

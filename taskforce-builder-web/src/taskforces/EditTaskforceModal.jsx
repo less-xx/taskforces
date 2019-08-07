@@ -7,6 +7,7 @@ import {
 import './Taskforces.css'
 import Select from 'react-select';
 import DataService from '../DataService';
+import DataStore from '../DataStore';
 
 class EditTaskforceModal extends Component {
 
@@ -17,7 +18,6 @@ class EditTaskforceModal extends Component {
             isLoaded: false,
             show: props.show ? props.show : false,
             validated: false,
-            groups: props.groups ? props.groups : [],
             taskforce: props.taskforce,
             taskforceId: null,
             taskforceName: null,
@@ -28,16 +28,17 @@ class EditTaskforceModal extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        console.log(newProps);
+        //console.log(newProps);
         this.setState({
             show: newProps.show ? newProps.show : false,
-            groups: newProps.groups ? newProps.groups : []
+            groups: newProps.groups ? newProps.groups : [],
+            disableGroupSelection: newProps.disableGroupSelection
         });
         if (newProps.taskforce) {
             this.setState({
                 taskforceId: newProps.taskforce.id,
                 taskforceName: newProps.taskforce.name,
-                taskforceGroupId: newProps.taskforce.groupId,
+                taskforceGroupId: newProps.taskforce.group.id,
                 taskforceDesc: newProps.taskforce.description
             });
         } else if (newProps.group) {
@@ -48,12 +49,16 @@ class EditTaskforceModal extends Component {
     }
 
     render() {
-        const groupOptions = this.state.groups.map(g =>
+        const groupOptions = DataStore.taskforceGroups.content.map(g =>
             ({
                 value: g.id,
                 label: g.name
             })
         );
+        const tgid = this.state.taskforceGroupId;
+        //console.log(tgid);
+        const defaultGroup = groupOptions.filter(g => g.value === tgid);
+        
         const title = this.state.taskforce ? "Edit Taskforce" : "New Taskfoce";
         const { validated } = this.state;
         return (

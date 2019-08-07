@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {
-    Button
+    Badge
 } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 import BootstrapTable from 'react-bootstrap-table-next';
+import { MdMoreVert } from 'react-icons/md';
 import './Taskforces.css'
 import Moment from 'react-moment';
 import DataService from '../DataService';
@@ -39,8 +40,22 @@ class GroupTaskforces extends Component {
 
     render() {
         var dateTimeFormatter = function (cell, row) {
+            if (cell == null) {
+                return <></>
+            }
             return (
                 <Moment format="YYYY-MM-DD HH:mm">
+                    {new Date(cell)}
+                </Moment>
+            );
+        }
+
+        var execTimeFormatter = function (cell, row) {
+            if (cell == null) {
+                return <></>
+            }
+            return (
+                <Moment format="YYYY-MM-DD HH:mm:ss">
                     {new Date(cell)}
                 </Moment>
             );
@@ -51,6 +66,22 @@ class GroupTaskforces extends Component {
                 <Link to="/taskforce-editor" onClick={DataStore.setCurrentTaskforceId(row.id)}> {cell} </Link>
             );
         }
+
+        var execStatusFormatter = function (cell, row) {
+            if (cell === "Running") {
+                return <Badge variant="success">{cell}</Badge>
+            } else if (cell === "Stopped") {
+                return <Badge variant="secondary">{cell}</Badge>
+            }
+            return <Badge variant="warning">{cell}</Badge>
+        }
+
+        var opColFormatter = function (cell, row, rowIndex, formatExtraData) {
+
+            return (
+                <MdMoreVert onClick={(e) => this.editTaskforce(e, row)} />
+            );
+        }.bind(this);
 
         const columns = [{
             dataField: 'name',
@@ -65,6 +96,24 @@ class GroupTaskforces extends Component {
             align: 'left',
             headerAlign: 'left',
         }, {
+            dataField: 'execStatus',
+            text: 'Execution Status',
+            align: 'center',
+            headerAlign: 'center',
+            formatter: execStatusFormatter
+        }, {
+            dataField: 'execStartTime',
+            text: 'Start Time',
+            align: 'center',
+            headerAlign: 'center',
+            formatter: execTimeFormatter
+        }, {
+            dataField: 'execEndTime',
+            text: 'End Time',
+            align: 'center',
+            headerAlign: 'center',
+            formatter: execTimeFormatter
+        }, {
             dataField: 'lastUpdatedTime',
             text: 'Last Updated',
             align: 'center',
@@ -77,6 +126,13 @@ class GroupTaskforces extends Component {
             align: 'center',
             headerAlign: 'center',
             headerStyle: { width: "150px" }
+        }, {
+            dataField: 'id',
+            text: '',
+            align: 'center',
+            headerAlign: 'center',
+            headerStyle: { width: "40px" },
+            formatter: opColFormatter
         }];
         return (
             <div>
@@ -87,7 +143,6 @@ class GroupTaskforces extends Component {
                     stripped
                     hover
                     condensed
-                    noDataIndication = { <Button variant="outline-primary" size="sm" onClick={this.editTaskforce.bind(this)}> New Taskforce </Button> }
                     wrapperClasses="taskforce-grid"
                     bordered={false}
                 />
@@ -96,9 +151,9 @@ class GroupTaskforces extends Component {
         );
     }
 
-    editTaskforce() {
-        console.log(this.state.taskforceGroup);
-        this.props.parent.editTaskforce(this.state.taskforceGroup);
+    editTaskforce(evt, taskforce) {
+        console.log(evt.target);
+        this.props.parent.showTaskforceContextMenu(evt.target, taskforce);
     }
 }
 

@@ -4,25 +4,28 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.teapotech.block.executor.BlockExecutionProgress;
-import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
 import org.teapotech.taskforce.entity.TaskforceExecution;
 
 public class TaskforceExecutionWrapper {
 
 	private Long id;
-	private SimpleTaskforceEntity taskforce;
+	private String taskforceId;
 	private String status;
-	private Date createdTime;
-	private String createdBy;
+	private Date startTime;
+	private Date endTime;
+	private String startBy;
+	private String endBy;
 	private Date lastUpdatedTime;
 	private Collection<BlockExecutionProgress> progress;
 
 	public TaskforceExecutionWrapper(TaskforceExecution taskExec, Collection<BlockExecutionProgress> bep) {
 		this.id = taskExec.getId();
-		this.taskforce = taskExec.getTaskforce();
+		this.taskforceId = taskExec.getTaskforceId();
 		this.status = taskExec.getStatus().name();
-		this.createdTime = taskExec.getCreatedTime();
-		this.createdBy = taskExec.getCreatedBy();
+		this.startTime = taskExec.getStartTime();
+		this.endTime = taskExec.getEndTime();
+		this.startBy = taskExec.getStartBy();
+		this.endBy = taskExec.getEndBy();
 		this.lastUpdatedTime = taskExec.getLastUpdatedTime();
 		this.progress = bep;
 	}
@@ -35,12 +38,12 @@ public class TaskforceExecutionWrapper {
 		this.id = id;
 	}
 
-	public SimpleTaskforceEntity getTaskforce() {
-		return taskforce;
+	public String getTaskforceId() {
+		return taskforceId;
 	}
 
-	public void setTaskforce(SimpleTaskforceEntity taskforce) {
-		this.taskforce = taskforce;
+	public void setTaskforceId(String taskforceId) {
+		this.taskforceId = taskforceId;
 	}
 
 	public String getStatus() {
@@ -51,20 +54,36 @@ public class TaskforceExecutionWrapper {
 		this.status = status;
 	}
 
-	public Date getCreatedTime() {
-		return createdTime;
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
-	public String getCreatedBy() {
-		return createdBy;
+	public Date getEndTime() {
+		return endTime;
 	}
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getStartBy() {
+		return startBy;
+	}
+
+	public void setStartBy(String startBy) {
+		this.startBy = startBy;
+	}
+
+	public String getEndBy() {
+		return endBy;
+	}
+
+	public void setEndBy(String endBy) {
+		this.endBy = endBy;
 	}
 
 	public Date getLastUpdatedTime() {

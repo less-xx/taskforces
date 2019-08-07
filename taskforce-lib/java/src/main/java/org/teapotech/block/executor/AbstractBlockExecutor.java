@@ -34,7 +34,11 @@ public abstract class AbstractBlockExecutor implements BlockExecutor {
 	public final Object execute(BlockExecutionContext context) throws BlockExecutionException {
 		Logger LOG = context.getLogger();
 		if (context.isStopped()) {
-			LOG.info("Execution is stopped.");
+			if (this.block != null) {
+				LOG.info("Block execution is stopped. type: {}, id: {}", block.getType(), block.getId());
+			} else {
+				LOG.info("Shadow execution is stopped. type: {}, id: {}", shadow.getType(), shadow.getId());
+			}
 			return null;
 		}
 		try {

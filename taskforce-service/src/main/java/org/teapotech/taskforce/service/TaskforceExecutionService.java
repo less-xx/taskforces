@@ -99,7 +99,8 @@ public class TaskforceExecutionService {
 		List<TaskforceExecution> activeExecs = getActiveTaskforceExecutions();
 		for (TaskforceExecution te : activeExecs) {
 			try {
-				Workspace w = getWorkspace(te.getTaskforce());
+				TaskforceEntity t = taskforceDataStoreService.findTaskforceEntityById(te.getTaskforceId());
+				Workspace w = getWorkspace(t);
 				String workspaceId = buildWorkspaceId(te);
 				BlockExecutionContext context = createWorkspaceExecutionContext(workspaceId);
 
@@ -117,7 +118,7 @@ public class TaskforceExecutionService {
 	}
 
 	private String buildWorkspaceId(TaskforceExecution exec) {
-		return buildWorkspaceId(exec.getTaskforce().getId(), exec.getId());
+		return buildWorkspaceId(exec.getTaskforceId(), exec.getId());
 	}
 
 	public Workspace getWorkspace(TaskforceEntity taskforceEntity) throws InvalidWorkspaceException {
@@ -136,8 +137,8 @@ public class TaskforceExecutionService {
 	public TaskforceExecution executeWorkspace(TaskforceEntity taskforce) throws InvalidWorkspaceException {
 
 		TaskforceExecution tfExec = new TaskforceExecution();
-		tfExec.setCreatedTime(new Date());
-		tfExec.setTaskforce(taskforce.toSimple());
+		tfExec.setStartTime(new Date());
+		tfExec.setTaskforceId(taskforce.getId());
 		tfExec = saveTaskforceExecution(tfExec);
 
 		Workspace w = getWorkspace(taskforce);
@@ -174,12 +175,18 @@ public class TaskforceExecutionService {
 
 	@Transactional
 	private TaskforceExecution saveTaskforceExecution(TaskforceExecution tfExec) {
+		tfExec.setLastUpdatedTime(new Date());
 		return tfExecRepo.save(tfExec);
 	}
 
 	@Transactional
 	private int updateTaskforceExecutionStatus(Long taskforceExecId, Status status) {
-		return tfExecRepo.updateTaskforceExecution(taskforceExecId, status, new Date());
+		if (status == Status.Running) {
+			return tfExecRepo.updateTaskforceExecutionStatusRunning(taskforceExecId);
+		} else if (status == Status.Stopped) {
+			return tfExecRepo.updateTaskforceExecutionStatusStopped(taskforceExecId);
+		}
+		return tfExecRepo.updateTaskforceExecutionStatus(taskforceExecId, status);
 	}
 
 	@Transactional
@@ -189,15 +196,15 @@ public class TaskforceExecutionService {
 
 	@Transactional
 	public TaskforceExecution getAliveTaskforceExecutionByTaskforce(TaskforceEntity taskforce) {
-		return tfExecRepo.findOneByTaskforceAndStatusIn(taskforce.toSimple(),
+		return tfExecRepo.findOneByTaskforceIdAndStatusIn(taskforce.getId(),
 				Arrays.asList(Status.Waiting, Status.Running, Status.Stopping));
 	}
 
 	@Transactional
-	public Page<TaskforceExecution> query(String id, String taskforceId, Collection<Status> status, Date createdTime,
-			String createdBy, Pageable pageable) {
+	public Page<TaskforceExecution> query(String id, String taskforceId, Collection<Status> status, Date startTime,
+			String startBy, Pageable pageable) {
 		return tfExecRepo.findAll(
-				TaskforceExecutionQuerySpecs.queryTaskforceExecution(id, taskforceId, status, createdTime, createdBy),
+				TaskforceExecutionQuerySpecs.queryTaskforceExecution(id, taskforceId, status, startTime, startBy),
 				pageable);
 	}
 

@@ -31,9 +31,11 @@ class Taskforces extends Component {
             showEditGroupModal: false,
             showEditTaskforceModal: false,
             selectedGroup: null,
-            selectTaskforce: null,
+            selectedTaskforce: null,
             showGroupOpMenu: false,
-            groupOpMenuTarget: null
+            groupOpMenuTarget: null,
+            taskforceOpMenuTarget: null,
+            showTaskforceOpMenu: false
         };
     }
 
@@ -90,7 +92,12 @@ class Taskforces extends Component {
         var parent = this;
         const expandRow = {
             renderer: row => (
-                <GroupTaskforces group={row} parent={parent} />
+                <>
+                    <GroupTaskforces group={row} parent={parent} />
+                    <div style={{ marginBottom: 10, textAlign: "center" }}>
+                        <Button variant="outline-primary" size="sm" onClick={(e) => this.newTaskforce(row)}> New Taskforce </Button>
+                    </div>
+                </>
             ),
             showExpandColumn: true,
             expandByColumnOnly: true,
@@ -127,13 +134,20 @@ class Taskforces extends Component {
                 <EditTaskforceGroupModal group={this.state.selectedGroup} show={this.state.showEditGroupModal}
                     refresh={this.refresh.bind(this)} />
 
-                <EditTaskforceModal groups={groups} taskforce={this.state.selectTaskforce} group={this.state.selectedGroup}
+                <EditTaskforceModal groups={groups} taskforce={this.state.selectedTaskforce} group={this.state.selectedGroup}
                     refresh={this.refreshGroupTaskforces.bind(this)}
-                    show={this.state.showEditTaskforceModal} disableGroupSelection={true} />
+                    show={this.state.showEditTaskforceModal} disableGroupSelection={this.state.selectedTaskforce == null} />
 
                 <Overlay target={this.state.groupOpMenuTarget} show={this.state.showGroupOpMenu} >
                     <Dropdown.Menu show>
                         <Dropdown.Item eventKey="1" onSelect={this.editGroup.bind(this)}>Edit</Dropdown.Item>
+                        <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Overlay>
+
+                <Overlay target={this.state.taskforceOpMenuTarget} show={this.state.showTaskforceOpMenu} >
+                    <Dropdown.Menu show>
+                        <Dropdown.Item eventKey="1" onSelect={this.editTaskforce.bind(this)}>Edit</Dropdown.Item>
                         <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
                     </Dropdown.Menu>
                 </Overlay>
@@ -153,7 +167,7 @@ class Taskforces extends Component {
     }
 
     refreshGroupTaskforces() {
-        this.setState({ 
+        this.setState({
             showEditTaskforceModal: false,
             isLoaded: false
         });
@@ -170,10 +184,21 @@ class Taskforces extends Component {
         });
     }
 
-    editTaskforce(group) {
+    editTaskforce() {
         this.setState({
             showEditTaskforceModal: true,
             showEditGroupModal: false,
+            showTaskforceOpMenu: false,
+            selectedGroup: this.state.selectedGroup,
+            selectedTaskforce: this.state.selectedTaskforce
+        });
+    }
+
+    newTaskforce(group) {
+        this.setState({
+            showEditTaskforceModal: true,
+            showEditGroupModal: false,
+            showTaskforceOpMenu: false,
             selectedGroup: group
         });
     }
@@ -183,7 +208,20 @@ class Taskforces extends Component {
             groupOpMenuTarget: target,
             showGroupOpMenu: true,
             showEditGroupModal: false,
+            showEditTaskforceModal: false,
             selectedGroup: group
+        });
+        //console.log(target);
+    }
+
+    showTaskforceContextMenu(target, taskforce) {
+        this.setState({
+            taskforceOpMenuTarget: target,
+            showGroupOpMenu: false,
+            showTaskforceOpMenu: true,
+            showEditGroupModal: false,
+            showEditTaskforceModal: false,
+            selectedTaskforce: taskforce
         });
         //console.log(target);
     }

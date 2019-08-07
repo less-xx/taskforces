@@ -179,7 +179,7 @@ class TaskforceBuilder extends Component {
         DataService.queryTaskforceExecution({
             taskforceId: this.state.taskforceId,
             size: 1,
-            sort: ["createdTime,desc"]
+            sort: ["startTime,desc"]
         }, (response) => {
             console.log(response.content);
             if (response.totalElements === 0) {

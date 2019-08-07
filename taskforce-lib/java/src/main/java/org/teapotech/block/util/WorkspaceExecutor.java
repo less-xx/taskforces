@@ -82,8 +82,6 @@ public class WorkspaceExecutor {
 			}
 		}
 
-		startMonitoring();
-
 		if (entryPointThread != null) {
 			boolean initialized = false;
 			while (!initialized) {
@@ -103,6 +101,7 @@ public class WorkspaceExecutor {
 			}
 
 			entryPointThread.start();
+			startMonitoring();
 		}
 	}
 

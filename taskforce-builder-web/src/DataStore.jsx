@@ -17,7 +17,7 @@ const DataStore = {
     },
 
     getGroupTaskforces: function (groupId) {
-        console.log("getGroupTaskforces(" + groupId + ")");
+        //console.log("getGroupTaskforces(" + groupId + ")");
         var taskforces = this.groupTaskforce[groupId];
         if (taskforces) {
             return taskforces.content;
