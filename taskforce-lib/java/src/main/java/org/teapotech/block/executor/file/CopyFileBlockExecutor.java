@@ -55,15 +55,17 @@ public class CopyFileBlockExecutor extends AbstractBlockExecutor implements Cust
 			throw new BlockExecutionException("File path does not exist. " + toPath.getAbsolutePath());
 		}
 		BlockValue bv = this.block.getBlockValueByName("files", this.block.getValues().get(0));
-		File[] files = (File[]) BlockExecutorUtils.execute(bv.getBlock(), context);
-		for (File f : files) {
+		Object value = BlockExecutorUtils.execute(bv.getBlock(), context);
+		if (value instanceof File[]) {
+			File[] files = (File[]) value;
+			for (File f : files) {
+				FileUtils.copyFileToDirectory(f, toPath);
+				LOG.info("Copied file {} to {}", f.getName(), resPath.getName());
+			}
+		} else if (value instanceof File) {
+			File f = (File) value;
 			FileUtils.copyFileToDirectory(f, toPath);
 			LOG.info("Copied file {} to {}", f.getName(), resPath.getName());
-			// FileEvent evt = new FileEvent(context.getWorkspaceId(), this.block.getType(),
-			// this.block.getId());
-			// evt.setFilePath(f.getAbsolutePath());
-			// evt.setOperation(Operation.Create);
-			// context.getBlockEventDispatcher().dispatchBlockEvent(evt);
 		}
 		return null;
 	}

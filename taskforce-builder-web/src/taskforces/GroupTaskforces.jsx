@@ -63,7 +63,7 @@ class GroupTaskforces extends Component {
 
         var taskforceNameFormatter = function (cell, row) {
             return (
-                <Link to="/taskforce-editor" onClick={DataStore.setCurrentTaskforceId(row.id)}> {cell} </Link>
+                <Link to="/taskforce-editor" onClick={(e) => DataStore.setCurrentTaskforceId(row.id)}> {cell} </Link>
             );
         }
 

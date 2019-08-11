@@ -1,0 +1,16 @@
+{
+	"type": "get_file_path",
+	"message0": "path of file %1",
+	"args0": [
+		{
+			"type": "input_value",
+			"name": "file",
+			"check": "String"
+		}
+	],
+	"inputsInline": true,
+	"output": "String",
+	"colour": 210,
+	"tooltip": "",
+	"helpUrl": ""
+}

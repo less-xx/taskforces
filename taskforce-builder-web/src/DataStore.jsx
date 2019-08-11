@@ -38,6 +38,7 @@ const DataStore = {
 
     setCurrentTaskforceId: function (id) {
         this.currentTaskforceId = id;
+        console.log("current taskforce id = "+id);
     }
 }
 

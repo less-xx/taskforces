@@ -11,8 +11,6 @@ import { MdPlayArrow, MdStop, } from 'react-icons/md';
 import SideBar from '../expandable-sidebar/SideBar';
 import TaskExecutionCard from './TaskExecutionCard';
 import './TaskforceBuilder.css';
-import BlockStyles from './BlockStyles';
-import TaskExecutionLog from '../taskforces/TaskExecutionLog';
 
 class TaskforceBuilder extends Component {
 
@@ -27,11 +25,9 @@ class TaskforceBuilder extends Component {
             taskforceId: DataStore.currentTaskforceId ? DataStore.currentTaskforceId : cookies.get("currentTaskforceId"),
             isRunning: false,
             showControlPanel: false,
-            taskExecution: null,
             containerSize: null,
             contentSize: null,
-            sideBarWidth: null,
-            showTaskExecLog: false
+            sideBarWidth: null
         };
         this.toSaveList = [];
         Blockly.HSV_SATURATION = 0.7;
@@ -164,44 +160,22 @@ class TaskforceBuilder extends Component {
                     taskforce: taskforce
                 });
 
-                this.queryTaskforceExecutions();
+                //this.queryTaskforceExecutions();
 
-                var theme = Blockly.getTheme();
-                theme.setBlockStyle("highlighted", BlockStyles["hightlighted"]);
-                console.log(Blockly.getTheme());
+                //var theme = Blockly.getTheme();
+                //theme.setBlockStyle("highlighted", BlockStyles["hightlighted"]);
+                //console.log(Blockly.getTheme());
             },
             (error) => {
                 console.log(error);
             });
     }
 
-    queryTaskforceExecutions() {
-        DataService.queryTaskforceExecution({
-            taskforceId: this.state.taskforceId,
-            size: 1,
-            sort: ["startTime,desc"]
-        }, (response) => {
-            console.log(response.content);
-            if (response.totalElements === 0) {
-                this.setState({ isRunning: false });
-                this.expandCollapseControlPanel(false);
-            } else {
-                this.setState({
-                    isRunning: response.content[0].status !== "Stopped",
-                    taskExecution: response.content[0]
-                });
-                this.expandCollapseControlPanel(true);
-            }
-        },
-            (error) => {
-                console.log(error);
-            });
-    }
+    
 
     render() {
         var maskOverlaySize = this.state.contentSize == null ? { width: 0, height: 0 } : { width: this.state.contentSize.width - 20, height: this.state.contentSize.height - 20 };
-        const taskExecution = this.state.taskExecution;
-        const taskExecId = taskExecution != null ? taskExecution.id : null;
+        
         return (
             <>
                 <SideBar.Container ref="sideBarContainer" onResize={this.onSizeChange.bind(this)}>
@@ -236,25 +210,15 @@ class TaskforceBuilder extends Component {
 
                         <div>
                             <TaskExecutionCard
-                                taskExecution={taskExecution}
+                                taskforceId={this.state.taskforceId}
                                 onClickItem={this.onSelectProgressItem.bind(this)}
-                                onViewLog={this.viewTaskExecLog.bind(this)}
+                                isRunning={this.state.isRunning}
                                 onExecutionStopped={this.onExecutionStopped.bind(this)} />
                         </div>
                     </SideBar>
                 </SideBar.Container>
 
-                <Modal size="lg"
-                    scrollable
-                    show={this.state.showTaskExecLog}
-                    onHide={this.onCloseTaskExecLog.bind(this)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Execution Logs</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <TaskExecutionLog taskExecId={taskExecId} />
-                    </Modal.Body>
-                </Modal>
+                
             </>
         );
     }
@@ -380,18 +344,6 @@ class TaskforceBuilder extends Component {
         //const block = Blockly.mainWorkspace.getBlockById(startBlockId);
         //block.setStyle("highlighted");
         //block.setColour("#FF0000");
-    }
-
-    viewTaskExecLog() {
-        this.setState({
-            showTaskExecLog: true
-        });
-    }
-
-    onCloseTaskExecLog() {
-        this.setState({
-            showTaskExecLog: false
-        });
     }
 }
 

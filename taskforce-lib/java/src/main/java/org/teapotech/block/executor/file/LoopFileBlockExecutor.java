@@ -46,7 +46,7 @@ public class LoopFileBlockExecutor extends AbstractBlockExecutor {
 		}
 
 		for (File f : files) {
-			context.setLocalVariable(var, f.getAbsolutePath());
+			context.setLocalVariable(var, f);
 			Statement stmt = this.block.getStatementByName("action", this.block.getStatements().get(0));
 			if (stmt != null) {
 				Block b = stmt.getBlock();
