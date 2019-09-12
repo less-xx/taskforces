@@ -58,7 +58,7 @@ taskforce:
     base-dir: ${DISK_FILE_STORAGE_BASE_DIR:/tmp/taskforce/files}
   
 taskforce.execution:
-  driver: docker
+  support-docker: ${SUPPORT_DOCKER_EXECUTOR:false}
   homeDir: ${TASKROCE_EXECUTION_HOME:/tmp/taskforce/execution}
   logPattern: "%r %thread %level - %msg%n"
 

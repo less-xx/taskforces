@@ -50,7 +50,7 @@ public class TestWorkspaceRunnerRedisStorage {
 	private static EventDispatcher eventDispatcher = new SimpleEventDispatcher(eventExchange);
 	private static BlockEventListenerFactory blockEventListenerFac = new SimpleBlockEventListenerFactory(eventExchange);
 
-	private static String testWorkspaceId = "test-workspace-id#0";
+	private static String testWorkspaceId = "test-workspace-id_0";
 
 	@BeforeAll
 	static void init() {

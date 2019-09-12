@@ -40,9 +40,8 @@ public class TestWorkspaceUtils {
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0));
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock());
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock().getFields());
-			assertNotNull(
-					w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock().getFields().get(0)
-							.getValue());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock().getFields().get(0)
+					.getValue());
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getStatements());
 			assertEquals(4, w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getStatements().size());
 		}
@@ -64,16 +63,12 @@ public class TestWorkspaceUtils {
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues());
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getShadow());
 			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getValues().get(0).getBlock());
-			assertNotNull(
-					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
-							.getMutation());
-			assertNotNull(
-					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
-							.getValues());
-			assertNotNull(
-					w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
-							.getValues()
-							.get(1));
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+					.getMutation());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+					.getValues());
+			assertNotNull(w.getBlocks().get(0).getNext().getBlock().getNext().getBlock().getValues().get(0).getBlock()
+					.getValues().get(1));
 		}
 	}
 
@@ -85,9 +80,9 @@ public class TestWorkspaceUtils {
 			Workspace w = BlockXmlUtils.loadWorkspace(source);
 			assertNotNull(w);
 			assertNotNull(w.getBlocks());
-			assertEquals(2, w.getBlocks().size());
-			assertNotNull(w.getBlocks().get(1).getNext());
-			assertNotNull(w.getBlocks().get(1).getNext().getBlock());
+			assertEquals(1, w.getBlocks().size());
+			assertNotNull(w.getBlocks().get(0).getStatements());
+			assertNotNull(w.getBlocks().get(0).getStatements().get(0).getBlock());
 		}
 	}
 }

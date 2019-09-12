@@ -64,12 +64,12 @@ public class TestTaskforceExecutor {
 
 	@BeforeAll
 	static void init() {
-		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id#0");
+		System.setProperty(TaskExecutionUtil.ENV_TASKFORICE_ID, "test-taskforce-id_0");
 	}
 
 	@Test
 	public void testRunResourceFetcher() throws Exception {
-		String taskforceId = "test-taskforce-id#0";
+		String taskforceId = "test-taskforce-id_0";
 
 		BlockExecutionContext context = taskforceExecService.createWorkspaceExecutionContext(taskforceId);
 
@@ -82,7 +82,8 @@ public class TestTaskforceExecutor {
 			Object result = context.getVariable("result");
 			assertNotNull(result);
 			System.out.println(result);
-
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
