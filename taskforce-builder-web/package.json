@@ -20,6 +20,7 @@
     "react-scripts": "3.0.0",
     "react-select": "^2.4.3",
     "react-styleguidist": "^9.0.8",
+    "redux": "^4.0.4",
     "styled-components": "^4.3.2",
     "universal-cookie": "^4.0.0"
   },
