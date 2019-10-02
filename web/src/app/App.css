@@ -1,0 +1,50 @@
+.App {
+  height: 100%;
+  margin: 0;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 30px;
+  pointer-events: none;
+}
+
+.App-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 50px;
+}
+
+.App-main {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50px;
+  bottom: 50px;
+
+}
+
+.App-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50px;
+  bottom: 0
+}
+
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
