@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import * as serviceWorker from './serviceWorker';
 import App from './app/App';
-import rootReducer from './reducers/index';
+import rootReducer from './reducers';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 //const unsubscribe = store.subscribe(() => console.log(store.getState()))

@@ -1,7 +1,11 @@
-import { combineReducers } from 'redux';
-import Dummy from './dummy';
-import {TaskforceReducer} from './TaskforceReducers';
+import {
+    combineReducers
+} from 'redux';
+
+import {
+    taskforceGroups
+} from './TaskforceReducers';
 
 export default combineReducers({
-    TaskforceReducer
+    taskforceGroups
 });

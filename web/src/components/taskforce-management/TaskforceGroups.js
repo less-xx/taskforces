@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { CustomFormat } from '../Format';
 import Moment from 'react-moment';
+import {
+    Button
+} from 'react-bootstrap';
 
-function TaskforceGroups({ groups, fetchTaskforceGroups }) {
+function TaskforceGroups({ taskforceGroups, fetchTaskforceGroups }) {
 
-    console.log(groups)
+    console.log(taskforceGroups);
+
     useEffect(() => {
         fetchTaskforceGroups();
-    }, [groups]);
+    }, []);
+
 
     const dateTimeFormatter = ({ value }) => {
         return (
@@ -25,8 +30,7 @@ function TaskforceGroups({ groups, fetchTaskforceGroups }) {
         { key: 'updatedBy', name: 'Updated By' }
     ];
 
-    const rows = groups || [];
-    console.log("row num: "+rows.length)
+    const rows = taskforceGroups || [];
     return (
         <div>
             <ReactDataGrid

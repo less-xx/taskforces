@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
-import TaskforceService from '../resources/TaskforceService';
-import { reloadGroups } from '../actions/TaskforceActions';
 
 import TaskforceGroups from '../components/taskforce-management/TaskforceGroups'
+import TaskforceService from '../resources/TaskforceService';
+import { reloadGroups } from '../actions/TaskforceActions';
 
 const fetchTaskforceGroups = (dispatch) => {
     TaskforceService.fetchTaskforceGroups((groups, pager) => {
@@ -14,7 +14,7 @@ const fetchTaskforceGroups = (dispatch) => {
 }
 
 const mapStateToProps = state => ({
-    groups: state.groups
+    taskforceGroups: state.taskforceGroups
 })
 
 const mapDispatchToProps = dispatch => ({

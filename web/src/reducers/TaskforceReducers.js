@@ -1,13 +1,9 @@
 import { ActionTypes as TaskforceActions } from '../actions/TaskforceActions';
 
-export const TaskforceReducer = (state = { groups: [] }, action) => {
+export const taskforceGroups = (state = [], action) => {
     switch (action.type) {
         case TaskforceActions.RELOAD_GROUPS:
-            let r=  Object.assign({}, state, {
-                groups: action.groups
-            })
-            console.log(r);
-            return r;
+            return action.groups;
         default:
             return state;
     }
