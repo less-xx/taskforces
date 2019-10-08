@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { CustomFormat } from '../Format';
 import Moment from 'react-moment';
 import {
     Modal,
-    Button
+    Button,
+    OverlayTrigger
 } from 'react-bootstrap';
 import { MdExpandLess, MdExpandMore, MdMoreVert } from 'react-icons/md';
-import { Menu } from "react-data-grid-addons";
-
-const { ContextMenu, MenuItem, ContextMenuTrigger } = Menu;
 
 function TaskforceGroups({ taskforceGroups, fetchTaskforceGroups }) {
 
     const [selectedGroupIndexes, setSelectedGroupIndexes] = useState([])
     console.log(selectedGroupIndexes)
+    const [showGroupOpMenu, setShowGroupOpMenu] = useState(false)
 
     useEffect(() => {
         fetchTaskforceGroups();
@@ -29,13 +28,23 @@ function TaskforceGroups({ taskforceGroups, fetchTaskforceGroups }) {
         );
     };
 
-    const onClickOpButton = (row) => {
+    const onClickOpButton = (e, row) => {
         console.log(row);
+
+        setShowGroupOpMenu(true)
     }
 
     const opColFormatter = ({ value }) => {
-        return (
-            <MdMoreVert onClick={(e) => onClickOpButton(e.target, value)} />
+        return (   
+            <OverlayTrigger
+                placement="right-start"
+                trigger={['click']}
+                rootClose={true}
+                overlay={TaskforceGroupOpMenu}
+            >
+                <MdMoreVert/>
+            </OverlayTrigger>
+            
         );
     };
 
@@ -86,33 +95,28 @@ function TaskforceGroups({ taskforceGroups, fetchTaskforceGroups }) {
                 rowsCount={rows.length} 
                 rowSelection={rowSelection}
                 onRowClick={selectTaskforceGroup}
-                contextMenu={
-                    <TaskforceGroupContextMenus
-                      onRowDelete={(e, { rowIdx }) => deleteTaskforceGroup(rowIdx)}
-                      onRowEdit={(e, { rowIdx }) => editTaskforceGroup(rowIdx)}
-                    />
-                }
-                RowsContainer={ContextMenuTrigger}/>
+            />
+
         </div>
     );
 }
 
-function TaskforceGroupContextMenus({
-        idx,
-        id,
-        rowIdx,
-        onRowDelete,
-        onRowEdit
-    }) {
+function TaskforceGroupOpMenu (props) {
+    console.log(props)
     return (
-        <ContextMenu id={id}>
-            <MenuItem data={{ rowIdx, idx }} onClick={onRowEdit}>
-                Edit
-            </MenuItem>
-            <MenuItem data={{ rowIdx, idx }} onClick={onRowDelete}>
-                Delete
-              </MenuItem>  
-        </ContextMenu>
-      );
+        <div
+        ref={props.ref}
+        style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.85)',
+            padding: '2px 10px',
+            color: 'white',
+            borderRadius: 3,
+            ...props.style,
+        }}
+        >
+        Simple tooltip
+        </div>
+    )
 }
+
 export default TaskforceGroups;
