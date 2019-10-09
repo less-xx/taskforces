@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { CustomFormat } from '../Format';
 import Moment from 'react-moment';
 import {
     Modal,
+    ButtonGroup,
     Button,
     OverlayTrigger
 } from 'react-bootstrap';
@@ -106,15 +107,15 @@ function TaskforceGroupOpMenu (props) {
     return (
         <div
         ref={props.ref}
+        className="operation-menu"
         style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.85)',
-            padding: '2px 10px',
-            color: 'white',
-            borderRadius: 3,
-            ...props.style,
+            ...props.style
         }}
         >
-        Simple tooltip
+        <ButtonGroup vertical>
+            <Button variant="light">Edit</Button>
+            <Button variant="light">Delete</Button>
+        </ButtonGroup>
         </div>
     )
 }
