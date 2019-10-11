@@ -35,7 +35,8 @@ function TaskforceGroups({ taskforceGroups, fetchTaskforceGroups }) {
         setShowGroupOpMenu(true)
     }
 
-    const opColFormatter = ({ value }) => {
+    const opColFormatter = ({value} ) => {
+        console.log(value);
         return (   
             <OverlayTrigger
                 placement="right-start"
