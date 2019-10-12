@@ -1,4 +1,4 @@
-import { createMuiTheme, withStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 let _theme = createMuiTheme({
     palette: {
@@ -112,29 +112,3 @@ export const theme = {
 
 export const drawerWidth = 256;
 
-export const styles = {
-    root: {
-        display: 'flex',
-        minHeight: '100vh',
-    },
-    drawer: {
-        [_theme.breakpoints.up('sm')]: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-    },
-    app: {
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    main: {
-        flex: 1,
-        padding: _theme.spacing(6, 4),
-        background: '#eaeff1',
-    },
-    footer: {
-        padding: _theme.spacing(2),
-        background: '#eaeff1',
-    },
-};

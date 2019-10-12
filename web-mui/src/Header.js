@@ -1,26 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import HelpIcon from '@material-ui/icons/Help';
-import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import {drawerWidth} from './themes/Default';
+import { drawerWidth } from './themes/Default';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleDrawer } from './actions/LayoutActions';
 
 const useStyles = makeStyles(theme => ({
-  
+
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -42,29 +37,6 @@ const useStyles = makeStyles(theme => ({
   hide: {
     display: 'none',
   },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-  },
-  drawerOpen: {
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerClose: {
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: 'hidden',
-    width: theme.spacing(7) + 1,
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
-    },
-  },
   toolbar: {
     display: 'flex',
     alignItems: 'center',
@@ -78,35 +50,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Header(props) {
+function Header() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const drawerOpen = useSelector(state => state.toggleDrawer);
+  console.log("Header.drawerOpen: " + drawerOpen);
+  const dispatch = useDispatch();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
   return (
     <React.Fragment>
-      <AppBar color="primary" position="fixed" 
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}>
+      <AppBar color="primary" position="fixed"
+        className={classes.appBar}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
-              <Grid item>
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  className={classes.menuButton}
-                >
-                  <MenuIcon />
-                </IconButton>
-              </Grid>
+            <Grid item>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={e => dispatch(toggleDrawer(!drawerOpen))}
+                edge="start"
+                className={classes.menuButton}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Grid>
             <Grid item xs />
             <Grid item>
               <Link className={classes.link} href="#" variant="body2">
@@ -128,14 +94,9 @@ function Header(props) {
           </Grid>
         </Toolbar>
       </AppBar>
-      
+
     </React.Fragment>
   );
 }
-
-Header.propTypes = {
-  classes: PropTypes.object.isRequired,
-  onDrawerToggle: PropTypes.func.isRequired,
-};
 
 export default Header;
