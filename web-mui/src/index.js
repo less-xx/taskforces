@@ -4,7 +4,7 @@ import './index.css';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import Paperbase from './Paperbase'
+import App from './App'
 import * as serviceWorker from './serviceWorker';
 import rootReducer from './reducers';
 
@@ -13,7 +13,7 @@ const unsubscribe = store.subscribe(() => console.log(store.getState()))
 
 const Root = () => (
     <Provider store={store}>
-        <Paperbase />
+        <App />
     </Provider>
 )
 

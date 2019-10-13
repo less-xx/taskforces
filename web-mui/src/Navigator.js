@@ -9,27 +9,26 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
-import HomeIcon from '@material-ui/icons/Home';
-import PeopleIcon from '@material-ui/icons/People';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 import DnsRoundedIcon from '@material-ui/icons/DnsRounded';
 import PermMediaOutlinedIcon from '@material-ui/icons/PhotoSizeSelectActual';
 import PublicIcon from '@material-ui/icons/Public';
 import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 import SettingsInputComponentIcon from '@material-ui/icons/SettingsInputComponent';
 import TimerIcon from '@material-ui/icons/Timer';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 import { useDispatch, useSelector } from 'react-redux';
-import { theme, drawerWidth } from './themes/Default';
-import { toggleDrawer } from './actions/LayoutActions';
+import { drawerWidth } from './themes/Default';
+import { withRouter,useHistory } from "react-router-dom";
 
 const categories = [
     {
-        id: 'Develop',
+        id: 'Taskforces',
         children: [
-            { id: 'Authentication', icon: <PeopleIcon />, active: true },
+            { id: 'Dashboard', icon: <DashboardIcon />, path: '/', active: true },
+            { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforces'},
             { id: 'Database', icon: <DnsRoundedIcon /> },
             { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
             { id: 'Hosting', icon: <PublicIcon /> },
@@ -124,7 +123,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function Navigator() {
+function Navigator(props) {
     const classes = useStyles();
     const drawerOpen = useSelector(state => state.toggleDrawer);
     const dispatch = useDispatch();
@@ -146,7 +145,7 @@ function Navigator() {
 
                 {categories.map(({ id, children }) => (
                     <React.Fragment key={id}>
-                        <ListItem 
+                        <ListItem
                             className={clsx(classes.categoryHeader, !drawerOpen && classes.hide)}>
                             <ListItemText
                                 classes={{
@@ -156,11 +155,12 @@ function Navigator() {
                                 {id}
                             </ListItemText>
                         </ListItem>
-                        {children.map(({ id: childId, icon, active }) => (
+                        {children.map(({ id: childId, icon, path, active }) => (
                             <ListItem
                                 key={childId}
                                 button
                                 className={clsx(classes.item, active && classes.itemActiveItem)}
+                                onClick={e=>{props.history.push(path)}}
                             >
                                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                                 <ListItemText

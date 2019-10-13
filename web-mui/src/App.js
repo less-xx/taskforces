@@ -1,35 +1,58 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { createMuiTheme, ThemeProvider, withStyles } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Hidden from '@material-ui/core/Hidden';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import Navigator from './Navigator';
-import Content from './Content';
 import Header from './Header';
-import './App.css';
+import { theme } from './themes/Default'
+import Copyright from './Copyright'
+import { makeStyles } from '@material-ui/core/styles';
+import AppRouter from './AppRouter';
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    minHeight: '100vh',
+  },
+  app: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  main: {
+    flex: 1,
+    padding: theme.spacing(10, 4),
+    background: '#eaeff1',
+  },
+  footer: {
+    padding: theme.spacing(2),
+    background: '#eaeff1',
+  },
 
+}));
 
 function App() {
+  const classes = useStyles();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className={classes.root}>
+        
+        <Navigator />
+
+        <div className={classes.app}>
+          <Header />
+          <CssBaseline />
+          <main className={classes.main}>
+            <AppRouter />
+          </main>
+
+          <footer className={classes.footer}>
+            <Copyright />
+          </footer>
+
+        </div>
+      </div>
+    </ThemeProvider>
   );
 }
 
