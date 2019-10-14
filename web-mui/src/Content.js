@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function Content() {
+function Content(props) {
 
     const classes = useStyles();
     const drawerOpen = useSelector(state => state.toggleDrawer);
