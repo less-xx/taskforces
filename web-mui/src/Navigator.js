@@ -22,12 +22,13 @@ import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 import { useDispatch, useSelector } from 'react-redux';
 import { drawerWidth } from './themes/Default';
 import { useHistory } from "react-router-dom";
+import { activeNavigatorMenu } from './actions/LayoutActions';
 
 const categories = [
     {
         id: 'Taskforces',
         children: [
-            { id: 'Dashboard', icon: <DashboardIcon />, path: '/', active: true },
+            { id: 'Dashboard', icon: <DashboardIcon />, path: '/' },
             { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforces' },
             { id: 'Database', icon: <DnsRoundedIcon /> },
             { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
@@ -126,6 +127,7 @@ const useStyles = makeStyles(theme => ({
 function Navigator() {
     const classes = useStyles();
     const drawerOpen = useSelector(state => state.toggleDrawer);
+    const activeNavigatorId = useSelector(state => state.activeNavigatorMenu);
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -156,12 +158,15 @@ function Navigator() {
                                 {id}
                             </ListItemText>
                         </ListItem>
-                        {children.map(({ id: childId, icon, path, active }) => (
+                        {children.map(({ id: childId, icon, path }) => (
                             <ListItem
                                 key={childId}
                                 button
-                                className={clsx(classes.item, active && classes.itemActiveItem)}
-                                onClick={e => { history.push(path) }}
+                                className={clsx(classes.item, (childId === activeNavigatorId) && classes.itemActiveItem)}
+                                onClick={e => {
+                                    history.push(path);
+                                    dispatch(activeNavigatorMenu(childId));
+                                }}
                             >
                                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                                 <ListItemText

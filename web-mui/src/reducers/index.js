@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
-import { toggleDrawer } from './LayoutReducers';
-import {taskforceGroups} from './TaskforceReducers';
+import { toggleDrawer, activeNavigatorMenu } from './LayoutReducers';
+import { taskforceGroups } from './TaskforceReducers';
 
 export default combineReducers({
     toggleDrawer,
+    activeNavigatorMenu,
     taskforceGroups
 });

@@ -8,3 +8,12 @@ export const toggleDrawer = (state = true, action) => {
             return state;
     }
 }
+
+export const activeNavigatorMenu = (state = 'Dashboard', action) => {
+    switch (action.type) {
+        case LayoutActions.ACTIVE_NAVIATOR_MENU:
+            return action.id;
+        default:
+            return state;
+    }
+}
