@@ -6,7 +6,9 @@ import Header from './Header';
 import { theme } from './themes/Default'
 import Copyright from './Copyright'
 import { makeStyles } from '@material-ui/core/styles';
-import AppRouter from './AppRouter';
+import { Router, Route, Switch } from "react-router-dom";
+import { createBrowserHistory } from "history";
+import { routes } from './routes';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,24 +35,38 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const classes = useStyles();
 
+  const content = (
+    <Switch>
+      {routes.map((route, i) =>
+        <Route key={i} exact={route.exact ? true : false} path={route.path} component={route.content}>
+
+        </Route>
+      )}
+    </Switch>
+  )
+
+  const browserHistory = createBrowserHistory();
+
   return (
     <ThemeProvider theme={theme}>
       <div className={classes.root}>
-        
-        <Navigator />
+        <Router history={browserHistory}>
+          <Navigator />
 
-        <div className={classes.app}>
-          <Header />
-          <CssBaseline />
-          <main className={classes.main}>
-            <AppRouter />
-          </main>
+          <div className={classes.app}>
+            <Header />
+            <CssBaseline />
+            <main className={classes.main}>
+              {content}
+            </main>
 
-          <footer className={classes.footer}>
-            <Copyright />
-          </footer>
+            <footer className={classes.footer}>
+              <Copyright />
+            </footer>
 
-        </div>
+          </div>
+
+        </Router>
       </div>
     </ThemeProvider>
   );

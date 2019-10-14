@@ -21,14 +21,14 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 import { useDispatch, useSelector } from 'react-redux';
 import { drawerWidth } from './themes/Default';
-import { withRouter,useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const categories = [
     {
         id: 'Taskforces',
         children: [
             { id: 'Dashboard', icon: <DashboardIcon />, path: '/', active: true },
-            { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforces'},
+            { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforces' },
             { id: 'Database', icon: <DnsRoundedIcon /> },
             { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
             { id: 'Hosting', icon: <PublicIcon /> },
@@ -123,10 +123,11 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function Navigator(props) {
+function Navigator() {
     const classes = useStyles();
     const drawerOpen = useSelector(state => state.toggleDrawer);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     return (
         <Drawer variant="permanent" className={clsx(classes.drawer, {
@@ -160,7 +161,7 @@ function Navigator(props) {
                                 key={childId}
                                 button
                                 className={clsx(classes.item, active && classes.itemActiveItem)}
-                                onClick={e=>{props.history.push(path)}}
+                                onClick={e => { history.push(path) }}
                             >
                                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                                 <ListItemText

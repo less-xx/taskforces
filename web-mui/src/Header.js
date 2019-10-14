@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
