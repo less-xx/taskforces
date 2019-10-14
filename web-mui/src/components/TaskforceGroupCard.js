@@ -1,6 +1,4 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,6 +15,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 const useStyles = makeStyles(theme => ({
     card: {
         maxWidth: 345,
+        margin: theme.spacing(3, 1),
     },
     media: {
         height: 0,
@@ -37,12 +36,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+function TaskforceGroupCard (props) {
 
-function TaskforceGroupCard(props) {
-
-    console.log(props);
+    //console.log(props);
     
     const classes = useStyles();
+    
     const { taskforceGroup } = props;
 
     return (
