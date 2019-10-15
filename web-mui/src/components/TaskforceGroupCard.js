@@ -11,6 +11,7 @@ import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Moment from 'react-moment';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -36,13 +37,15 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function TaskforceGroupCard (props) {
+function TaskforceGroupCard(props) {
 
     //console.log(props);
-    
+
     const classes = useStyles();
-    
+
     const { taskforceGroup } = props;
+
+    const lastUpdatedTime = <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
 
     return (
         <Card className={classes.card}>
@@ -58,7 +61,7 @@ function TaskforceGroupCard (props) {
                     </IconButton>
                 }
                 title={taskforceGroup.name}
-                subheader="September 14, 2016"
+                subheader={lastUpdatedTime}
             />
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">

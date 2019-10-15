@@ -2,8 +2,11 @@ const URLS = {
 
     GET_TASKFORCE_GROUPS: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups",
     POST_TASKFORCE_GROUP: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups",
-    PUT_TASKFORCE_GROUP: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups/{id}"
-
+    PUT_TASKFORCE_GROUP: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups/{id}",
+    GET_TASKFORCES: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces",
+    POST_TASKFORCE: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces",
+    PUT_TASKFORCE: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces/{id}",
+    GET_TASKFORCE_BY_ID: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces/{id}",
 }
 
 const TaskforceService = {
@@ -29,6 +32,38 @@ const TaskforceService = {
             });
     },
 
+    createTaskforceGroup(request, success, failure) {
+        var url = URLS.POST_TASKFORCE_GROUP;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        })
+            .then(response => response.json())
+            .then(json => success(json))
+            .catch(error => failure(error));
+    },
+
+    updateTaskforceGroup(groupId, request, success, failure) {
+        var url = URLS.PUT_TASKFORCE_GROUP.replace(/\{.*\}/g, groupId);;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        })
+            .then(response => response.json())
+            .then(json => success(json))
+            .catch(error => failure(error));
+    },
+
     fetchTaskforceBlocks: function (handleBlocks, handleError) {
         var url = URLS.GET_TASKFORCE_BLOCKS;
         fetch(url)
@@ -41,7 +76,84 @@ const TaskforceService = {
             .catch(error => {
                 handleError(error);
             });
-    }
+    },
+
+
+    fetchGroupTaskforces: function (groupId, handleTaskforces, handleError) {
+        var url = URLS.GET_TASKFORCES;
+        url.search = new URLSearchParams({
+            group_id: groupId
+        });
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    var taskforces = result.body.content;
+                    var pager = result.body.pageable;
+                    if (handleTaskforces) {
+                        //console.log(taskforces);
+                        handleTaskforces(taskforces, pager);
+                    }
+                }
+            )
+            .catch(error => {
+                console.log(error);
+                if (handleError) {
+                    handleError(error);
+                }
+            });
+    },
+
+    createTaskforce: function (request, handleResponse, handleError) {
+        var url = URLS.POST_TASKFORCE;
+        fetch(url, {
+            method: "POST",
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            body: JSON.stringify(request)
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
+    updateTaskforce: function (taskforceId, request, handleResponse, handleError) {
+        var url = URL.PUT_TASKFORCE.replace(/\{.*\}/g, taskforceId);
+        fetch(url, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(request)
+        }).then(response => response.json())
+            .then(json => {
+                if (handleResponse) {
+                    handleResponse(json);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
+    fetchTaskforce: function (taskforceId, handleTaskforce, handleError) {
+        var url = URL.GET_TASKFORCE_BY_ID.replace(/\{.*\}/g, taskforceId);
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+                if (handleTaskforce) {
+                    handleTaskforce(json.body);
+                }
+            })
+            .catch(error => handleError(error));
+    },
+
 
 };
 

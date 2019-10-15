@@ -8,3 +8,15 @@ export const taskforceGroups = (state = [], action) => {
             return state;
     }
 }
+
+export const taskforceDialogs = (state = {}, action) => {
+
+    const { type, ...args } = action
+    switch (type) {
+        case TaskforceActionTypes.OPEN_TASKFORCE_DIALOG:
+            return args;
+        default:
+            return state;
+    }
+}
+

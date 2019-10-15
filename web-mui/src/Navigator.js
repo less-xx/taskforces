@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -124,12 +124,31 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+const currentCategoryId = (path) => {
+    for (const cIdx in categories) {
+        const children = categories[cIdx].children
+        for (var eIdx in children) {
+            if (children[eIdx].path === path) {
+                return children[eIdx].id
+            }
+        }
+    }
+    return 'Dashboard'
+}
+
 function Navigator() {
-    const classes = useStyles();
-    const drawerOpen = useSelector(state => state.toggleDrawer);
-    const activeNavigatorId = useSelector(state => state.activeNavigatorMenu);
-    const dispatch = useDispatch();
-    const history = useHistory();
+    const classes = useStyles()
+    const drawerOpen = useSelector(state => state.toggleDrawer)
+    const activeNavigatorId = useSelector(state => state.activeNavigatorMenu)
+    const dispatch = useDispatch()
+    const history = useHistory()
+    //console.log(history.location)
+
+    useEffect(() => {
+        const cid = currentCategoryId(history.location.pathname)
+        console.log("Current category: "+cid)
+        dispatch(activeNavigatorMenu(cid))
+    })
 
     return (
         <Drawer variant="permanent" className={clsx(classes.drawer, {
