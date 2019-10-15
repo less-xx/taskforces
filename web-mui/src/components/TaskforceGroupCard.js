@@ -9,9 +9,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
+import { useDispatch } from 'react-redux';
+import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -37,13 +40,17 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
+
 function TaskforceGroupCard(props) {
 
-    //console.log(props);
-
     const classes = useStyles();
-
+    const dispatch = useDispatch();
     const { taskforceGroup } = props;
+
+    const editTaskgroup = () => {
+        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE_GROUP, true, taskforceGroup))
+    }
 
     const lastUpdatedTime = <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
 
@@ -68,12 +75,15 @@ function TaskforceGroupCard(props) {
                     {taskforceGroup.description}
                 </Typography>
             </CardContent>
-            <CardActions disableSpacing>
+            <CardActions >
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>
-                <IconButton aria-label="share">
-                    <ShareIcon />
+                <IconButton aria-label="edit" onClick={editTaskgroup}>
+                    <EditIcon />
+                </IconButton>
+                <IconButton aria-label="edit">
+                    <DeleteIcon />
                 </IconButton>
             </CardActions>
         </Card>
