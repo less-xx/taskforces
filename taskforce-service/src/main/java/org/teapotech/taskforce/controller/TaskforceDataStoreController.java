@@ -49,7 +49,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 			throws TaskforceDataStoreException {
 		TaskforceGroup group = tfDataStoreService.findTaskforceGroupByName(request.getName());
 		if (group != null) {
-			throw new TaskforceDataStoreException("Taskforce group with name " + request.getName() + " exists.");
+			throw new TaskforceDataStoreException("Taskforce group name exists.");
 		}
 		group = new TaskforceGroup();
 		group.setName(request.getName());

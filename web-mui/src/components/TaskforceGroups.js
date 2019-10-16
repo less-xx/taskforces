@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
 
     cards: {
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'flex-center',
         padding: theme.spacing(2, 0),
@@ -28,7 +29,7 @@ function TaskforceGroups() {
 
     const dispatch = useDispatch();
     const taskforceGroups = useSelector(state => state.taskforceGroups);
-    //console.log(taskforceGroups);
+    const [currentGroup, setCurrentGroup] = useState()
     const classes = useStyles();
 
     const reloadTaskforceGroups = () => {
@@ -44,14 +45,19 @@ function TaskforceGroups() {
         reloadTaskforceGroups()
     }, []);
 
-    const groupCards = taskforceGroups.map((tg, i) => (
-        <TaskforceGroupCard key={i} taskforceGroup={tg} />
-    ))
-
     const newTaskgroup = () => {
-        //console.log("new task group")
+        setCurrentGroup({ id: '', name: '', description: '' })
         dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE_GROUP, true))
     }
+
+    const editTaskgroup = (group) => {
+        setCurrentGroup(group)
+        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE_GROUP, true))
+    }
+
+    const groupCards = taskforceGroups.map((tg, i) => (
+        <TaskforceGroupCard key={i} index={i} edit={editTaskgroup} />
+    ))
 
     return (
         <>
@@ -67,7 +73,7 @@ function TaskforceGroups() {
                 {groupCards}
             </div>
 
-            <EditTaskforceGroupDialog refresh={reloadTaskforceGroups} />
+            <EditTaskforceGroupDialog refresh={reloadTaskforceGroups} group={currentGroup}/>
         </>
     )
 }

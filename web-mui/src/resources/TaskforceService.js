@@ -51,7 +51,7 @@ const TaskforceService = {
     updateTaskforceGroup(groupId, request, success, failure) {
         var url = URLS.PUT_TASKFORCE_GROUP.replace(/\{.*\}/g, groupId);;
         fetch(url, {
-            method: "POST",
+            method: "PUT",
             credentials: "include",
             mode: "cors",
             headers: {

@@ -13,13 +13,25 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
-import { useDispatch } from 'react-redux';
-import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        maxWidth: 345,
+        maxWidth: 320,
+        minWidth: 200,
+        minHeight: 200,
+        maxHeight: 240,
         margin: theme.spacing(3, 1),
+    },
+    cardName: {
+        minHeight: 60,
+        maxHeight: 100,
+        overflow: 'hidden',
+    },
+    cardDescription: {
+        minHeight: 70,
+        maxHeight: 80,
+        overflow: 'hidden',
     },
     media: {
         height: 0,
@@ -46,12 +58,7 @@ function TaskforceGroupCard(props) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
-    const { taskforceGroup } = props;
-
-    const editTaskgroup = () => {
-        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE_GROUP, true, taskforceGroup))
-    }
-
+    const taskforceGroup = useSelector(state => state.taskforceGroups[props.index])
     const lastUpdatedTime = <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
 
     return (
@@ -69,8 +76,9 @@ function TaskforceGroupCard(props) {
                 }
                 title={taskforceGroup.name}
                 subheader={lastUpdatedTime}
+                className={classes.cardName}
             />
-            <CardContent>
+            <CardContent className={classes.cardDescription}>
                 <Typography variant="body2" color="textSecondary" component="p">
                     {taskforceGroup.description}
                 </Typography>
@@ -79,7 +87,7 @@ function TaskforceGroupCard(props) {
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={editTaskgroup}>
+                <IconButton aria-label="edit" onClick={e => props.edit(taskforceGroup)}>
                     <EditIcon />
                 </IconButton>
                 <IconButton aria-label="edit">

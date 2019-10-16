@@ -38,7 +38,7 @@ public class ControllerExceptionHandler {
 	@ResponseBody
 	public ErrorResponse handleTaskforceDataStoreException(Exception e, HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse) {
-		return respondError(e, httpRequest, httpResponse, false);
+		return respondError(e, httpRequest, httpResponse, true);
 	}
 
 	@ExceptionHandler({ UserNotLogonException.class })
