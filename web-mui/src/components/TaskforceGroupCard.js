@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -50,6 +51,9 @@ const useStyles = makeStyles(theme => ({
     avatar: {
         backgroundColor: red[500],
     },
+    titleLink: {
+        margin: theme.spacing(2,0),
+    }
 }));
 
 
@@ -60,7 +64,8 @@ function TaskforceGroupCard(props) {
     const dispatch = useDispatch();
     const taskforceGroup = useSelector(state => state.taskforceGroups[props.index])
     const lastUpdatedTime = <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
-
+    const path = `/taskforces?group_id=${taskforceGroup.id}`
+    const title =  (<Link href={path} className={classes.titleLink}>{taskforceGroup.name}</Link>)
     return (
         <Card className={classes.card}>
             <CardHeader
@@ -74,7 +79,7 @@ function TaskforceGroupCard(props) {
                         <MoreVertIcon />
                     </IconButton>
                 }
-                title={taskforceGroup.name}
+                title={title}
                 subheader={lastUpdatedTime}
                 className={classes.cardName}
             />
