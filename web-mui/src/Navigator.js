@@ -29,7 +29,7 @@ const categories = [
         id: 'Taskforces',
         children: [
             { id: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-            { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforces' },
+            { id: 'Taskforce Groups', icon: <ViewModuleIcon />, path: '/taskforce-groups' },
             { id: 'Database', icon: <DnsRoundedIcon /> },
             { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
             { id: 'Hosting', icon: <PublicIcon /> },

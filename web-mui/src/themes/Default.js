@@ -14,6 +14,9 @@ let _theme = createMuiTheme({
             fontSize: 26,
             letterSpacing: 0.5,
         },
+        subtitle1: {
+            lineHeight: 1.2
+        }
     },
     shape: {
         borderRadius: 8,

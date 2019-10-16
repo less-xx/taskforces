@@ -34,19 +34,29 @@ public class TaskforceDataStoreController extends LogonUserController {
 
 	@GetMapping("/taskforce-groups")
 	@ResponseBody
-	public RestResponse<Page<TaskforceGroup>> getTaskforceGroups(Pageable pageable,
-			HttpServletRequest httpRequest)
+	public RestResponse<Page<TaskforceGroup>> getTaskforceGroups(Pageable pageable, HttpServletRequest httpRequest)
 			throws TaskforceDataStoreException {
 
 		Page<TaskforceGroup> result = tfDataStoreService.getAllGroups(pageable);
 		return new RestResponse<Page<TaskforceGroup>>(result);
 	}
 
+	@GetMapping("/taskforce-groups/{id}")
+	@ResponseBody
+	public RestResponse<TaskforceGroup> getTaskforceGroupById(@PathVariable String id, HttpServletRequest httpRequest)
+			throws TaskforceDataStoreException {
+
+		TaskforceGroup group = tfDataStoreService.findTaskforceGroupById(id);
+		if (group == null) {
+			throw new TaskforceDataStoreException("Group does not exist");
+		}
+		return new RestResponse<TaskforceGroup>(group);
+	}
+
 	@PostMapping("/taskforce-groups")
 	@ResponseBody
 	public RestResponse<SimpleTaskforceGroup> createTaskforceGroup(@RequestBody TaskforceGroupRequest request,
-			HttpServletRequest httpRequest)
-			throws TaskforceDataStoreException {
+			HttpServletRequest httpRequest) throws TaskforceDataStoreException {
 		TaskforceGroup group = tfDataStoreService.findTaskforceGroupByName(request.getName());
 		if (group != null) {
 			throw new TaskforceDataStoreException("Taskforce group name exists.");
@@ -63,10 +73,8 @@ public class TaskforceDataStoreController extends LogonUserController {
 
 	@PutMapping("/taskforce-groups/{id}")
 	@ResponseBody
-	public RestResponse<SimpleTaskforceGroup> updateTaskforceGroup(
-			@PathVariable("id") String groupId,
-			@RequestBody TaskforceGroupRequest request,
-			HttpServletRequest httpRequest)
+	public RestResponse<SimpleTaskforceGroup> updateTaskforceGroup(@PathVariable("id") String groupId,
+			@RequestBody TaskforceGroupRequest request, HttpServletRequest httpRequest)
 			throws TaskforceDataStoreException {
 		TaskforceGroup group = tfDataStoreService.findTaskforceGroupById(groupId);
 		if (group == null) {
@@ -91,10 +99,8 @@ public class TaskforceDataStoreController extends LogonUserController {
 	public RestResponse<Page<SimpleTaskforceEntity>> getTaskforces(
 			@RequestParam(name = "id", required = false) String id,
 			@RequestParam(name = "name", required = false) String name,
-			@RequestParam(name = "group_id", required = false) String groupId,
-			Pageable pageable,
-			HttpServletRequest httpRequest)
-			throws TaskforceDataStoreException {
+			@RequestParam(name = "group_id", required = false) String groupId, Pageable pageable,
+			HttpServletRequest httpRequest) throws TaskforceDataStoreException {
 
 		Page<SimpleTaskforceEntity> result = tfDataStoreService.query(id, name, groupId, pageable);
 		return new RestResponse<Page<SimpleTaskforceEntity>>(result);
@@ -103,8 +109,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 	@PostMapping("/taskforces")
 	@ResponseBody
 	public RestResponse<SimpleTaskforceEntity> createTaskforce(@RequestBody TaskforceRequest request,
-			HttpServletRequest httpRequest)
-			throws TaskforceDataStoreException {
+			HttpServletRequest httpRequest) throws TaskforceDataStoreException {
 
 		TaskforceGroup group = tfDataStoreService.findTaskforceGroupById(request.getGroupId());
 		if (group == null) {
@@ -127,8 +132,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 
 	@PutMapping("/taskforces/{id}")
 	public RestResponse<SimpleTaskforceEntity> updateTaskforce(@PathVariable("id") String taskforceId,
-			@RequestBody TaskforceRequest request, HttpServletRequest httpRequest)
-			throws TaskforceDataStoreException {
+			@RequestBody TaskforceRequest request, HttpServletRequest httpRequest) throws TaskforceDataStoreException {
 
 		TaskforceEntity existedTaskfoce = tfDataStoreService.findTaskforceEntityById(taskforceId);
 		if (existedTaskfoce == null) {
@@ -171,8 +175,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 
 	@GetMapping("/taskforces/{id}")
 	public RestResponse<TaskforceEntity> getTaskforce(@PathVariable("id") String taskforceId,
-			HttpServletRequest httpRequest)
-			throws TaskforceDataStoreException {
+			HttpServletRequest httpRequest) throws TaskforceDataStoreException {
 
 		TaskforceEntity existedTaskfoce = tfDataStoreService.findTaskforceEntityById(taskforceId);
 		if (existedTaskfoce == null) {

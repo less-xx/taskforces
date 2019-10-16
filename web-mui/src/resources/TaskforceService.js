@@ -1,6 +1,7 @@
 const URLS = {
 
     GET_TASKFORCE_GROUPS: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups",
+    GET_TASKFORCE_GROUP_BY_ID: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups/{id}",
     POST_TASKFORCE_GROUP: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups",
     PUT_TASKFORCE_GROUP: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-groups/{id}",
     GET_TASKFORCES: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces",
@@ -12,13 +13,16 @@ const URLS = {
 const TaskforceService = {
 
     fetchTaskforceGroups: function (handleGroups, handleError) {
-        var url = URLS.GET_TASKFORCE_GROUPS;
+        var url = new URL(URLS.GET_TASKFORCE_GROUPS);
+        url.search = new URLSearchParams({
+            sort: "lastUpdatedTime,desc"
+        });
         fetch(url)
             .then(res => res.json())
             .then(
                 (result) => {
-                    var groups = result.body.content;
-                    var pager = result.body.pageable;
+                    const groups = result.body.content;
+                    const pager = result.body.pageable;
                     if (handleGroups) {
                         handleGroups(groups, pager);
                     }
@@ -32,8 +36,28 @@ const TaskforceService = {
             });
     },
 
+    fetchTaskforceGroupById: function (groupId, handleGroup, handleError) {
+        const url = URLS.GET_TASKFORCE_GROUP_BY_ID.replace(/\{.*\}/g, groupId);
+        fetch(url)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    const group = result.body;
+                    if (handleGroup) {
+                        handleGroup(group);
+                    }
+                }
+            )
+            .catch(error => {
+                console.log(error);
+                if (handleError) {
+                    handleError(error);
+                }
+            });
+    },
+
     createTaskforceGroup(request, success, failure) {
-        var url = URLS.POST_TASKFORCE_GROUP;
+        const url = URLS.POST_TASKFORCE_GROUP;
         fetch(url, {
             method: "POST",
             credentials: "include",
@@ -49,7 +73,7 @@ const TaskforceService = {
     },
 
     updateTaskforceGroup(groupId, request, success, failure) {
-        var url = URLS.PUT_TASKFORCE_GROUP.replace(/\{.*\}/g, groupId);;
+        var url = URLS.PUT_TASKFORCE_GROUP.replace(/\{.*\}/g, groupId);
         fetch(url, {
             method: "PUT",
             credentials: "include",
@@ -80,7 +104,7 @@ const TaskforceService = {
 
 
     fetchGroupTaskforces: function (groupId, handleTaskforces, handleError) {
-        var url = URLS.GET_TASKFORCES;
+        var url = new URL(URLS.GET_TASKFORCES);
         url.search = new URLSearchParams({
             group_id: groupId
         });

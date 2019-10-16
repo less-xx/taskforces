@@ -15,6 +15,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from '@material-ui/core/Link';
+import { useHistory } from "react-router-dom";
+import { activeNavigatorMenu } from '../actions/LayoutActions';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -23,6 +25,9 @@ const useStyles = makeStyles(theme => ({
         minHeight: 200,
         maxHeight: 240,
         margin: theme.spacing(3, 1),
+    },
+    cardHeader: {
+        margin: theme.spacing(0),
     },
     cardName: {
         minHeight: 60,
@@ -52,7 +57,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: red[500],
     },
     titleLink: {
-        margin: theme.spacing(2,0),
+        margin: theme.spacing(2,0)
     }
 }));
 
@@ -62,18 +67,21 @@ function TaskforceGroupCard(props) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
+    const history = useHistory()
     const taskforceGroup = useSelector(state => state.taskforceGroups[props.index])
-    const lastUpdatedTime = <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
-    const path = `/taskforces?group_id=${taskforceGroup.id}`
-    const title =  (<Link href={path} className={classes.titleLink}>{taskforceGroup.name}</Link>)
+    const lastUpdatedTime = (<Typography variant="subtitle2" color="textSecondary"><Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment></Typography>)
+    const path = `/taskforce-groups/${taskforceGroup.id}`
+    const title =  (
+        <Link href="#" 
+            onClick={e => {
+                history.push(path);
+            }}
+            className={classes.titleLink}><Typography variant="subtitle1">{taskforceGroup.name}</Typography>
+        </Link>
+    )
     return (
         <Card className={classes.card}>
             <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        R
-                    </Avatar>
-                }
                 action={
                     <IconButton aria-label="settings">
                         <MoreVertIcon />
@@ -81,7 +89,7 @@ function TaskforceGroupCard(props) {
                 }
                 title={title}
                 subheader={lastUpdatedTime}
-                className={classes.cardName}
+                className={classes.cardHeader}
             />
             <CardContent className={classes.cardDescription}>
                 <Typography variant="body2" color="textSecondary" component="p">

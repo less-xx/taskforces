@@ -112,7 +112,7 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
                         handleSubmit,
                         isSubmitting,
                     }) => {
-                        console.log(values)
+                        //console.log(values)
                         return (
                             <form className={classes.form} onSubmit={handleSubmit}>
                                 <FormControl className={classes.formControl}>
@@ -124,7 +124,7 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         required
-                                        error={errors.name && errors.name != ''}
+                                        error={errors.name && errors.name !== ''}
                                         helperText={(errors.name && touched.name) ? errors.name : Field.Name.helperText}
                                     />
                                 </FormControl>
@@ -146,7 +146,7 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
                                     <Button onClick={handleClose} color="primary">
                                         Cancel
                                     </Button>
-                                    <Button type="submit" color="primary" disabled={isSubmitting || (errors.name && errors.name != '')}>
+                                    <Button type="submit" color="primary" disabled={isSubmitting || (errors.name && errors.name !== '')}>
                                         Save
                                     </Button>
                                 </DialogActions>
