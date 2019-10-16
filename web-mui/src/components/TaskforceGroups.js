@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
     },
     newGroupButton: {
-        margin: theme.spacing(3, 1),
+        margin: theme.spacing(10, 8),
     },
 
 }));
