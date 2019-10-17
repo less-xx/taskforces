@@ -22,7 +22,8 @@ const controlPanelWidth = 240
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        minHeight: '83vh',
+        minHeight: '89vh',
+        width: '100%',
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(0),
         borderRadius: 5,
@@ -63,10 +64,10 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const resizeWorkspace=(workspace, newWidth,newHeight)=>{
+const resizeWorkspace=(workspace)=>{
     var blocklyArea = document.getElementById('workspaceContainer');
-    blocklyArea.style.width = newWidth + 'px';
-    blocklyArea.style.height = newHeight + 'px';
+    blocklyArea.style.width = '100%';
+    blocklyArea.style.height = `89vh`;
     Blockly.svgResize(workspace);
 }
 
@@ -94,10 +95,7 @@ const initBlocklyWorkspace = (workspaceRef) => {
             },
             trashcan: true
         });
-        const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
-        const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
-        //console.log('width='+ width+", height="+height); 
-        resizeWorkspace(workspace, width, height)
+        resizeWorkspace(workspace)
     }, (error) => {
         console.log(error)
     })
@@ -132,7 +130,7 @@ function TaskforceBuilder(props) {
     const classes = useStyles();
     const history = useHistory()
     const taskforceGroup = props.location.state
-    const [controlPanelOpen, setControlPanelOpen] = useState(true)
+    const [controlPanelOpen, setControlPanelOpen] = useState(false)
     //console.log(taskforceGroup)
     const workspaceRef = useRef(null);
     const [workspaceInitialized, setWorkspaceInitialized] = useState(false)
@@ -141,40 +139,21 @@ function TaskforceBuilder(props) {
         history.push("/taskforce-groups")
     }
 
-    const [dimensions, setDimensions] = useState({ 
-        height: window.innerHeight,
-        width: window.innerWidth
-    })
-
     useEffect(() => {
         if(!workspaceInitialized){
             initCustomBlockDefs()
             initBlocklyWorkspace(workspaceRef)
             setWorkspaceInitialized(true)
-        }else if(Blockly.getMainWorkspace()!=null){
-            const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
-            const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
-            //console.log('width='+ width+", height="+height); 
-            resizeWorkspace(Blockly.getMainWorkspace(), width, height)
         }
     })
 
     useEffect(() => {
         function handleResize() {
-            const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
-            const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
-            console.log('resize, width='+ width+", height="+height); 
-
-            var blocklyArea = document.getElementById('workspaceContainer');
-            blocklyArea.style.width = '100%';
-            blocklyArea.style.height = `calc(100%-20px)`;
-            Blockly.svgResize(Blockly.getMainWorkspace());
-
+            resizeWorkspace(Blockly.getMainWorkspace())
         }
         window.addEventListener('resize', handleResize)
         return _ => {
             window.removeEventListener('resize', handleResize)
-          
         }
     })
 
@@ -211,7 +190,9 @@ function TaskforceBuilder(props) {
             <Tooltip title="Expand/Collapse Control Panel" aria-label="expand-collapse-control-panel">
                 <Fab size="small" aria-label="expand-collapse-control-panel"
                     className={clsx(classes.controlPanelButton, { [classes.controlPanelButtonShift]: controlPanelOpen })}
-                    onClick={e => setControlPanelOpen(!controlPanelOpen)}
+                    onClick={e => {
+                        setControlPanelOpen(!controlPanelOpen)
+                    }}
                 >
                     {controlPanelOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </Fab>
