@@ -1,5 +1,6 @@
 import TaskforceGroups from './components/TaskforceGroups';
 import Taskforces from './components/Taskforces';
+import TaskforceBuilder from './components/TaskforceBuilder';
 import Content from './Content';
 
 export const routes = [
@@ -14,7 +15,13 @@ export const routes = [
         content: TaskforceGroups
     },
     {
+        exact: true,
         path: '/taskforce-groups/:groupId',
         content: Taskforces
-    }
+    },
+    {
+        exact: true,
+        path: '/taskforce-builder',
+        content: TaskforceBuilder
+    },
 ]

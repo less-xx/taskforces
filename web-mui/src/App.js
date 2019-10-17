@@ -22,11 +22,15 @@ const useStyles = makeStyles(theme => ({
   },
   main: {
     flex: 1,
-    padding: theme.spacing(10, 4),
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
     background: '#eaeff1',
   },
   footer: {
-    padding: theme.spacing(2),
+    marginTop: theme.spacing(0),
+    padding: theme.spacing(1),
     background: '#eaeff1',
   },
 

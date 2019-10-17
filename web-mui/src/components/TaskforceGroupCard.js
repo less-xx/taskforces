@@ -16,7 +16,6 @@ import Moment from 'react-moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from '@material-ui/core/Link';
 import { useHistory } from "react-router-dom";
-import { activeNavigatorMenu } from '../actions/LayoutActions';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -74,7 +73,7 @@ function TaskforceGroupCard(props) {
     const title =  (
         <Link href="#" 
             onClick={e => {
-                history.push(path);
+                history.push(path, taskforceGroup);
             }}
             className={classes.titleLink}><Typography variant="subtitle1">{taskforceGroup.name}</Typography>
         </Link>

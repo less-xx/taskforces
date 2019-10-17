@@ -8,6 +8,8 @@ const URLS = {
     POST_TASKFORCE: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces",
     PUT_TASKFORCE: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces/{id}",
     GET_TASKFORCE_BY_ID: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforces/{id}",
+    GET_TASKFORCE_BLOCKS: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/taskforce-blocks",
+    GET_CUSTOM_BLOCK_DEFS: process.env.REACT_APP_SERVICE_BASE_URL + "/taskforce-service/custom-block-definitions",
 }
 
 const TaskforceService = {
@@ -56,7 +58,7 @@ const TaskforceService = {
             });
     },
 
-    createTaskforceGroup(request, success, failure) {
+    createTaskforceGroup: function(request, success, failure) {
         const url = URLS.POST_TASKFORCE_GROUP;
         fetch(url, {
             method: "POST",
@@ -72,7 +74,7 @@ const TaskforceService = {
             .catch(error => failure(error));
     },
 
-    updateTaskforceGroup(groupId, request, success, failure) {
+    updateTaskforceGroup: function(groupId, request, success, failure) {
         var url = URLS.PUT_TASKFORCE_GROUP.replace(/\{.*\}/g, groupId);
         fetch(url, {
             method: "PUT",
@@ -149,7 +151,7 @@ const TaskforceService = {
     },
 
     updateTaskforce: function (taskforceId, request, handleResponse, handleError) {
-        var url = URL.PUT_TASKFORCE.replace(/\{.*\}/g, taskforceId);
+        var url = URLS.PUT_TASKFORCE.replace(/\{.*\}/g, taskforceId);
         fetch(url, {
             method: "PUT",
             credentials: "include",
@@ -167,7 +169,7 @@ const TaskforceService = {
     },
 
     fetchTaskforce: function (taskforceId, handleTaskforce, handleError) {
-        var url = URL.GET_TASKFORCE_BY_ID.replace(/\{.*\}/g, taskforceId);
+        var url = URLS.GET_TASKFORCE_BY_ID.replace(/\{.*\}/g, taskforceId);
         fetch(url)
             .then(res => res.json())
             .then(json => {
@@ -178,6 +180,20 @@ const TaskforceService = {
             .catch(error => handleError(error));
     },
 
+    fetchCustomBlockDefinitions: function (handleResponse, handleError) {
+        var url = URLS.GET_CUSTOM_BLOCK_DEFS;
+        fetch(url)
+            .then(res => {
+                return res.json();
+            })
+            .then(
+                (result) => {
+                    handleResponse(result);
+                })
+            .catch(error => {
+                handleError(error);
+            });
+    },
 
 };
 
