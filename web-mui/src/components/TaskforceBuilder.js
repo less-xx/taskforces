@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Blockly from 'node-blockly/browser';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
         minHeight: '83vh',
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(0),
-        borderRadius: 5
+        borderRadius: 5,
     },
     drawer: {
         width: controlPanelWidth,
@@ -42,8 +42,6 @@ const useStyles = makeStyles(theme => ({
     },
     workspaceContainer:{
         backgroundColor: 'ligthgray',
-        width: paper.width,
-        height: theme.height.paper,
     },
     controlPanelButton: {
         position: 'absolute',
@@ -65,9 +63,17 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const initBlocklyWorkspace = () => {
+const resizeWorkspace=(workspace, newWidth,newHeight)=>{
+    var blocklyArea = document.getElementById('workspaceContainer');
+    blocklyArea.style.width = newWidth + 'px';
+    blocklyArea.style.height = newHeight + 'px';
+    Blockly.svgResize(workspace);
+}
 
+const initBlocklyWorkspace = (workspaceRef) => {
+    console.log("Fetching taskforce blocks")
     TaskforceService.fetchTaskforceBlocks((toolbox) => {
+        console.log("Start initializing workspace")
         const mediaUrl = process.env.PUBLIC_URL + '/static/media/';
         var workspace = Blockly.inject('workspaceContainer', {
             media: mediaUrl,
@@ -87,12 +93,14 @@ const initBlocklyWorkspace = () => {
                 scaleSpeed: 1.2
             },
             trashcan: true
-        }, (error) => {
-            console.log(error)
         });
+        const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
+        const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
+        //console.log('width='+ width+", height="+height); 
+        resizeWorkspace(workspace, width, height)
+    }, (error) => {
+        console.log(error)
     })
-
-
 }
 
 const registerBlock = (blockType, blockDef) => {
@@ -120,11 +128,6 @@ const initCustomBlockDefs = () => {
     })
 }
 
-const resizeWorkspace=(toWidth, toHeight)=>{
-    console.log(toWidth)
-}
-
-
 function TaskforceBuilder(props) {
     const classes = useStyles();
     const history = useHistory()
@@ -132,14 +135,47 @@ function TaskforceBuilder(props) {
     const [controlPanelOpen, setControlPanelOpen] = useState(true)
     //console.log(taskforceGroup)
     const workspaceRef = useRef(null);
+    const [workspaceInitialized, setWorkspaceInitialized] = useState(false)
 
     if (taskforceGroup == null) {
         history.push("/taskforce-groups")
     }
 
+    const [dimensions, setDimensions] = useState({ 
+        height: window.innerHeight,
+        width: window.innerWidth
+    })
+
     useEffect(() => {
-        initCustomBlockDefs()
-        initBlocklyWorkspace()
+        if(!workspaceInitialized){
+            initCustomBlockDefs()
+            initBlocklyWorkspace(workspaceRef)
+            setWorkspaceInitialized(true)
+        }else if(Blockly.getMainWorkspace()!=null){
+            const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
+            const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
+            //console.log('width='+ width+", height="+height); 
+            resizeWorkspace(Blockly.getMainWorkspace(), width, height)
+        }
+    })
+
+    useEffect(() => {
+        function handleResize() {
+            const width = workspaceRef.current ? workspaceRef.current.offsetWidth : 200;
+            const height = workspaceRef.current ? workspaceRef.current.offsetHeight : 200;
+            console.log('resize, width='+ width+", height="+height); 
+
+            var blocklyArea = document.getElementById('workspaceContainer');
+            blocklyArea.style.width = '100%';
+            blocklyArea.style.height = `calc(100%-20px)`;
+            Blockly.svgResize(Blockly.getMainWorkspace());
+
+        }
+        window.addEventListener('resize', handleResize)
+        return _ => {
+            window.removeEventListener('resize', handleResize)
+          
+        }
     })
 
     return (
@@ -154,9 +190,8 @@ function TaskforceBuilder(props) {
                 <Typography color="textPrimary">Untitled</Typography>
             </Breadcrumbs>
 
-            <Paper className={classes.paper}>
-                <div  ref={workspaceRef} className={classes.workspaceContainer}>
-                </div>
+            <Paper className={classes.paper} ref={workspaceRef} id="workspaceContainer">
+                
             </Paper>
 
             <Drawer
