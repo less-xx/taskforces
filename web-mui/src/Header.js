@@ -9,7 +9,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
-import { drawerWidth } from './themes/Default';
+import { DrawerOpenWidth } from './themes/Default';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleDrawer } from './actions/LayoutActions';
 
@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: DrawerOpenWidth,
+    width: `calc(100% - ${DrawerOpenWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

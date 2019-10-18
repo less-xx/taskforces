@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import TaskforceService from '../resources/TaskforceService';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Paper from '@material-ui/core/Paper';
 import Drawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -17,12 +17,13 @@ import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
+import { DrawerOpenWidth, DrawerCloseWidth } from '../themes/Default';
 
 const controlPanelWidth = 240
 
 const useStyles = makeStyles(theme => ({
     paper: {
-        minHeight: '89vh',
+        height: '89vh',
         width: '100%',
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(0),
@@ -64,10 +65,10 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const resizeWorkspace = (workspace) => {
+const resizeWorkspace = (workspace, width='100%', height='calc(100% - 30px)') => {
     var blocklyArea = document.getElementById('workspaceContainer');
-    blocklyArea.style.width = '100%';
-    blocklyArea.style.height = `89vh`;
+    blocklyArea.style.width = width;
+    blocklyArea.style.height = height;
     Blockly.svgResize(workspace);
 }
 
@@ -161,8 +162,9 @@ function TaskforceBuilder(props) {
 
     useEffect(() => {
         if (workspaceInitialized) {
-            console.log("resizing workspace, width="+workspaceRef.current.offsetWidth)
-            resizeWorkspace(Blockly.getMainWorkspace())
+            const newWidth = drawerOpen ? workspaceRef.current.offsetWidth-200 : workspaceRef.current.offsetWidth+200
+            console.log("resizing workspace, width="+newWidth)
+            resizeWorkspace(Blockly.getMainWorkspace(), newWidth+"px")
         }
     }, [drawerOpen])
 

@@ -113,5 +113,6 @@ export const theme = {
     },
 };
 
-export const drawerWidth = 256;
+export const DrawerOpenWidth = 256;
+export const DrawerCloseWidth = 20;
 

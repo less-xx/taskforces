@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { drawerWidth } from '../themes/Default';
+import { DrawerOpenWidth } from '../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     newButtonShift: {
         position: 'absolute',
         top: theme.spacing(20),
-        left: drawerWidth + theme.spacing(4),
+        left: DrawerOpenWidth + theme.spacing(4),
         transition: theme.transitions.create(['left', 'top'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,

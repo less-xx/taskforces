@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { drawerWidth } from '../themes/Default';
+import { DrawerOpenWidth } from '../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     newButtonShift: {
         position: 'absolute',
         top: theme.spacing(15),
-        left: drawerWidth+theme.spacing(4),
+        left: DrawerOpenWidth+theme.spacing(4),
         transition: theme.transitions.create(['left'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,

@@ -20,7 +20,7 @@ import TimerIcon from '@material-ui/icons/Timer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 import { useDispatch, useSelector } from 'react-redux';
-import { drawerWidth } from './themes/Default';
+import { DrawerOpenWidth, DrawerCloseWidth } from './themes/Default';
 import { useHistory } from "react-router-dom";
 import { activeNavigatorMenu } from './actions/LayoutActions';
 
@@ -49,12 +49,12 @@ const categories = [
 
 const useStyles = makeStyles(theme => ({
     drawer: {
-        width: drawerWidth,
+        width: DrawerOpenWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
     },
     drawerOpen: {
-        width: drawerWidth,
+        width: DrawerOpenWidth,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
-        width: theme.spacing(6) + 1,
+        width: DrawerCloseWidth,
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing(6) + 3,
         },
