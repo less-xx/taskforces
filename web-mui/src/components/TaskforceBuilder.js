@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
-    workspaceContainer:{
+    workspaceContainer: {
         backgroundColor: 'ligthgray',
     },
     controlPanelButton: {
@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const resizeWorkspace=(workspace)=>{
+const resizeWorkspace = (workspace) => {
     var blocklyArea = document.getElementById('workspaceContainer');
     blocklyArea.style.width = '100%';
     blocklyArea.style.height = `89vh`;
@@ -134,13 +134,15 @@ function TaskforceBuilder(props) {
     //console.log(taskforceGroup)
     const workspaceRef = useRef(null);
     const [workspaceInitialized, setWorkspaceInitialized] = useState(false)
+    const drawerOpen = useSelector(state => state.toggleDrawer);
+
 
     if (taskforceGroup == null) {
         history.push("/taskforce-groups")
     }
 
     useEffect(() => {
-        if(!workspaceInitialized){
+        if (!workspaceInitialized) {
             initCustomBlockDefs()
             initBlocklyWorkspace(workspaceRef)
             setWorkspaceInitialized(true)
@@ -157,6 +159,13 @@ function TaskforceBuilder(props) {
         }
     })
 
+    useEffect(() => {
+        if (workspaceInitialized) {
+            console.log("resizing workspace, width="+workspaceRef.current.offsetWidth)
+            resizeWorkspace(Blockly.getMainWorkspace())
+        }
+    }, [drawerOpen])
+
     return (
         <>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
@@ -170,7 +179,6 @@ function TaskforceBuilder(props) {
             </Breadcrumbs>
 
             <Paper className={classes.paper} ref={workspaceRef} id="workspaceContainer">
-                
             </Paper>
 
             <Drawer
