@@ -19,10 +19,6 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     card: {
-        maxWidth: 320,
-        minWidth: 200,
-        minHeight: 200,
-        maxHeight: 240,
         margin: theme.spacing(3, 1),
     },
     cardHeader: {
@@ -38,47 +34,23 @@ const useStyles = makeStyles(theme => ({
         maxHeight: 80,
         overflow: 'hidden',
     },
-    media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-    },
-    expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-            duration: theme.transitions.duration.shortest,
-        }),
-    },
-    expandOpen: {
-        transform: 'rotate(180deg)',
-    },
-    avatar: {
-        backgroundColor: red[500],
-    },
-    titleLink: {
-        margin: theme.spacing(2,0)
-    }
 }));
 
 
-
-function TaskforceGroupCard(props) {
-
+function TaskforceCard({taskforce, edit}) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory()
-    const taskforceGroup = useSelector(state => state.taskforceGroups[props.index])
-    const lastUpdatedTime = (<Typography variant="subtitle2" color="textSecondary"><Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment></Typography>)
-    const path = `/taskforce-groups/${taskforceGroup.id}`
+    const lastUpdatedTime = <Moment format='LL'>{new Date(taskforce.lastUpdatedTime)}</Moment>
+
     const title =  (
         <Link href="#" 
-            onClick={e => {
-                history.push(path, taskforceGroup);
-            }}
+            onClick={edit}
             className={classes.titleLink}>
-            <Typography variant="subtitle1">{taskforceGroup.name}</Typography>
+            <Typography variant="subtitle1">{taskforce.name}</Typography>
         </Link>
     )
+
     return (
         <Card className={classes.card}>
             <CardHeader
@@ -93,7 +65,7 @@ function TaskforceGroupCard(props) {
             />
             <CardContent className={classes.cardDescription}>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    {taskforceGroup.description}
+                    {taskforce.description}
                 </Typography>
             </CardContent>
             
@@ -101,15 +73,15 @@ function TaskforceGroupCard(props) {
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={e => props.edit(taskforceGroup)}>
+                <IconButton aria-label="edit" onClick={edit}>
                     <EditIcon />
                 </IconButton>
-                <IconButton aria-label="edit">
+                <IconButton aria-label="delete">
                     <DeleteIcon />
                 </IconButton>
             </CardActions>
         </Card>
-    )
+    )    
 }
 
-export default TaskforceGroupCard;
+export default TaskforceCard;

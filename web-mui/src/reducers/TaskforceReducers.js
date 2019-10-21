@@ -9,6 +9,15 @@ export const taskforceGroups = (state = [], action) => {
     }
 }
 
+export const taskforces = (state = {}, action) => {
+    switch (action.type) {
+        case TaskforceActionTypes.LOAD_GROUP_TASKFORCES:
+            return action.taskforces;
+        default:
+            return state;
+    }
+}
+
 export const taskforceDialogs = (state = {}, action) => {
 
     const { type, ...args } = action

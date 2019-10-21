@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'flex-center',
         padding: theme.spacing(3, 1),
-
+        margin: theme.spacing(2, 10),
     },
     newButton: {
         position: 'absolute',

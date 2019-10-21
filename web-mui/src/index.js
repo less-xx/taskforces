@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import rootReducer from './reducers';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
-const unsubscribe = store.subscribe(() => console.log(store.getState()))
+//const unsubscribe = store.subscribe(() => console.log(store.getState()))
 
 const Root = () => (
     <Provider store={store}>

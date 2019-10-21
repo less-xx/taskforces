@@ -130,25 +130,31 @@ const initCustomBlockDefs = () => {
 function TaskforceBuilder(props) {
     const classes = useStyles();
     const history = useHistory()
-    const taskforceGroup = props.location.state
+    console.log(props.location)
+
     const [controlPanelOpen, setControlPanelOpen] = useState(false)
     //console.log(taskforceGroup)
     const workspaceRef = useRef(null);
     const [workspaceInitialized, setWorkspaceInitialized] = useState(false)
     const drawerOpen = useSelector(state => state.toggleDrawer);
 
+    const taskforce = props.location.state
+    const taskforceGroup = taskforce? taskforce.group: null
 
     if (taskforceGroup == null) {
         history.push("/taskforce-groups")
     }
 
     useEffect(() => {
+        if (taskforceGroup == null) {
+            history.push("/taskforce-groups")
+        }
         if (!workspaceInitialized) {
             initCustomBlockDefs()
             initBlocklyWorkspace(workspaceRef)
             setWorkspaceInitialized(true)
         }
-    })
+    },[])
 
     useEffect(() => {
         function handleResize() {
@@ -158,15 +164,18 @@ function TaskforceBuilder(props) {
         return _ => {
             window.removeEventListener('resize', handleResize)
         }
-    })
+    },[])
 
     useEffect(() => {
+        if (taskforceGroup == null) {
+            history.push("/taskforce-groups")
+        }
         if (workspaceInitialized) {
             const newWidth = drawerOpen ? workspaceRef.current.offsetWidth-200 : workspaceRef.current.offsetWidth+200
             console.log("resizing workspace, width="+newWidth)
             resizeWorkspace(Blockly.getMainWorkspace(), newWidth+"px")
         }
-    }, [drawerOpen])
+    }, [])
 
     return (
         <>
