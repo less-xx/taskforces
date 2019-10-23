@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
     newButtonShift: {
         position: 'absolute',
         top: theme.spacing(15),
-        left: DrawerOpenWidth+theme.spacing(4),
+        left: DrawerOpenWidth + theme.spacing(4),
         transition: theme.transitions.create(['left'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -86,8 +86,8 @@ function TaskforceGroups() {
 
             <div className={classes.cards}>
                 <Tooltip title="New Taskforce Group" aria-label="new-taskforce-group">
-                    <Fab size="large" aria-label="new-taskforce-group" 
-                        className={clsx(classes.newButton, {[classes.newButtonShift]: drawerOpen})} 
+                    <Fab size="large" aria-label="new-taskforce-group"
+                        className={clsx(classes.newButton, { [classes.newButtonShift]: drawerOpen })}
                         onClick={newTaskgroup}
                     >
                         <AddIcon color="action" />
@@ -96,7 +96,7 @@ function TaskforceGroups() {
                 {groupCards}
             </div>
 
-            <EditTaskforceGroupDialog refresh={reloadTaskforceGroups} group={currentGroup}/>
+            <EditTaskforceGroupDialog refresh={reloadTaskforceGroups} group={currentGroup} />
         </>
     )
 }

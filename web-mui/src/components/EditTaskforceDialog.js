@@ -29,54 +29,39 @@ const Field = {
     Name: {
         name: "name",
         label: "Name",
-        helperText: "Input the name of the taskforce"
+        helperText: "Input the name of the taskforce group"
     },
     Description: {
         name: "description",
         label: "Description",
-        helperText: "Input the description of the taskforce"
+        helperText: "Input the description of the taskforce group"
     }
 }
 
-const isNewGroup = (group) => {
-    return group.id == null || group.id === '';
-}
 
-function EditTaskforceGroupDialog({ refresh, group = {} }) {
+function EditTaskforceDialog({ refresh, taskforce }) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
     const dialogObj = useSelector(state => state.taskforceDialogs, shallowEqual);
-    const openEditTaskforceDialog = dialogObj.dialog === TaskforceDialogTypes.EDIT_TASKFORCE_GROUP ? dialogObj.open : false;
-    const title = isNewGroup(group) ? 'New Taskforce Group' : 'Edit Taskforce Group'
+    const openEditTaskforceDialog = dialogObj.dialog === TaskforceDialogTypes.EDIT_TASKFORCE ? dialogObj.open : false;
+    const title = 'Edit Taskforce'
 
     const handleClose = () => {
-        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE_GROUP, false))
+        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE, false))
     };
 
-    const saveTaskforceGroup = (values, setSubmitting) => {
+    const saveTaskforce = (values, setSubmitting) => {
         setSubmitting(true)
-        if (isNewGroup(values)) {
-            TaskforceService.createTaskforceGroup(values, (response) => {
-                console.log(response)
-                handleClose()
-                refresh()
-            }, (error) => {
-                console.log(error)
-                setSubmitting(false)
-            })
-
-        } else {
-            const { id, ...request } = values;
-            TaskforceService.updateTaskforceGroup(id, request, (response) => {
-                console.log(response)
-                handleClose()
-                refresh()
-            }, (error) => {
-                console.log(error)
-                setSubmitting(false)
-            })
-        }
+        const { id, ...request } = values;
+        TaskforceService.updateTaskforce(id, request, (response) => {
+            console.log(response)
+            handleClose()
+            refresh()
+        }, (error) => {
+            console.log(error)
+            setSubmitting(false)
+        })
     }
 
     const validate = values => {
@@ -87,8 +72,8 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
         return errors;
     }
 
-    const toFormValues = (group) => {
-        return { id: group.id, name: group.name, description: group.description }
+    const toFormValues = (taskforce) => {
+        return { id: taskforce.id, name: taskforce.name, description: taskforce.description }
     }
 
     return (
@@ -97,10 +82,10 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
             <DialogContent>
                 <Formik
                     enableReinitialize={true}
-                    initialValues={toFormValues(group)}
+                    initialValues={toFormValues(taskforce)}
                     validate={validate}
                     onSubmit={(values, { setSubmitting }) => {
-                        saveTaskforceGroup(values, setSubmitting)
+                        saveTaskforce(values, setSubmitting)
                     }}
                 >
                     {({
@@ -135,7 +120,7 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
                                         label={Field.Description.label}
                                         multiline
                                         rowsMax="4"
-                                        value={values.description}
+                                        value={values.description ? values.description : ''}
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         helperText={Field.Description.helperText}
@@ -160,4 +145,4 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
     )
 }
 
-export default EditTaskforceGroupDialog
+export default EditTaskforceDialog

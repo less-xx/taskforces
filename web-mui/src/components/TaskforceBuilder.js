@@ -3,7 +3,7 @@ import Blockly from 'node-blockly/browser';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import TaskforceService from '../resources/TaskforceService';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -222,7 +222,7 @@ function TaskforceBuilder(props) {
                 loadTaskforce(taskforce.id)
             }
         }
-    }, [])
+    },[])
 
     useEffect(() => {
         if (taskforce.group == null) {
@@ -257,7 +257,7 @@ function TaskforceBuilder(props) {
         return _ => {
             clearInterval(timer)
         }
-    })
+    },[])
 
 
     const groupId = taskforce.group == null ? '' : taskforce.group.id

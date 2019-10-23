@@ -4,18 +4,14 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
-import { useDispatch, useSelector } from 'react-redux';
 import Link from '@material-ui/core/Link';
-import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -37,11 +33,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function TaskforceCard({ taskforce, edit }) {
+function TaskforceCard({ taskforce, edit, editProps }) {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const history = useHistory()
-    const lastUpdatedTime = <Moment format='LL'>{new Date(taskforce.lastUpdatedTime)}</Moment>
+    const lastUpdatedTime = (
+        <Typography variant="subtitle2" color="textSecondary">
+            {taskforce.updatedBy} - <Moment format='LL'>{new Date(taskforce.lastUpdatedTime)}</Moment>
+        </Typography>
+    )
 
     const title = (
         <Link href="#"
@@ -71,13 +69,13 @@ function TaskforceCard({ taskforce, edit }) {
 
             <CardActions >
                 <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                    <FavoriteBorderOutlinedIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={edit}>
-                    <EditIcon />
+                <IconButton aria-label="edit" onClick={e => editProps(taskforce)}>
+                    <EditOutlinedIcon />
                 </IconButton>
                 <IconButton aria-label="delete">
-                    <DeleteIcon />
+                    <DeleteOutlinedIcon />
                 </IconButton>
             </CardActions>
         </Card>

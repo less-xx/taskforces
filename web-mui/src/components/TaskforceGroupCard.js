@@ -4,16 +4,15 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Link from '@material-ui/core/Link';
 import { useHistory } from "react-router-dom";
 
@@ -56,7 +55,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: red[500],
     },
     titleLink: {
-        margin: theme.spacing(2,0)
+        margin: theme.spacing(2, 0)
     }
 }));
 
@@ -65,13 +64,14 @@ const useStyles = makeStyles(theme => ({
 function TaskforceGroupCard(props) {
 
     const classes = useStyles();
-    const dispatch = useDispatch();
     const history = useHistory()
     const taskforceGroup = useSelector(state => state.taskforceGroups[props.index])
-    const lastUpdatedTime = (<Typography variant="subtitle2" color="textSecondary"><Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment></Typography>)
+    const lastUpdatedTime = (<Typography variant="subtitle2" color="textSecondary">
+        {taskforceGroup.updatedBy} - <Moment format='LL'>{new Date(taskforceGroup.lastUpdatedTime)}</Moment>
+    </Typography>)
     const path = `/taskforce-groups/${taskforceGroup.id}`
-    const title =  (
-        <Link href="#" 
+    const title = (
+        <Link href="#"
             onClick={e => {
                 history.push(path, taskforceGroup);
             }}
@@ -96,16 +96,16 @@ function TaskforceGroupCard(props) {
                     {taskforceGroup.description}
                 </Typography>
             </CardContent>
-            
+
             <CardActions >
                 <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
+                    <FavoriteBorderOutlinedIcon />
                 </IconButton>
                 <IconButton aria-label="edit" onClick={e => props.edit(taskforceGroup)}>
-                    <EditIcon />
+                    <EditOutlinedIcon />
                 </IconButton>
                 <IconButton aria-label="edit">
-                    <DeleteIcon />
+                    <DeleteOutlinedIcon />
                 </IconButton>
             </CardActions>
         </Card>

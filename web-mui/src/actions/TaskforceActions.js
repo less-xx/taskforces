@@ -7,6 +7,7 @@ export const TaskforceActionTypes = {
 
 export const TaskforceDialogTypes = {
     EDIT_TASKFORCE_GROUP: "EDIT_TASKFORCE_GROUP",
+    EDIT_TASKFORCE: "EDIT_TASKFORCE",
 }
 
 export const reloadGroups = (groups, pager) => ({

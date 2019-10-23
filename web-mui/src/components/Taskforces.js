@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
 import TaskforceService from '../resources/TaskforceService';
-import { loadGroupTaskforces, TaskforceDialogTypes } from '../actions/TaskforceActions'
+import { loadGroupTaskforces, openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Fab from '@material-ui/core/Fab';
@@ -14,6 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useParams, useHistory } from "react-router-dom";
 import TaskforceCard from './TaskforceCard';
+import EditTaskforceDialog from './EditTaskforceDialog';
 
 const useStyles = makeStyles(theme => ({
 
@@ -56,6 +57,7 @@ function Taskforces(props) {
     const history = useHistory()
     const { groupId } = useParams();
     const [taskforceGroup, setTaskforceGroup] = useState(props.location.state != null ? props.location.state : {})
+    const [currentTaskforce, setCurrentTaskforce] = useState({})
 
     const reloadGroupTaskforces = (groupId) => {
         TaskforceService.fetchGroupTaskforces(groupId, (taskforces, pager) => {
@@ -80,6 +82,11 @@ function Taskforces(props) {
         history.push('/taskforce-builder', taskforce)
     }
 
+    const editTaskforceProps = (taskforce) => {
+        setCurrentTaskforce(taskforce)
+        dispatch(openTaskforceDialog(TaskforceDialogTypes.EDIT_TASKFORCE, true))
+    }
+
     const newTaskforce = () => {
         history.push('/taskforce-builder', { name: "Untitled", group: taskforceGroup })
     }
@@ -90,7 +97,7 @@ function Taskforces(props) {
                 <div className={classes.taskforceCards}>
                     {
                         taskforces.values.map(t => {
-                            return (<TaskforceCard key={t.id} taskforce={t} edit={editTaskforce} />)
+                            return (<TaskforceCard key={t.id} taskforce={t} edit={editTaskforce} editProps={editTaskforceProps}/>)
                         })
                     }
                 </div>
@@ -109,13 +116,13 @@ function Taskforces(props) {
         if (groupId) {
             reloadGroupTaskforces(groupId)
         }
-    }, []);
+    }, [groupId]);
 
     useEffect(() => {
         if (taskforceGroup.name == null) {
             loadTaskforceGroup(groupId)
         }
-    }, []);
+    }, [groupId, taskforceGroup.name]);
 
 
     return (
@@ -139,6 +146,8 @@ function Taskforces(props) {
                     <AddIcon color="action" />
                 </Fab>
             </Tooltip>
+
+            <EditTaskforceDialog refresh={() => reloadGroupTaskforces(groupId)} taskforce={currentTaskforce} />
         </>
     )
 }
