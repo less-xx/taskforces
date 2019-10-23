@@ -55,12 +55,12 @@ function Taskforces(props) {
     const drawerOpen = useSelector(state => state.toggleDrawer);
     const history = useHistory()
     const { groupId } = useParams();
-    const [taskforceGroup,setTaskforceGroup] = useState(props.location.state!=null?props.location.state:{})
+    const [taskforceGroup, setTaskforceGroup] = useState(props.location.state != null ? props.location.state : {})
 
     const reloadGroupTaskforces = (groupId) => {
         TaskforceService.fetchGroupTaskforces(groupId, (taskforces, pager) => {
             console.log(taskforces);
-            dispatch(loadGroupTaskforces({values: taskforces, pager: pager}))
+            dispatch(loadGroupTaskforces({ values: taskforces, pager: pager }))
         }, (error) => {
             console.log(error);
         });
@@ -81,28 +81,28 @@ function Taskforces(props) {
     }
 
     const newTaskforce = () => {
-        history.push('/taskforce-builder', {group: taskforceGroup})
+        history.push('/taskforce-builder', { name: "Untitled", group: taskforceGroup })
     }
 
-    const taskforcesComponent = ()=>{
-        if(taskforces.values){
+    const taskforcesComponent = () => {
+        if (taskforces.values) {
             return (
                 <div className={classes.taskforceCards}>
-                   {
-                        taskforces.values.map(t=>{
-                            return (<TaskforceCard  key={t.id} taskforce={t} edit={e=>editTaskforce(t)}/>)
+                    {
+                        taskforces.values.map(t => {
+                            return (<TaskforceCard key={t.id} taskforce={t} edit={editTaskforce} />)
                         })
                     }
                 </div>
             )
-            
-        }else{
+
+        } else {
             return <></>
         }
     }
 
-    const taskforceGroupName = ()=> {
-        return taskforceGroup.name!=null ? taskforceGroup.name : "Unknown"
+    const taskforceGroupName = () => {
+        return taskforceGroup.name != null ? taskforceGroup.name : "Unknown"
     }
 
     useEffect(() => {
@@ -116,7 +116,7 @@ function Taskforces(props) {
             loadTaskforceGroup(groupId)
         }
     }, []);
-    
+
 
     return (
         <>
@@ -129,9 +129,9 @@ function Taskforces(props) {
             <Typography variant="h5" component="h3">
                 Taskforces
             </Typography>
-            
-                {taskforcesComponent()}
-         
+
+            {taskforcesComponent()}
+
             <Tooltip title="New Taskforce" aria-label="new-taskforce">
                 <Fab size="large" aria-label="new-taskforce"
                     className={clsx(classes.newButton, { [classes.newButtonShift]: drawerOpen })}

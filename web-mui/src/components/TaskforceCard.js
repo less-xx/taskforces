@@ -37,15 +37,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function TaskforceCard({taskforce, edit}) {
+function TaskforceCard({ taskforce, edit }) {
     const classes = useStyles();
     const dispatch = useDispatch();
     const history = useHistory()
     const lastUpdatedTime = <Moment format='LL'>{new Date(taskforce.lastUpdatedTime)}</Moment>
 
-    const title =  (
-        <Link href="#" 
-            onClick={edit}
+    const title = (
+        <Link href="#"
+            onClick={e => edit(taskforce)}
             className={classes.titleLink}>
             <Typography variant="subtitle1">{taskforce.name}</Typography>
         </Link>
@@ -68,7 +68,7 @@ function TaskforceCard({taskforce, edit}) {
                     {taskforce.description}
                 </Typography>
             </CardContent>
-            
+
             <CardActions >
                 <IconButton aria-label="add to favorites">
                     <FavoriteIcon />
@@ -81,7 +81,7 @@ function TaskforceCard({taskforce, edit}) {
                 </IconButton>
             </CardActions>
         </Card>
-    )    
+    )
 }
 
 export default TaskforceCard;

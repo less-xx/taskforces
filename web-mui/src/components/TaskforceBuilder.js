@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const resizeWorkspace = (workspace, width='100%', height='calc(100% - 30px)') => {
+const resizeWorkspace = (workspace, width = '100%', height = 'calc(100% - 30px)') => {
     var blocklyArea = document.getElementById('workspaceContainer');
     blocklyArea.style.width = width;
     blocklyArea.style.height = height;
@@ -138,15 +138,14 @@ function TaskforceBuilder(props) {
     const [workspaceInitialized, setWorkspaceInitialized] = useState(false)
     const drawerOpen = useSelector(state => state.toggleDrawer);
 
-    const taskforce = props.location.state
-    const taskforceGroup = taskforce? taskforce.group: null
+    const [taskforce, setTaskforce] = useState(props.location.state != null ? props.location.state : {})
 
-    if (taskforceGroup == null) {
+    if (taskforce.group == null) {
         history.push("/taskforce-groups")
     }
 
     useEffect(() => {
-        if (taskforceGroup == null) {
+        if (taskforce.group == null) {
             history.push("/taskforce-groups")
         }
         if (!workspaceInitialized) {
@@ -154,7 +153,18 @@ function TaskforceBuilder(props) {
             initBlocklyWorkspace(workspaceRef)
             setWorkspaceInitialized(true)
         }
-    },[])
+    }, [])
+
+    useEffect(() => {
+        if (taskforce.group == null) {
+            history.push("/taskforce-groups")
+        }
+        if (workspaceInitialized) {
+            const newWidth = drawerOpen ? workspaceRef.current.offsetWidth - 200 : workspaceRef.current.offsetWidth + 200
+            console.log("resizing workspace, width=" + newWidth)
+            resizeWorkspace(Blockly.getMainWorkspace(), newWidth + "px")
+        }
+    }, [])
 
     useEffect(() => {
         function handleResize() {
@@ -164,18 +174,10 @@ function TaskforceBuilder(props) {
         return _ => {
             window.removeEventListener('resize', handleResize)
         }
-    },[])
-
-    useEffect(() => {
-        if (taskforceGroup == null) {
-            history.push("/taskforce-groups")
-        }
-        if (workspaceInitialized) {
-            const newWidth = drawerOpen ? workspaceRef.current.offsetWidth-200 : workspaceRef.current.offsetWidth+200
-            console.log("resizing workspace, width="+newWidth)
-            resizeWorkspace(Blockly.getMainWorkspace(), newWidth+"px")
-        }
     }, [])
+
+    const groupId = taskforce.group == null ? '' : taskforce.group.id
+    const groupName = taskforce.group == null ? 'Unknown' : taskforce.group.name
 
     return (
         <>
@@ -183,10 +185,10 @@ function TaskforceBuilder(props) {
                 <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups")}>
                     Groups
                 </Link>
-                <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups/" + taskforceGroup.id)}>
-                    {taskforceGroup.name}
+                <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups/" + groupId)}>
+                    {groupName}
                 </Link>
-                <Typography color="textPrimary">Untitled</Typography>
+                <Typography color="textPrimary">{taskforce.name}</Typography>
             </Breadcrumbs>
 
             <Paper className={classes.paper} ref={workspaceRef} id="workspaceContainer">
