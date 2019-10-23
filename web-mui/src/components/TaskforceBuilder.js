@@ -12,12 +12,10 @@ import Paper from '@material-ui/core/Paper';
 import Drawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
-import { DrawerOpenWidth, DrawerCloseWidth } from '../themes/Default';
+import SnackbarMessage from './SnackbarMessage';
 
 const controlPanelWidth = 240
 
@@ -62,7 +60,7 @@ const useStyles = makeStyles(theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
-    }
+    },
 }))
 
 const resizeWorkspace = (workspace, width = '100%', height = 'calc(100% - 30px)') => {
@@ -72,12 +70,12 @@ const resizeWorkspace = (workspace, width = '100%', height = 'calc(100% - 30px)'
     Blockly.svgResize(workspace);
 }
 
-const initBlocklyWorkspace = (workspaceRef) => {
+const initBlocklyWorkspace = (workspaceRef, onWorkspaceChange) => {
     console.log("Fetching taskforce blocks")
     TaskforceService.fetchTaskforceBlocks((toolbox) => {
         console.log("Start initializing workspace")
         const mediaUrl = process.env.PUBLIC_URL + '/static/media/';
-        var workspace = Blockly.inject('workspaceContainer', {
+        const workspace = Blockly.inject('workspaceContainer', {
             media: mediaUrl,
             toolbox: toolbox,
             grid: {
@@ -96,7 +94,9 @@ const initBlocklyWorkspace = (workspaceRef) => {
             },
             trashcan: true
         });
+        workspace.addChangeListener(e => onWorkspaceChange(e, workspace));
         resizeWorkspace(workspace)
+        console.log("Initialized workspace")
     }, (error) => {
         console.log(error)
     })
@@ -130,7 +130,7 @@ const initCustomBlockDefs = () => {
 function TaskforceBuilder(props) {
     const classes = useStyles();
     const history = useHistory()
-    console.log(props.location)
+    //console.log(props.location)
 
     const [controlPanelOpen, setControlPanelOpen] = useState(false)
     //console.log(taskforceGroup)
@@ -139,9 +139,75 @@ function TaskforceBuilder(props) {
     const drawerOpen = useSelector(state => state.toggleDrawer);
 
     const [taskforce, setTaskforce] = useState(props.location.state != null ? props.location.state : {})
+    const [confChangeHistory, setConfChangeHistory] = useState([])
+    const [showSnackbar, setShowSnackbar] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState()
+    const [snackbarVariant, setSnackbarVariant] = useState("success")
+
+    //console.log(taskforce)
+
+    const onWorkspaceChange = (e, workspace) => {
+
+        if (e instanceof Blockly.Events.Ui) {
+            return;
+        }
+
+        var xmlStr = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+        if (confChangeHistory.length > 0 && confChangeHistory[confChangeHistory.length - 1] === xmlStr) {
+            return
+        }
+
+        setConfChangeHistory(previousValues => ([...previousValues, xmlStr]))
+    }
 
     if (taskforce.group == null) {
         history.push("/taskforce-groups")
+    }
+
+    const showSnackbarMessage = (message, variant) => {
+        setSnackbarVariant(variant)
+        setSnackbarMessage(message)
+        setShowSnackbar(true)
+    }
+
+    const saveTaskforceConfig = (taskforce, config) => {
+        const request = {
+            name: taskforce.name,
+            groupId: taskforce.group.id,
+            configuration: config
+        }
+        //console.log(request)
+        if (taskforce.id) {
+            TaskforceService.updateTaskforce(taskforce.id, request, (response) => {
+                //console.log(response)
+                showSnackbarMessage("Saved taskforce configuration", "success")
+            }, (error) => {
+                console.log(error)
+                showSnackbarMessage(error, "error")
+            })
+        } else {
+            TaskforceService.createTaskforce(request, (taskforce) => {
+                //console.log(response)
+                setTaskforce(taskforce)
+                showSnackbarMessage("Saved taskforce configuration", "success")
+            }, (error) => {
+                console.log(error)
+                showSnackbarMessage(error, "error")
+            })
+        }
+
+    }
+
+    const loadTaskforce = (taskforceId) => {
+        TaskforceService.fetchTaskforce(taskforceId, (taskforce) => {
+            console.log(taskforce)
+            var xml = Blockly.Xml.textToDom(taskforce.configuration);
+            Blockly.Xml.domToWorkspace(xml, Blockly.getMainWorkspace());
+            console.log("Loaded taskforce, ID: " + taskforceId)
+            setConfChangeHistory([])
+        }, (error) => {
+            console.log(error)
+        })
     }
 
     useEffect(() => {
@@ -150,8 +216,11 @@ function TaskforceBuilder(props) {
         }
         if (!workspaceInitialized) {
             initCustomBlockDefs()
-            initBlocklyWorkspace(workspaceRef)
+            initBlocklyWorkspace(workspaceRef, onWorkspaceChange)
             setWorkspaceInitialized(true)
+            if (taskforce.id) {
+                loadTaskforce(taskforce.id)
+            }
         }
     }, [])
 
@@ -175,6 +244,21 @@ function TaskforceBuilder(props) {
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            if (confChangeHistory.length > 0) {
+                //console.log(confChangeHistory)
+                const config = confChangeHistory[confChangeHistory.length - 1]
+                setConfChangeHistory([])
+                saveTaskforceConfig(taskforce, config)
+            }
+        }, 5000)
+        return _ => {
+            clearInterval(timer)
+        }
+    })
+
 
     const groupId = taskforce.group == null ? '' : taskforce.group.id
     const groupName = taskforce.group == null ? 'Unknown' : taskforce.group.name
@@ -218,6 +302,16 @@ function TaskforceBuilder(props) {
                     {controlPanelOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </Fab>
             </Tooltip>
+
+            <SnackbarMessage
+                autoHideDuration={2000}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                key={taskforce.id}
+                open={showSnackbar}
+                onClose={() => setShowSnackbar(false)}
+                message={snackbarMessage}
+                variant={snackbarVariant}
+            />
         </>
     )
 
