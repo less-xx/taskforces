@@ -9,10 +9,23 @@ let _theme = createMuiTheme({
         },
     },
     typography: {
-        h5: {
+        h3: {
             fontWeight: 500,
             fontSize: 26,
+            letterSpacing: 0.6,
+            lineHeight: 2.0
+        },
+        h4: {
+            fontWeight: 400,
+            fontSize: 22,
             letterSpacing: 0.5,
+            lineHeight: 2.0
+        },
+        h5: {
+            fontWeight: 400,
+            fontSize: 18,
+            letterSpacing: 0.4,
+            lineHeight: 2.0
         },
         subtitle1: {
             lineHeight: 1.2

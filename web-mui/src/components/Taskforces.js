@@ -135,7 +135,7 @@ function Taskforces(props) {
                 </Link>
                 <Typography color="textPrimary">{taskforceGroupName()}</Typography>
             </Breadcrumbs>
-            <Typography variant="h5" component="h3">
+            <Typography variant="h3" component="h3">
                 Taskforces
             </Typography>
 

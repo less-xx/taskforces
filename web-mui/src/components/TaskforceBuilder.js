@@ -21,6 +21,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import EditTaskforceNameDialog from './EditTaskforceNameDialog';
 import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
+import TaskforceControlPanelWrapper from './TaskforceControlPanelWrapper'
 
 const controlPanelWidth = 240
 
@@ -130,7 +131,7 @@ function TaskforceBuilder(props) {
         if (confChangeHistory.length > 0 && confChangeHistory[confChangeHistory.length - 1] === xmlStr) {
             return
         }
-        console.log(xmlStr)
+        //console.log(xmlStr)
         setConfChangeHistory([xmlStr])
     }
 
@@ -316,7 +317,7 @@ function TaskforceBuilder(props) {
                 }}
             >
                 <div className={classes.drawerContent}>
-                    Content
+                    <TaskforceControlPanelWrapper/>
                 </div>
             </Drawer>
 
