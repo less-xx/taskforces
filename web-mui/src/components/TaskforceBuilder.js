@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import Blockly from 'node-blockly/browser';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -16,6 +17,10 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import clsx from 'clsx';
 import SnackbarMessage from './SnackbarMessage';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import IconButton from '@material-ui/core/IconButton';
+import EditTaskforceNameDialog from './EditTaskforceNameDialog';
+import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 
 const controlPanelWidth = 240
 
@@ -70,38 +75,6 @@ const resizeWorkspace = (workspace, width = '100%', height = 'calc(100% - 30px)'
     Blockly.svgResize(workspace);
 }
 
-const initBlocklyWorkspace = (workspaceRef, onWorkspaceChange) => {
-    console.log("Fetching taskforce blocks")
-    TaskforceService.fetchTaskforceBlocks((toolbox) => {
-        console.log("Start initializing workspace")
-        const mediaUrl = process.env.PUBLIC_URL + '/static/media/';
-        const workspace = Blockly.inject('workspaceContainer', {
-            media: mediaUrl,
-            toolbox: toolbox,
-            grid: {
-                spacing: 20,
-                length: 3,
-                colour: '#ccc',
-                snap: true
-            },
-            zoom: {
-                controls: true,
-                wheel: true,
-                startScale: 1.0,
-                maxScale: 2,
-                minScale: 0.5,
-                scaleSpeed: 1.2
-            },
-            trashcan: true
-        });
-        workspace.addChangeListener(e => onWorkspaceChange(e, workspace));
-        resizeWorkspace(workspace)
-        console.log("Initialized workspace")
-    }, (error) => {
-        console.log(error)
-    })
-}
-
 const registerBlock = (blockType, blockDef) => {
     //console.log(blockDef);
     Blockly.Blocks[blockType] = {
@@ -131,7 +104,7 @@ function TaskforceBuilder(props) {
     const classes = useStyles();
     const history = useHistory()
     //console.log(props.location)
-
+    const dispatch = useDispatch();
     const [controlPanelOpen, setControlPanelOpen] = useState(false)
     //console.log(taskforceGroup)
     const workspaceRef = useRef(null);
@@ -153,11 +126,12 @@ function TaskforceBuilder(props) {
         }
 
         var xmlStr = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+        
         if (confChangeHistory.length > 0 && confChangeHistory[confChangeHistory.length - 1] === xmlStr) {
             return
         }
-
-        setConfChangeHistory(previousValues => ([...previousValues, xmlStr]))
+        console.log(xmlStr)
+        setConfChangeHistory([xmlStr])
     }
 
     if (taskforce.group == null) {
@@ -170,25 +144,25 @@ function TaskforceBuilder(props) {
         setShowSnackbar(true)
     }
 
-    const saveTaskforceConfig = (taskforce, config) => {
+    const saveTaskforceConfig = (taskforce, config, handleResponse) => {
         const request = {
             name: taskforce.name,
             groupId: taskforce.group.id,
             configuration: config
         }
-        //console.log(request)
+        console.log(taskforce)
         if (taskforce.id) {
             TaskforceService.updateTaskforce(taskforce.id, request, (response) => {
-                //console.log(response)
+                handleResponse(taskforce)
                 showSnackbarMessage("Saved taskforce configuration", "success")
             }, (error) => {
                 console.log(error)
                 showSnackbarMessage(error, "error")
             })
         } else {
-            TaskforceService.createTaskforce(request, (taskforce) => {
+            TaskforceService.createTaskforce(request, (response) => {
                 //console.log(response)
-                setTaskforce(taskforce)
+                handleResponse(taskforce)
                 showSnackbarMessage("Saved taskforce configuration", "success")
             }, (error) => {
                 console.log(error)
@@ -203,10 +177,52 @@ function TaskforceBuilder(props) {
             console.log(taskforce)
             var xml = Blockly.Xml.textToDom(taskforce.configuration);
             Blockly.Xml.domToWorkspace(xml, Blockly.getMainWorkspace());
-            console.log("Loaded taskforce, ID: " + taskforceId)
             setConfChangeHistory([])
+            console.log("Loaded taskforce, ID: " + taskforceId)
         }, (error) => {
             console.log(error)
+        })
+    }
+
+    const initBlocklyWorkspace = () => {
+        console.log("Fetching taskforce blocks")
+        TaskforceService.fetchTaskforceBlocks((toolbox) => {
+            console.log("Start initializing workspace")
+            const mediaUrl = process.env.PUBLIC_URL + '/static/media/';
+            const workspace = Blockly.inject('workspaceContainer', {
+                media: mediaUrl,
+                toolbox: toolbox,
+                grid: {
+                    spacing: 20,
+                    length: 3,
+                    colour: '#ccc',
+                    snap: true
+                },
+                zoom: {
+                    controls: true,
+                    wheel: true,
+                    startScale: 1.0,
+                    maxScale: 2,
+                    minScale: 0.5,
+                    scaleSpeed: 1.2
+                },
+                trashcan: true
+            });
+            workspace.addChangeListener(e => onWorkspaceChange(e, workspace));
+            resizeWorkspace(workspace)
+            console.log("Initialized workspace")
+        }, (error) => {
+            console.log(error)
+        })
+    }
+
+    const renameTaskforce = (taskforce) => {
+        dispatch(openTaskforceDialog(TaskforceDialogTypes.RENAME_TASKFORCE, true, taskforce))
+    }
+
+    const onUpdatedTaskforceName = (taskforce) =>{
+        setTaskforce(oldValues=>{
+            return { ...oldValues, name: taskforce.name}
         })
     }
 
@@ -215,9 +231,10 @@ function TaskforceBuilder(props) {
             history.push("/taskforce-groups")
         }
         if (!workspaceInitialized) {
-            initCustomBlockDefs()
-            initBlocklyWorkspace(workspaceRef, onWorkspaceChange)
             setWorkspaceInitialized(true)
+            initCustomBlockDefs()
+            initBlocklyWorkspace()
+            //console.log(taskforce)
             if (taskforce.id) {
                 loadTaskforce(taskforce.id)
             }
@@ -246,19 +263,24 @@ function TaskforceBuilder(props) {
     }, [])
 
     useEffect(() => {
+        let isCancelled = false
         const timer = setInterval(() => {
             if (confChangeHistory.length > 0) {
                 //console.log(confChangeHistory)
                 const config = confChangeHistory[confChangeHistory.length - 1]
                 setConfChangeHistory([])
-                saveTaskforceConfig(taskforce, config)
+                saveTaskforceConfig(taskforce, config, ()=>{
+                    if (!isCancelled){
+                        setTaskforce(taskforce)
+                    }
+                })
             }
         }, 5000)
         return _ => {
             clearInterval(timer)
+            isCancelled = true
         }
-    },[])
-
+    },[confChangeHistory])
 
     const groupId = taskforce.group == null ? '' : taskforce.group.id
     const groupName = taskforce.group == null ? 'Unknown' : taskforce.group.name
@@ -272,7 +294,13 @@ function TaskforceBuilder(props) {
                 <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups/" + groupId)}>
                     {groupName}
                 </Link>
-                <Typography color="textPrimary">{taskforce.name}</Typography>
+                <Typography color="textPrimary">
+                    {taskforce.name}
+                    <IconButton aria-label="edit" onClick={e=>renameTaskforce(taskforce)}>
+                        <EditOutlinedIcon />
+                    </IconButton>
+                </Typography>
+                
             </Breadcrumbs>
 
             <Paper className={classes.paper} ref={workspaceRef} id="workspaceContainer">
@@ -312,6 +340,8 @@ function TaskforceBuilder(props) {
                 message={snackbarMessage}
                 variant={snackbarVariant}
             />
+
+            <EditTaskforceNameDialog onUpdate={onUpdatedTaskforceName} taskforce={taskforce} />
         </>
     )
 

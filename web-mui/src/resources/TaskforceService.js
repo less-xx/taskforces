@@ -144,7 +144,7 @@ const TaskforceService = {
         }).then(response => response.json())
             .then(json => {
                 if (handleResponse) {
-                    handleResponse(json);
+                    handleResponse(json.body);
                 }
             })
             .catch(error => handleError(error));
@@ -162,7 +162,7 @@ const TaskforceService = {
         }).then(response => response.json())
             .then(json => {
                 if (handleResponse) {
-                    handleResponse(json);
+                    handleResponse(json.body);
                 }
             })
             .catch(error => handleError(error));

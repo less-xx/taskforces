@@ -15,6 +15,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { useParams, useHistory } from "react-router-dom";
 import TaskforceCard from './TaskforceCard';
 import EditTaskforceDialog from './EditTaskforceDialog';
+import * as moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
 
@@ -88,7 +89,8 @@ function Taskforces(props) {
     }
 
     const newTaskforce = () => {
-        history.push('/taskforce-builder', { name: "Untitled", group: taskforceGroup })
+        const suffix = moment().format("YYYY-MM-DD_HH-mm-ss")
+        history.push('/taskforce-builder', { name: "Untitled_"+suffix, group: taskforceGroup })
     }
 
     const taskforcesComponent = () => {

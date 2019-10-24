@@ -8,6 +8,7 @@ export const TaskforceActionTypes = {
 export const TaskforceDialogTypes = {
     EDIT_TASKFORCE_GROUP: "EDIT_TASKFORCE_GROUP",
     EDIT_TASKFORCE: "EDIT_TASKFORCE",
+    RENAME_TASKFORCE: "RENAE_TASKFORCE",
 }
 
 export const reloadGroups = (groups, pager) => ({
