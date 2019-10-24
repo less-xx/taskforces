@@ -1,4 +1,4 @@
-<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+<xml xmlns="https://developers.google.com/blockly/xml" id="workspaceBlocks" style="display:none">
   <block type="copy_files" id="FbRAHGrz0{2AL|pyMvf6" x="137" y="188">
     <field name="customFilePathId">id0</field>
     <value name="files">

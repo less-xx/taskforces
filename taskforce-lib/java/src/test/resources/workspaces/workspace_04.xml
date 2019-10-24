@@ -1,4 +1,4 @@
-<xml xmlns="http://www.w3.org/1999/xhtml">
+<xml xmlns="https://developers.google.com/blockly/xml">
   <variables>
     <variable type="" id=".sHJQ~4V7.dkC,8=K[B5">min_num</variable>
     <variable type="" id="(uu#p|Rj7CJ=tEFia@]w">max_num</variable>

@@ -1,4 +1,4 @@
-<xml xmlns="http://www.w3.org/1999/xhtml" id="workspaceBlocks" style="display:none">
+<xml xmlns="https://developers.google.com/blockly/xml" id="workspaceBlocks" style="display:none">
 	<variables>
 		<variable type="" id="SSQq%~url%p:*XHtbVY@">result</variable>
 	</variables>

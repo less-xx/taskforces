@@ -23,7 +23,7 @@ import EditTaskforceNameDialog from './EditTaskforceNameDialog';
 import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 import TaskforceControlPanelWrapper from './TaskforceControlPanelWrapper'
 
-const controlPanelWidth = 240
+const controlPanelWidth = 280
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
     controlPanelButtonShift: {
         position: 'absolute',
         top: theme.spacing(7) - 1,
-        right: theme.spacing(30) + 5,
+        right: controlPanelWidth + 5,
         transition: theme.transitions.create(['right'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -212,6 +212,9 @@ function TaskforceBuilder(props) {
             workspace.addChangeListener(e => onWorkspaceChange(e, workspace));
             resizeWorkspace(workspace)
             console.log("Initialized workspace")
+            if (taskforce.id) {
+                loadTaskforce(taskforce.id)
+            }
         }, (error) => {
             console.log(error)
         })
@@ -235,10 +238,6 @@ function TaskforceBuilder(props) {
             setWorkspaceInitialized(true)
             initCustomBlockDefs()
             initBlocklyWorkspace()
-            //console.log(taskforce)
-            if (taskforce.id) {
-                loadTaskforce(taskforce.id)
-            }
         }
     },[])
 
@@ -317,7 +316,7 @@ function TaskforceBuilder(props) {
                 }}
             >
                 <div className={classes.drawerContent}>
-                    <TaskforceControlPanelWrapper/>
+                    <TaskforceControlPanelWrapper taskforce={taskforce}/>
                 </div>
             </Drawer>
 

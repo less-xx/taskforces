@@ -26,7 +26,7 @@ public class TaskforceExecution {
 
 	@Id
 	@SequenceGenerator(name = "task_execution_id_seq")
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "task_execution_id_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "task_execution_id_seq")
 	@Column(name = "id", columnDefinition = "serial")
 	private Long id;
 

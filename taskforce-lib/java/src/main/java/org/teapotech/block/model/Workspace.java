@@ -22,8 +22,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 @XmlRootElement(name = "xml")
 public class Workspace {
 
-	// public final static String NAMESPACE = "http://www.w3.org/1999/xhtml";
-
 	@XmlElementWrapper(name = "variables")
 	@XmlElement(name = "variable")
 	private List<Variable> variables;

@@ -1,4 +1,4 @@
-<xml xmlns="http://www.w3.org/1999/xhtml">
+<xml xmlns="https://developers.google.com/blockly/xml">
 	<block type="dispatch_event">
 		<value name="event">
 			<shadow type="event_with_param">

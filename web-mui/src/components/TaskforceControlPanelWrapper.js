@@ -5,11 +5,11 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import RunControlPanel from './panels/RunControlPanel';
 
-function TaskforceControlPanelWrapper(){
+function TaskforceControlPanelWrapper({taskforce}){
 
     return (
         <>
-            <RunControlPanel/>
+            <RunControlPanel taskforce={taskforce}/>
         </>
     )
     
