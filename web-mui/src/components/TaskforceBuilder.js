@@ -127,7 +127,7 @@ function TaskforceBuilder(props) {
         }
 
         var xmlStr = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
-        
+
         if (confChangeHistory.length > 0 && confChangeHistory[confChangeHistory.length - 1] === xmlStr) {
             return
         }
@@ -224,9 +224,9 @@ function TaskforceBuilder(props) {
         dispatch(openTaskforceDialog(TaskforceDialogTypes.RENAME_TASKFORCE, true, taskforce))
     }
 
-    const onUpdatedTaskforceName = (taskforce) =>{
-        setTaskforce(oldValues=>{
-            return { ...oldValues, name: taskforce.name}
+    const onUpdatedTaskforceName = (taskforce) => {
+        setTaskforce(oldValues => {
+            return { ...oldValues, name: taskforce.name }
         })
     }
 
@@ -239,7 +239,7 @@ function TaskforceBuilder(props) {
             initCustomBlockDefs()
             initBlocklyWorkspace()
         }
-    },[])
+    }, [])
 
     useEffect(() => {
         if (taskforce.group == null) {
@@ -269,8 +269,8 @@ function TaskforceBuilder(props) {
                 //console.log(confChangeHistory)
                 const config = confChangeHistory[confChangeHistory.length - 1]
                 setConfChangeHistory([])
-                saveTaskforceConfig(taskforce, config, ()=>{
-                    if (!isCancelled){
+                saveTaskforceConfig(taskforce, config, () => {
+                    if (!isCancelled) {
                         setTaskforce(taskforce)
                     }
                 })
@@ -280,7 +280,7 @@ function TaskforceBuilder(props) {
             clearInterval(timer)
             isCancelled = true
         }
-    },[confChangeHistory])
+    }, [confChangeHistory])
 
     const groupId = taskforce.group == null ? '' : taskforce.group.id
     const groupName = taskforce.group == null ? 'Unknown' : taskforce.group.name
@@ -296,11 +296,11 @@ function TaskforceBuilder(props) {
                 </Link>
                 <Typography color="textPrimary">
                     {taskforce.name}
-                    <IconButton aria-label="edit" onClick={e=>renameTaskforce(taskforce)}>
+                    <IconButton aria-label="edit" onClick={e => renameTaskforce(taskforce)}>
                         <EditOutlinedIcon />
                     </IconButton>
                 </Typography>
-                
+
             </Breadcrumbs>
 
             <Paper className={classes.paper} ref={workspaceRef} id="workspaceContainer">
@@ -316,7 +316,7 @@ function TaskforceBuilder(props) {
                 }}
             >
                 <div className={classes.drawerContent}>
-                    <TaskforceControlPanelWrapper taskforce={taskforce}/>
+                    <TaskforceControlPanelWrapper taskforce={taskforce} />
                 </div>
             </Drawer>
 
