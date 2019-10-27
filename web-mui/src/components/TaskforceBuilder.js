@@ -22,6 +22,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditTaskforceNameDialog from './EditTaskforceNameDialog';
 import { openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 import TaskforceControlPanelWrapper from './TaskforceControlPanelWrapper'
+import TaskforceExecutionLogDialog from './TaskforceExecutionLogDialog'
 
 const controlPanelWidth = 280
 
@@ -342,6 +343,7 @@ function TaskforceBuilder(props) {
             />
 
             <EditTaskforceNameDialog onUpdate={onUpdatedTaskforceName} taskforce={taskforce} />
+            <TaskforceExecutionLogDialog/>
         </>
     )
 
