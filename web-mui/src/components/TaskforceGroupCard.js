@@ -93,7 +93,7 @@ function TaskforceGroupCard(props) {
             />
             <CardContent className={classes.cardDescription}>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    {taskforceGroup.description}
+                    Description: {taskforceGroup.description}
                 </Typography>
             </CardContent>
 

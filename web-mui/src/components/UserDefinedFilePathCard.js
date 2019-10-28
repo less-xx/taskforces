@@ -12,6 +12,7 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Moment from 'react-moment';
 import Link from '@material-ui/core/Link';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -21,31 +22,45 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(0),
     },
     cardName: {
-        minHeight: 60,
-        maxHeight: 100,
+        minHeight: 30,
+        maxHeight: 50,
         overflow: 'hidden',
     },
-    cardDescription: {
-        minHeight: 70,
+    cardContent: {
+        margin: theme.spacing(0),
+        paddingTop: theme.spacing(0),
+        minHeight: 20,
         maxHeight: 80,
         overflow: 'hidden',
     },
+    cardContentItem: {
+        margin: theme.spacing(0),
+        padding: theme.spacing(1),
+        backgroundColor: '#EEEEEE',
+    },
+    cardContentDescription: {
+        margin: theme.spacing(0),
+        padding: theme.spacing(1),
+    },
+    cardContentDivider: {
+        marginBottom: theme.spacing(1),
+        borderColor: '#FF0000'
+    }
 }));
 
 
-function TaskforceCard({ taskforce, edit, editProps }) {
+function UserDefinedFilePathCard({ filePath, edit }) {
     const classes = useStyles();
     const lastUpdatedTime = (
-        <Typography variant="subtitle2" color="textSecondary">
-            {taskforce.updatedBy} - <Moment format='LL'>{new Date(taskforce.lastUpdatedTime)}</Moment>
+        <Typography variant="body2" color="textSecondary" component="span">
+            {filePath.updatedBy} - <Moment format='LL'>{new Date(filePath.lastUpdatedTime)}</Moment>
         </Typography>
     )
 
     const title = (
         <Link href="#"
-            onClick={e => edit(taskforce)}
-            className={classes.titleLink}>
-            <Typography variant="subtitle1">{taskforce.name}</Typography>
+            onClick={e => edit(filePath)}>
+            <Typography variant="subtitle1">{filePath.name}</Typography>
         </Link>
     )
 
@@ -61,9 +76,13 @@ function TaskforceCard({ taskforce, edit, editProps }) {
                 subheader={lastUpdatedTime}
                 className={classes.cardHeader}
             />
-            <CardContent className={classes.cardDescription}>
-                <Typography variant="body2" color="textSecondary" component="p">
-                Description: {taskforce.description}
+            <CardContent className={classes.cardContent}>
+                <Typography variant="body1" color="textPrimary" component="p" className={classes.cardContentItem}>
+                    Path: {filePath.path}
+                </Typography>
+                <Divider light  />
+                <Typography variant="body2" color="textSecondary" component="p" className={classes.cardContentDescription}>
+                    Description: {filePath.description}
                 </Typography>
             </CardContent>
 
@@ -71,7 +90,7 @@ function TaskforceCard({ taskforce, edit, editProps }) {
                 <IconButton aria-label="add to favorites">
                     <FavoriteBorderOutlinedIcon />
                 </IconButton>
-                <IconButton aria-label="edit" onClick={e => editProps(taskforce)}>
+                <IconButton aria-label="edit" onClick={e => edit(filePath)}>
                     <EditOutlinedIcon />
                 </IconButton>
                 <IconButton aria-label="delete">
@@ -82,4 +101,4 @@ function TaskforceCard({ taskforce, edit, editProps }) {
     )
 }
 
-export default TaskforceCard;
+export default UserDefinedFilePathCard;

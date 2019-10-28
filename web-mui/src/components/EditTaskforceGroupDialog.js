@@ -46,7 +46,7 @@ function EditTaskforceGroupDialog({ refresh, group = {} }) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
-    const dialogObj = useSelector(state => state.taskforceDialogs, shallowEqual);
+    const dialogObj = useSelector(state => state.openDialog, shallowEqual);
     const openEditTaskforceDialog = dialogObj.dialog === TaskforceDialogTypes.EDIT_TASKFORCE_GROUP ? dialogObj.open : false;
     const title = isNewGroup(group) ? 'New Taskforce Group' : 'Edit Taskforce Group'
 

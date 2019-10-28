@@ -343,7 +343,7 @@ function TaskforceBuilder(props) {
             />
 
             <EditTaskforceNameDialog onUpdate={onUpdatedTaskforceName} taskforce={taskforce} />
-            <TaskforceExecutionLogDialog/>
+            <TaskforceExecutionLogDialog />
         </>
     )
 

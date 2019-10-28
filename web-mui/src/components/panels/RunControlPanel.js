@@ -79,17 +79,17 @@ const TaskExecutionItem = ({ taskExecution, showLog }) => {
     const classes = useStyles();
     let execStatusClass = classes.execStatus;
     const status = `${taskExecution.status}`.toLocaleLowerCase()
-    if("running"===status){
+    if ("running" === status) {
         execStatusClass = classes.execStatusRunning
-    }else if("success"===status){
+    } else if ("success" === status) {
         execStatusClass = classes.execStatusSuccess
-    }else if("failure"===status){
+    } else if ("failure" === status) {
         execStatusClass = classes.execStatusFailure
     }
     return (
         <>
             <ListItem alignItems="flex-start" className={classes.execItem}>
-                <ListItemText primary={taskExecution.status} className={execStatusClass}/>
+                <ListItemText primary={taskExecution.status} className={execStatusClass} />
                 <ListItemText secondary={
                     <>
                         <span className={classes.execItemLine}>
@@ -115,8 +115,8 @@ const TaskExecutionItem = ({ taskExecution, showLog }) => {
                             <Moment format="MM-DD HH:mm">{new Date(taskExecution.endTime)}</Moment>
                         </span>
                         <span className={classes.viewLogLink}>
-                        <Link href="#" onClick={()=>{showLog(taskExecution)}} variant="body2" >
-                            View Log
+                            <Link href="#" onClick={() => { showLog(taskExecution) }} variant="body2" >
+                                View Log
                         </Link>
                         </span>
                     </>
@@ -150,11 +150,11 @@ function RunControlPanel({ taskforce }) {
         }
     }
 
-    const showTaskforceExecLogs = (taskforceExec)=>{
+    const showTaskforceExecLogs = (taskforceExec) => {
         dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, true, taskforceExec))
     }
 
-    const refreshTaskforceExecutions = ()=>{
+    const refreshTaskforceExecutions = () => {
         queryTaskforceExecutions(taskforce.id, (execs) => {
             setTaskExecutions(execs)
             //console.log(execs)

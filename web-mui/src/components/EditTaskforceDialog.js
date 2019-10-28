@@ -43,7 +43,7 @@ function EditTaskforceDialog({ refresh, taskforce }) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
-    const dialogObj = useSelector(state => state.taskforceDialogs, shallowEqual);
+    const dialogObj = useSelector(state => state.openDialog, shallowEqual);
     const openEditTaskforceDialog = dialogObj.dialog === TaskforceDialogTypes.EDIT_TASKFORCE ? dialogObj.open : false;
     const title = 'Edit Taskforce'
 

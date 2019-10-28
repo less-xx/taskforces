@@ -7,10 +7,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Formik } from 'formik';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { TaskforceDialogTypes, openTaskforceDialog } from '../actions/TaskforceActions'
+import { ResourceDialogTypes, openResourceDialog } from '../actions/ResourceActions'
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import TaskforceService from '../resources/TaskforceService';
+import FilePathService from '../resources/FilePathService';
 
 const useStyles = makeStyles(theme => ({
     form: {
@@ -29,34 +29,59 @@ const Field = {
     Name: {
         name: "name",
         label: "Name",
-        helperText: "Input the name of the taskforce group"
+        helperText: "Input the name of the user defined file path"
+    },
+    Path: {
+        name: "path",
+        label: "Path",
+        helperText: "Input the file system path"
+    },
+    Description: {
+        name: "description",
+        label: "Description",
+        helperText: "Input the description of the user defined file path"
     }
 }
 
+const isNew = (filePath) => {
+    return filePath.id == null || filePath.id === '';
+}
 
-function EditTaskforceNameDialog({ onUpdate, taskforce }) {
+function EditUserDefinedFilePathDialog({ refresh, filePath = {} }) {
 
     const classes = useStyles();
     const dispatch = useDispatch();
     const dialogObj = useSelector(state => state.openDialog, shallowEqual);
-    const openEditTaskforceDialog = dialogObj.dialog === TaskforceDialogTypes.RENAME_TASKFORCE ? dialogObj.open : false;
-    const title = 'Rename Taskforce'
+    const openEditTaskforceDialog = dialogObj.dialog === ResourceDialogTypes.EDIT_USER_DEFINED_FILE_PATH ? dialogObj.open : false;
+    const title = isNew(filePath) ? 'New File Path' : 'Edit File Path'
 
     const handleClose = () => {
-        dispatch(openTaskforceDialog(TaskforceDialogTypes.RENAME_TASKFORCE, false))
+        dispatch(openResourceDialog(ResourceDialogTypes.EDIT_USER_DEFINED_FILE_PATH, false))
     };
 
-    const saveTaskforce = (values, setSubmitting) => {
+    const saveFilePath = (values, setSubmitting) => {
         setSubmitting(true)
-        const { id, ...request } = values;
-        TaskforceService.updateTaskforce(id, request, (newTaskforce) => {
-            console.log(newTaskforce)
-            handleClose()
-            onUpdate(newTaskforce)
-        }, (error) => {
-            console.log(error)
-            setSubmitting(false)
-        })
+        if (isNew(values)) {
+            FilePathService.createFileSystemPath(values, (response) => {
+                console.log(response)
+                refresh()
+                handleClose()
+            }, (error) => {
+                console.log(error)
+                setSubmitting(false)
+            })
+
+        } else {
+            const { id, ...request } = values;
+            FilePathService.updateFileSystemPath(id, request, (response) => {
+                console.log(response)
+                refresh()
+                handleClose()
+            }, (error) => {
+                console.log(error)
+                setSubmitting(false)
+            })
+        }
     }
 
     const validate = values => {
@@ -67,8 +92,8 @@ function EditTaskforceNameDialog({ onUpdate, taskforce }) {
         return errors;
     }
 
-    const toFormValues = (taskforce) => {
-        return { id: taskforce.id, name: taskforce.name }
+    const toFormValues = (filePath) => {
+        return { id: filePath.id, name: filePath.name, path: filePath.path, description: filePath.description }
     }
 
     return (
@@ -77,10 +102,10 @@ function EditTaskforceNameDialog({ onUpdate, taskforce }) {
             <DialogContent>
                 <Formik
                     enableReinitialize={true}
-                    initialValues={toFormValues(taskforce)}
+                    initialValues={toFormValues(filePath)}
                     validate={validate}
                     onSubmit={(values, { setSubmitting }) => {
-                        saveTaskforce(values, setSubmitting)
+                        saveFilePath(values, setSubmitting)
                     }}
                 >
                     {({
@@ -109,6 +134,32 @@ function EditTaskforceNameDialog({ onUpdate, taskforce }) {
                                     />
                                 </FormControl>
 
+                                <FormControl className={classes.formControl}>
+                                    <TextField
+                                        name={Field.Path.name}
+                                        label={Field.Path.label}
+                                        value={values.path}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        required
+                                        error={errors.path && errors.path !== ''}
+                                        helperText={(errors.name && touched.name) ? errors.name : Field.Path.helperText}
+                                    />
+                                </FormControl>
+
+                                <FormControl className={classes.formControl}>
+                                    <TextField
+                                        name={Field.Description.name}
+                                        label={Field.Description.label}
+                                        multiline
+                                        rowsMax="4"
+                                        value={values.description}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        helperText={Field.Description.helperText}
+                                    />
+                                </FormControl>
+
                                 <DialogActions>
                                     <Button onClick={handleClose} color="primary">
                                         Cancel
@@ -127,4 +178,4 @@ function EditTaskforceNameDialog({ onUpdate, taskforce }) {
     )
 }
 
-export default EditTaskforceNameDialog
+export default EditUserDefinedFilePathDialog

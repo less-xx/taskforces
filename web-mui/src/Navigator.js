@@ -37,9 +37,9 @@ const categories = [
         ],
     },
     {
-        id: 'Quality',
+        id: 'Resources',
         children: [
-            { id: 'Analytics', icon: <SettingsIcon /> },
+            { id: 'User Defined File Paths', icon: <SettingsIcon />, path: '/resource/user-defined-file-paths' },
             { id: 'Performance', icon: <TimerIcon /> },
             { id: 'Test Lab', icon: <PhonelinkSetupIcon /> },
         ],
