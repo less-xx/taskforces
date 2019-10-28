@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { DrawerOpenWidth } from '../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import TaskforceService from '../resources/TaskforceService';
 import { reloadGroups, openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 import TaskforceGroupCard from './TaskforceGroupCard'
 import EditTaskforceGroupDialog from './EditTaskforceGroupDialog'
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Tooltip from '@material-ui/core/Tooltip';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Typography from '@material-ui/core/Typography';
+import ListToolbar from './ListToolbar';
 
 const useStyles = makeStyles(theme => ({
 
@@ -20,7 +19,11 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'flex-center',
         padding: theme.spacing(3, 1),
-        margin: theme.spacing(2, 10),
+        margin: theme.spacing(2, 2),
+    },
+    toolbar: {
+        margin: theme.spacing(2, 4, 2, 4),
+        backgroundColor: '#EFEFEF',
     },
     newButton: {
         position: 'absolute',
@@ -43,13 +46,20 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
+const sortByOptions = [{
+    value: 'name',
+    text: 'Name'
+},{
+    value: 'lastModifiedTime',
+    text: 'Last Modified Time'
+}]
+
 function TaskforceGroups() {
 
     const dispatch = useDispatch();
     const taskforceGroups = useSelector(state => state.taskforceGroups);
     const [currentGroup, setCurrentGroup] = useState()
     const classes = useStyles();
-    const drawerOpen = useSelector(state => state.toggleDrawer);
 
     const reloadTaskforceGroups = () => {
         TaskforceService.fetchTaskforceGroups((groups, pager) => {
@@ -80,19 +90,14 @@ function TaskforceGroups() {
 
     return (
         <>
-            <Typography variant="h5" component="h3">
-                Taskforce Groups
-            </Typography>
+            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Typography color="textSecondary">Taskforce</Typography>
+                <Typography color="textPrimary">Groups</Typography>
+            </Breadcrumbs>
+
+            <ListToolbar sortByOptions={sortByOptions} className={classes.toolbar} newAction={newTaskgroup}/>
 
             <div className={classes.cards}>
-                <Tooltip title="New Taskforce Group" aria-label="new-taskforce-group">
-                    <Fab size="large" aria-label="new-taskforce-group"
-                        className={clsx(classes.newButton, { [classes.newButtonShift]: drawerOpen })}
-                        onClick={newTaskgroup}
-                    >
-                        <AddIcon color="action" />
-                    </Fab>
-                </Tooltip>
                 {groupCards}
             </div>
 

@@ -289,6 +289,7 @@ function TaskforceBuilder(props) {
     return (
         <>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Typography color="textSecondary">Taskforce</Typography>
                 <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups")}>
                     Groups
                 </Link>

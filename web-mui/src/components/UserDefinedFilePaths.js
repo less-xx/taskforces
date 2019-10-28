@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
 import { DrawerOpenWidth } from '../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -8,11 +7,9 @@ import FilePathService from '../resources/FilePathService';
 import { openResourceDialog, ResourceDialogTypes } from '../actions/ResourceActions'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Tooltip from '@material-ui/core/Tooltip';
 import UserDefinedFilePathCard from './UserDefinedFilePathCard';
 import EditUserDefinedFilePathDialog from './EditUserDefinedFilePathDialog';
+import ListToolbar from './ListToolbar';
 
 const useStyles = makeStyles(theme => ({
 
@@ -22,6 +19,10 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         justifyContent: 'flex-center',
         padding: theme.spacing(2, 0),
+    },
+    toolbar: {
+        margin: theme.spacing(2, 3, 2, 3),
+        backgroundColor: '#EFEFEF',
     },
     newButton: {
         position: 'absolute',
@@ -34,8 +35,8 @@ const useStyles = makeStyles(theme => ({
     },
     newButtonShift: {
         position: 'absolute',
-        top: theme.spacing(20),
-        left: DrawerOpenWidth + theme.spacing(4),
+        top: theme.spacing(14),
+        left: DrawerOpenWidth + theme.spacing(5),
         transition: theme.transitions.create(['left', 'top'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -43,9 +44,17 @@ const useStyles = makeStyles(theme => ({
     },
     filePathCards: {
         //backgroundColor: theme.palette.background.paper,
-        margin: theme.spacing(2, 10),
+        margin: theme.spacing(2, 2),
     },
 }));
+
+const sortByOptions = [{
+    value: 'name',
+    text: 'Name'
+},{
+    value: 'lastModifiedTime',
+    text: 'Last Modified Time'
+}]
 
 function UserDefinedFilePaths() {
     const dispatch = useDispatch();
@@ -91,20 +100,14 @@ function UserDefinedFilePaths() {
     return (
         <>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                <Typography color="textPrimary">Resources</Typography>
+                <Typography color="textSecondary">Resources</Typography>
                 <Typography color="textPrimary">User Defined File Paths</Typography>
             </Breadcrumbs>
            
+           <ListToolbar sortByOptions={sortByOptions} className={classes.toolbar} newAction={newFilePath}/>
 
             {filePathsComponent()}
 
-            <Tooltip title="New File Path" aria-label="new-file-path">
-                <Fab size="large" aria-label="new-file-path"
-                    className={clsx(classes.newButton, { [classes.newButtonShift]: drawerOpen })}
-                    onClick={e => newFilePath()}>
-                    <AddIcon color="action" />
-                </Fab>
-            </Tooltip>
 
             <EditUserDefinedFilePathDialog  filePath={currentFilePath} refresh={reloadFilePaths}/>
         </>

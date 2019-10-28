@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
-import { DrawerOpenWidth } from '../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
@@ -9,13 +7,11 @@ import TaskforceService from '../resources/TaskforceService';
 import { loadGroupTaskforces, openTaskforceDialog, TaskforceDialogTypes } from '../actions/TaskforceActions'
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
-import Tooltip from '@material-ui/core/Tooltip';
 import { useParams, useHistory } from "react-router-dom";
 import TaskforceCard from './TaskforceCard';
 import EditTaskforceDialog from './EditTaskforceDialog';
 import * as moment from 'moment';
+import ListToolbar from './ListToolbar';
 
 const useStyles = makeStyles(theme => ({
 
@@ -26,35 +22,29 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'flex-center',
         padding: theme.spacing(2, 0),
     },
-    newButton: {
-        position: 'absolute',
-        top: theme.spacing(20),
-        left: theme.spacing(9),
-        transition: theme.transitions.create(['left', 'top'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    newButtonShift: {
-        position: 'absolute',
-        top: theme.spacing(20),
-        left: DrawerOpenWidth + theme.spacing(4),
-        transition: theme.transitions.create(['left', 'top'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
+    toolbar: {
+        margin: theme.spacing(2, 3, 2, 3),
+        backgroundColor: '#EFEFEF',
     },
     taskforceCards: {
         //backgroundColor: theme.palette.background.paper,
-        margin: theme.spacing(2, 10),
+        margin: theme.spacing(2, 2),
     },
 }));
+
+const sortByOptions = [{
+    value: 'name',
+    text: 'Name'
+},{
+    value: 'lastModifiedTime',
+    text: 'Last Modified Time'
+}]
+
 
 function Taskforces(props) {
     const dispatch = useDispatch();
     const taskforces = useSelector(state => state.taskforces);
     const classes = useStyles();
-    const drawerOpen = useSelector(state => state.toggleDrawer);
     const history = useHistory()
     const { groupId } = useParams();
     const [taskforceGroup, setTaskforceGroup] = useState(props.location.state != null ? props.location.state : {})
@@ -130,24 +120,16 @@ function Taskforces(props) {
     return (
         <>
             <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                <Typography color="textSecondary">Taskforce</Typography>
                 <Link color="inherit" href="#" onClick={e => history.push("/taskforce-groups")}>
                     Groups
                 </Link>
                 <Typography color="textPrimary">{taskforceGroupName()}</Typography>
             </Breadcrumbs>
-            <Typography variant="h3" component="h3">
-                Taskforces
-            </Typography>
+
+            <ListToolbar sortByOptions={sortByOptions} className={classes.toolbar} newAction={newTaskforce}/>
 
             {taskforcesComponent()}
-
-            <Tooltip title="New Taskforce" aria-label="new-taskforce">
-                <Fab size="large" aria-label="new-taskforce"
-                    className={clsx(classes.newButton, { [classes.newButtonShift]: drawerOpen })}
-                    onClick={e => newTaskforce()}>
-                    <AddIcon color="action" />
-                </Fab>
-            </Tooltip>
 
             <EditTaskforceDialog refresh={() => reloadGroupTaskforces(groupId)} taskforce={currentTaskforce} />
         </>

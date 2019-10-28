@@ -93,7 +93,7 @@ function EditUserDefinedFilePathDialog({ refresh, filePath = {} }) {
     }
 
     const toFormValues = (filePath) => {
-        return { id: filePath.id, name: filePath.name, path: filePath.path, description: filePath.description }
+        return { id: filePath.id, name: filePath.name, path: filePath.path, description: filePath.description?filePath.description:'' }
     }
 
     return (
