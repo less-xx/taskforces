@@ -20,6 +20,11 @@
 		"style": "loop"
 	},
 	{
+		"id": "control",
+		"name": "Control",
+		"style": "control"
+	},
+	{
 		"id": "text",
 		"name": "Text",
 		"style": "test"

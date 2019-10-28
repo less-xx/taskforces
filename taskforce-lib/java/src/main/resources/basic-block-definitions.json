@@ -11,27 +11,27 @@
 	},
 	{
 		"type": "controls_if",
-		"category": "basic/logic",
+		"category": "basic/control",
 		"executorClass": "org.teapotech.block.executor.logic.ControlsIfBlockExecutor"
 	},
 	{
 		"type": "logic_compare",
-		"category": "basic/logic",
+		"category": "basic/control",
 		"executorClass": "org.teapotech.block.executor.logic.LogicCompareBlockExecutor"
 	},
 	{
 		"type": "controls_repeat_ext",
-		"category": "basic/loop",
+		"category": "basic/control",
 		"executorClass": "org.teapotech.block.executor.loop.ControlsRepeatExtBlockExecutor"
 	},
 	{
 		"type": "controls_whileUntil",
-		"category": "basic/loop",
+		"category": "basic/control",
 		"executorClass": "org.teapotech.block.executor.loop.ControlsWhileUntilBlockExecutor"
 	},
 	{
 		"type": "controls_flow_statements",
-		"category": "basic/loop",
+		"category": "basic/control",
 		"executorClass": "org.teapotech.block.executor.loop.ControlsFlowStatementsBlockExecutor"
 	},
 	{
