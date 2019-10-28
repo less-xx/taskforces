@@ -8,64 +8,73 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { TaskforceDialogTypes, openTaskforceDialog } from '../actions/TaskforceActions'
 import TaskforceService from '../resources/TaskforceService';
-
+import Link from '@material-ui/core/Link';
 
 const LINES_PER_PAGE = 100
 
 function TaskforceExecutionLogDialog() {
 
-    const dispatch = useDispatch();
-    const [logs,setLogs] = useState('')
-    const [start, setStart] = useState(0)
-    const [lines, setLines] = useState(LINES_PER_PAGE)
+  const dispatch = useDispatch();
+  const [logs, setLogs] = useState('')
+  const [start, setStart] = useState(0)
+    const [hasMore, setHasMore] = useState(true)
 
-    const dialogObj = useSelector(state => state.taskforceDialogs, shallowEqual);
-    const showDialog = dialogObj.dialog === TaskforceDialogTypes.TASKFORCE_EXEC_LOGS ? dialogObj.open : false;
+  const dialogObj = useSelector(state => state.taskforceDialogs, shallowEqual);
+  const showDialog = dialogObj.dialog === TaskforceDialogTypes.TASKFORCE_EXEC_LOGS ? dialogObj.open : false;
+  const taskforceExec = dialogObj.data
+  const title = "Taskforce Execution Log"
+  //console.log(dialogObj)
+  const handleClose = () => {
+    dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, false))
+  }
 
-    const title = "Taskforce Execution Log"
-    //console.log(dialogObj)
-    const handleClose = ()=>{
-        dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, false))
+  const fetchLogs = (execution) => {
+    TaskforceService.getTaskforceExecutionLogsById(execution.id, start, LINES_PER_PAGE, (logContent) => {
+      setLogs(logs+logContent)
+      if (logContent === '') {
+        setHasMore(false)
+      }else{
+        setStart(start+LINES_PER_PAGE)
+      }
+    }, (error) => {
+      console.log(error)
+    })
+  }
+
+  useEffect(() => {
+
+    if (taskforceExec != null) {
+
+      fetchLogs(taskforceExec)
     }
 
-    const fetchLogs = (execution) => {
-        TaskforceService.getTaskforceExecutionLogsById(execution.id, start, lines, (logs)=>{
-            setLogs(logs)
-        }, (error)=>{
-            console.log(error)
-        })
-    }
+  }, [showDialog])
 
-    useEffect(()=>{
-        
-        if(dialogObj.data!=null){
-          
-          fetchLogs(dialogObj.data)
+  return (
+    <Dialog
+      open={showDialog}
+      onClose={handleClose}
+      scroll='paper'
+      aria-labelledby="taskforce-execution-log"
+      maxWidth='lg'
+    >
+      <DialogTitle id="taskforce-execution-log">{title}</DialogTitle>
+      <DialogContent dividers={true}>
+        <DialogContentText component="pre">
+          {logs}
+        </DialogContentText>
+        {hasMore &&
+          <Link onClick={e=>fetchLogs(taskforceExec)}>...Load More</Link>
         }
-        
-    },[showDialog])
 
-    return (
-        <Dialog
-            open={showDialog}
-            onClose={handleClose}
-            scroll='paper'
-            aria-labelledby="taskforce-execution-log"
-            maxWidth='lg'
-        >
-        <DialogTitle id="taskforce-execution-log">{title}</DialogTitle>
-        <DialogContent dividers={true}>
-          <DialogContentText component="pre">
-            {logs}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Close
           </Button>
-        </DialogActions>
-      </Dialog>
-    )
+      </DialogActions>
+    </Dialog>
+  )
 
 }
 export default TaskforceExecutionLogDialog;

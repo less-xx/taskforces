@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 const queryTaskforceExecutions = (taskforceId, handleTaskExecutions, handleError) => {
     TaskforceService.queryTaskforceExecution({
         taskforceId: taskforceId,
-        size: 2,
+        size: 5,
         sort: ["startTime,desc"]
     }, (response) => {
         console.log(response)
@@ -74,6 +74,7 @@ const queryTaskforceExecutions = (taskforceId, handleTaskExecutions, handleError
         handleError(error)
     })
 }
+
 const TaskExecutionItem = ({ taskExecution, showLog }) => {
     const classes = useStyles();
     let execStatusClass = classes.execStatus;
@@ -137,7 +138,6 @@ function RunControlPanel({ taskforce }) {
         }, (error) => {
             console.log(error)
         })
-
     }
 
     const stopTaskforce = () => {
@@ -154,13 +154,14 @@ function RunControlPanel({ taskforce }) {
         dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, true, taskforceExec))
     }
 
-    useEffect(() => {
+    const refreshTaskforceExecutions = ()=>{
         queryTaskforceExecutions(taskforce.id, (execs) => {
             setTaskExecutions(execs)
+            //console.log(execs)
             if (execs.length > 0) {
-                if (execs[execs.length - 1].status === 'Running') {
+                if (execs[0].status === 'Running') {
                     console.log("Found running task execution.")
-                    setRunningTaskExec(execs[execs.length - 1])
+                    setRunningTaskExec(execs[0])
                 } else {
                     console.log("No running taskforce")
                     setRunningTaskExec({})
@@ -169,6 +170,16 @@ function RunControlPanel({ taskforce }) {
         }, (error) => {
             console.log(error)
         })
+    }
+
+    useEffect(() => {
+        refreshTaskforceExecutions()
+        const timer = setInterval(() => {
+            refreshTaskforceExecutions()
+        }, 5000)
+        return _ => {
+            clearInterval(timer)
+        }
     }, [])
 
     return (
