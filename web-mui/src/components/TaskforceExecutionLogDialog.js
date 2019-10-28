@@ -23,18 +23,22 @@ function TaskforceExecutionLogDialog() {
   const showDialog = dialogObj.dialog === TaskforceDialogTypes.TASKFORCE_EXEC_LOGS ? dialogObj.open : false;
   const taskforceExec = dialogObj.data
   const title = "Taskforce Execution Log"
-  console.log(dialogObj)
   const handleClose = () => {
+    setLogs('')
+    setStart(0)
     dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, false))
   }
 
   const fetchLogs = (execution) => {
+    //console.log(execution)
     TaskforceService.getTaskforceExecutionLogsById(execution.id, start, LINES_PER_PAGE, (logContent) => {
+      //console.log(logContent)
       setLogs(logs + logContent)
       if (logContent === '') {
         setHasMore(false)
       } else {
         setStart(start + LINES_PER_PAGE)
+        setHasMore(true)
       }
     }, (error) => {
       console.log(error)
@@ -66,7 +70,6 @@ function TaskforceExecutionLogDialog() {
         {hasMore &&
           <Link onClick={e => fetchLogs(taskforceExec)}>...Load More</Link>
         }
-
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
