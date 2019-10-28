@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
         margin: theme.spacing(2, 2),
     },
     toolbar: {
-        margin: theme.spacing(2, 4, 2, 4),
+        margin: theme.spacing(2, 3, 2, 3),
         backgroundColor: '#EFEFEF',
     },
     newButton: {
