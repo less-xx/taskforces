@@ -23,7 +23,7 @@ function TaskforceExecutionLogDialog() {
   const showDialog = dialogObj.dialog === TaskforceDialogTypes.TASKFORCE_EXEC_LOGS ? dialogObj.open : false;
   const taskforceExec = dialogObj.data
   const title = "Taskforce Execution Log"
-  //console.log(dialogObj)
+  console.log(dialogObj)
   const handleClose = () => {
     dispatch(openTaskforceDialog(TaskforceDialogTypes.TASKFORCE_EXEC_LOGS, false))
   }

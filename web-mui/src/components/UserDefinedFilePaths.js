@@ -55,7 +55,8 @@ function UserDefinedFilePaths() {
     const [currentFilePath, setCurrentFilePath] = useState({})
     
     const editFilePath = (filePath) => {
-        console.log(filePath)
+        setCurrentFilePath(filePath)
+        dispatch(openResourceDialog(ResourceDialogTypes.EDIT_USER_DEFINED_FILE_PATH, true))
     }
 
     const newFilePath = () => {

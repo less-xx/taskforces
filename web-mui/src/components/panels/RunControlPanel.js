@@ -115,7 +115,7 @@ const TaskExecutionItem = ({ taskExecution, showLog }) => {
                             <Moment format="MM-DD HH:mm">{new Date(taskExecution.endTime)}</Moment>
                         </span>
                         <span className={classes.viewLogLink}>
-                            <Link href="#" onClick={() => { showLog(taskExecution) }} variant="body2" >
+                            <Link href="#" onClick={() => { showLog() }} variant="body2" >
                                 View Log
                         </Link>
                         </span>
@@ -204,7 +204,7 @@ function RunControlPanel({ taskforce }) {
                     Recent Executions
                 </Typography>
                 <List className={classes.execList} component="nav">
-                    {taskExecutions.map(e => <TaskExecutionItem key={e.id} taskExecution={e} showLog={showTaskforceExecLogs} />)}
+                    {taskExecutions.map(e => <TaskExecutionItem key={e.id} taskExecution={e} showLog={() => showTaskforceExecLogs(e)} />)}
                 </List>
             </div>
         </div>
