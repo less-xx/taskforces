@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;INIT=CREATE SCHEMA IF NOT EXISTS credentials_service
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+    testOnBorrow: true
+    validationQuery: SELECT 1
+    validationInterval: 30000
+  jpa:
+    open-in-view: false
+    show-sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate.ddl-auto: update
+    properties:
+      hibernate.default_schema: ${APP_DB_SCHEMA:credentials_service}
+      hibernate.temp.use_jdbc_metadata_defaults: false
+      hibernate.current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+      hibernate.naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
+    
+
+spring.main.web-environment: false
+
+
+logging:
+  level:
+    root: INFO
+    org.teapotech: DEBUG
+    
+credentials-service:
+   encryptCredentials: ${APP_ENCRYPT_CREDENTIALS:true}
+   homeDir: ${APP_HOME_DIR:/tmp/credentials-service}
+   
+cipher:
+  keystore:
+    type: JCEKS
+    path: ${CIPHER_KEYSTORE_FILE:/tmp/credentials-service/keystore}
+    password: ${CIPHER_KEYSTORE_PASSWORD:changeIt!}

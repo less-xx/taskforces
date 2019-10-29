@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.taskforce.entity;
+package org.teapotech.credentials.entity;
 
 import java.util.Date;
 
@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 /**
@@ -21,11 +22,11 @@ import org.hibernate.annotations.UpdateTimestamp;
  *
  */
 @Entity
-@Table(name = "tf_credentials")
+@Table(name = "credentials")
 public class Credentials {
 
-	public static enum Catalog {
-		USERNAME_PASSWORD, DATABASE_CONNECTION_JDBC, WS_OAUTH2, WS_API_KEY
+	public static enum AuthenticationMethod {
+		USERNAME_PASSWORD, API_KEY, SSH_KEY, OAUTH
 	}
 
 	@Id
@@ -37,9 +38,9 @@ public class Credentials {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "catalog", nullable = false)
+	@Column(name = "auth_method", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Catalog catalog;
+	private AuthenticationMethod authenticationMethod = AuthenticationMethod.USERNAME_PASSWORD;
 
 	@Column(name = "credentials", columnDefinition = "TEXT", nullable = false)
 	private String credentials;
@@ -50,6 +51,10 @@ public class Credentials {
 
 	@Column(name = "updated_by")
 	private String updatedBy;
+
+	@Column(name = "is_enabled", columnDefinition = "CHAR(1) DEFAULT 'Y'", nullable = false)
+	@Type(type = "yes_no")
+	private boolean enabled = true;
 
 	public String getId() {
 		return id;
@@ -67,12 +72,12 @@ public class Credentials {
 		this.name = name;
 	}
 
-	public Catalog getCatalog() {
-		return catalog;
+	public AuthenticationMethod getAuthenticationMethod() {
+		return authenticationMethod;
 	}
 
-	public void setCatalog(Catalog catalog) {
-		this.catalog = catalog;
+	public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
+		this.authenticationMethod = authenticationMethod;
 	}
 
 	public String getCredentials() {
@@ -99,11 +104,17 @@ public class Credentials {
 		this.updatedBy = updatedBy;
 	}
 
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	@Override
 	public String toString() {
-		return "{\n\tID: " + this.id
-				+ ",\n\tName: " + this.name
-				+ ",\n\tCalalog: " + this.catalog
+		return "{\n\tID: " + this.id + ",\n\tName: " + this.name + ",\n\tAuthMethod: " + this.authenticationMethod
 				+ "\n}";
 	}
 }
