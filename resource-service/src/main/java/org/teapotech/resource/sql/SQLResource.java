@@ -5,6 +5,7 @@ package org.teapotech.resource.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -26,6 +27,7 @@ public abstract class SQLResource extends ParameterizedResource {
 	private SessionFactory sessionFactory;
 	private String NAMED_PARAMETER_SIGN = ":";
 	private String PUNCTUATIONS = "\n .,:;'/()";
+	protected List<ResourceParameter<?>> sqlNamedParameters;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -53,7 +55,7 @@ public abstract class SQLResource extends ParameterizedResource {
 	}
 
 	public void setSQLStatement(String sql) {
-		setBoundedParameterValue(PARAM_SQL, sql);
+		setResourceParameterValue(PARAM_SQL, sql);
 	}
 
 	public List<String> getSQLNamedParameters(String sql) {
@@ -88,9 +90,15 @@ public abstract class SQLResource extends ParameterizedResource {
 		return params;
 	}
 
-	public List<String> getSQLNamedParameters() {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public List<ResourceParameter<?>> getSQLNamedParameters() {
+		if (this.sqlNamedParameters != null) {
+			return this.sqlNamedParameters;
+		}
+
 		String sql = getSQLStatement();
-		return getSQLNamedParameters(sql);
+		return getSQLNamedParameters(sql).stream().map(pname -> new ResourceParameter(pname, String.class))
+				.collect(Collectors.toList());
 	}
 
 }

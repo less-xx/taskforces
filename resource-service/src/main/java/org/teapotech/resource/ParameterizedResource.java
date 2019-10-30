@@ -31,7 +31,7 @@ abstract public class ParameterizedResource implements Resource {
 
 	public Map<String, Object> getBoundedParametersValues() {
 		Map<String, Object> parameters = new HashMap<>();
-		for (ResourceParameter<?> param : getBoundedParameters()) {
+		for (ResourceParameter<?> param : getResourceParameters()) {
 			Object value = getBoundedParameterValue(param);
 			parameters.put(param.getName(), value);
 		}
@@ -51,11 +51,9 @@ abstract public class ParameterizedResource implements Resource {
 		return (T) this.parameterValues.get(param.getName());
 	}
 
-	public <T> void setBoundedParameterValue(ResourceParameter<T> param, T value) {
+	public <T> void setResourceParameterValue(ResourceParameter<T> param, T value) {
 		this.parameterValues.put(param.getName(), value);
 	}
-
-	abstract public ResourceParameter<?>[] getBoundedParameters();
 
 	public void setParameterValue(String parameterName, Object value) {
 		ResourceParameter<?> param = findBoundedParameter(parameterName);
@@ -114,7 +112,7 @@ abstract public class ParameterizedResource implements Resource {
 
 	protected void validateParameterValues(Map<String, Object> paramValues)
 			throws MissingParameterValueException, InvalidParameterValueException {
-		for (ResourceParameter<?> bp : getBoundedParameters()) {
+		for (ResourceParameter<?> bp : getResourceParameters()) {
 			if (bp.isRequired()) {
 				Object pv = null;
 				if (paramValues != null) {
@@ -156,7 +154,7 @@ abstract public class ParameterizedResource implements Resource {
 	}
 
 	public ResourceParameter<?> findBoundedParameter(String parameterName) {
-		ResourceParameter<?>[] boundParams = getBoundedParameters();
+		ResourceParameter<?>[] boundParams = getResourceParameters();
 		if (boundParams == null) {
 			return null;
 		}

@@ -25,28 +25,17 @@ public class SQLQueryResource extends SQLResource implements CallableResource<Li
 	public final static ResourceParameter<Integer> PARAM_OFFSET = new ResourceParameter<Integer>("offset",
 			Integer.class, false);
 
-	public final static ResourceParameter<?>[] boundedParameters = { PARAM_SQL, PARAM_LIMIT, PARAM_OFFSET };
+	public final static ResourceParameter<?>[] resourceParameters = { PARAM_SQL, PARAM_LIMIT, PARAM_OFFSET };
 
 	@Override
-	public ResourceParameter<?>[] getBoundedParameters() {
-		return boundedParameters;
+	public ResourceParameter<?>[] getResourceParameters() {
+		return resourceParameters;
 	}
 
 	@Override
 	public List<Map<String, Object>> call(Map<String, Object> parameterValues) throws ResourceExecutionException {
-		List<String> sqlParameters = null;
-		String sql = (String) parameterValues.get(PARAM_SQL.getName());
-		try {
-			if (sql == null) {
-				sql = getSQLStatement();
-				sqlParameters = getSQLNamedParameters();
-			} else {
-				sqlParameters = getSQLNamedParameters(sql);
-			}
-		} catch (Exception e) {
-			throw new ResourceExecutionException(e.getMessage(), e);
-		}
-
+		List<ResourceParameter<?>> sqlParameters = getSQLNamedParameters();
+		String sql = getSQLStatement();
 		sql = StringSubstitutor.replace(sql, parameterValues);
 
 		try {
@@ -55,12 +44,12 @@ public class SQLQueryResource extends SQLResource implements CallableResource<Li
 			if (!sqlParameters.isEmpty()) {
 				query = createQuery(sql);
 				for (int i = 0; i < sqlParameters.size(); i++) {
-					String var = sqlParameters.get(i);
-					Object paramValue = ObjectValueExtractor.getPropertyValue(parameterValues, var);
+					ResourceParameter<?> var = sqlParameters.get(i);
+					Object paramValue = ObjectValueExtractor.getPropertyValue(parameterValues, var.getName());
 					if (paramValue == null) {
 						throw new ResourceExecutionException("Cannot find value for parameter: " + var);
 					}
-					query.setParameter(var, paramValue);
+					query.setParameter(var.getName(), paramValue);
 				}
 			} else {
 				query = createQuery(sql);
@@ -88,9 +77,4 @@ public class SQLQueryResource extends SQLResource implements CallableResource<Li
 		}
 	}
 
-	@Override
-	public List<ResourceParameter<?>> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
