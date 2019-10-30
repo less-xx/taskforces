@@ -23,7 +23,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "credentials")
-public class Credentials {
+public class Credentials implements Cloneable {
 
 	public static enum AuthenticationMethod {
 		USERNAME_PASSWORD, API_KEY, SSH_KEY, OAUTH
@@ -110,6 +110,11 @@ public class Credentials {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 	@Override

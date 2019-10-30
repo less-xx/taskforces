@@ -1,5 +1,7 @@
 package org.teapotech.credentials.service.impl;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teapotech.credentials.CredentialsObject;
+import org.teapotech.credentials.Oauth2Credentials;
 import org.teapotech.credentials.UsernamePasswordCredentials;
 import org.teapotech.credentials.entity.Credentials;
 import org.teapotech.credentials.entity.Credentials.AuthenticationMethod;
@@ -49,7 +52,9 @@ public class CredentialsServiceImpl implements CredentialsService {
 
 	@Transactional
 	public Credentials saveCredentials(Credentials cred) throws CipherException {
-		return credRepo.save(encryptCredentials(cred));
+		Credentials c = encryptCredentials(cred);
+		c.setLastUpdatedTime(new Date());
+		return credRepo.save(c);
 	}
 
 	public Credentials getCredentialsById(String id) {
@@ -69,6 +74,14 @@ public class CredentialsServiceImpl implements CredentialsService {
 		String credStr = jsonHelper.getJSON(cred);
 		Credentials c = new Credentials();
 		c.setAuthenticationMethod(AuthenticationMethod.USERNAME_PASSWORD);
+		c.setCredentials(credStr);
+		return c;
+	}
+
+	public Credentials createOauth2Credentials(Oauth2Credentials cred) throws JsonProcessingException {
+		String credStr = jsonHelper.getJSON(cred);
+		Credentials c = new Credentials();
+		c.setAuthenticationMethod(AuthenticationMethod.OAUTH);
 		c.setCredentials(credStr);
 		return c;
 	}

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.teapotech.credentials.oauth.Oauth2Credentials;
+import org.teapotech.credentials.Oauth2Credentials;
 import org.teapotech.credentials.util.OAuth2CredentialDeserializer;
 import org.teapotech.util.JsonHelper;
 
@@ -34,6 +34,8 @@ public class CredentialsServiceConfig {
 		if (!home.exists()) {
 			home.mkdirs();
 			LOG.info("Create home directory: {}", home.getAbsolutePath());
+		} else {
+			LOG.info("Home directory: {}", home.getAbsolutePath());
 		}
 		return home;
 	}

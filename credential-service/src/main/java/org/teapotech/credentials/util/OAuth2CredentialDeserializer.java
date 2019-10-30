@@ -9,7 +9,8 @@ import org.springframework.security.oauth2.client.token.grant.client.ClientCrede
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitResourceDetails;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
-import org.teapotech.credentials.oauth.Oauth2Credentials;
+import org.teapotech.credentials.Oauth2Credentials;
+import org.teapotech.credentials.Oauth2Credentials.AuthorizationType;
 import org.teapotech.credentials.service.exception.InvalidOAuth2ConigurationException;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -47,26 +48,28 @@ public class OAuth2CredentialDeserializer extends StdDeserializer<Oauth2Credenti
 		String authorizationType = jn.get(PROP_AUTHORIZATION_TYPE).asText();
 		JsonNode oauth2ResNode = jn.get(PROP_OAUTH2_RESOURCE);
 
-		if (authorizationType.equals(Oauth2Credentials.TYPE_AUTHORIZATION_CODE)) {
+		if (authorizationType.equalsIgnoreCase(AuthorizationType.AUTHORIZATION_CODE.name())) {
 			AuthorizationCodeResourceDetails res = p.getCodec().treeToValue(oauth2ResNode,
 					AuthorizationCodeResourceDetails.class);
 			oauth2Cred.setOauth2Resource(res);
-		} else if (authorizationType.equals(Oauth2Credentials.TYPE_CLIENT_CREDENTIALS)) {
+			oauth2Cred.setAuthorizationType(AuthorizationType.AUTHORIZATION_CODE);
+		} else if (authorizationType.equalsIgnoreCase(AuthorizationType.CLIENT_CREDENTIALS.name())) {
 			ClientCredentialsResourceDetails res = p.getCodec().treeToValue(oauth2ResNode,
 					ClientCredentialsResourceDetails.class);
 			oauth2Cred.setOauth2Resource(res);
-		} else if (authorizationType.equals(Oauth2Credentials.TYPE_IMPLICIT)) {
-			ImplicitResourceDetails res = p.getCodec().treeToValue(oauth2ResNode,
-					ImplicitResourceDetails.class);
+			oauth2Cred.setAuthorizationType(AuthorizationType.CLIENT_CREDENTIALS);
+		} else if (authorizationType.equalsIgnoreCase(AuthorizationType.IMPLICIT.name())) {
+			ImplicitResourceDetails res = p.getCodec().treeToValue(oauth2ResNode, ImplicitResourceDetails.class);
 			oauth2Cred.setOauth2Resource(res);
-		} else if (authorizationType.equals(Oauth2Credentials.TYPE_RESOURCE_OWNER_PASSWORD)) {
+			oauth2Cred.setAuthorizationType(AuthorizationType.IMPLICIT);
+		} else if (authorizationType.equalsIgnoreCase(AuthorizationType.PASSWORD.name())) {
 			ResourceOwnerPasswordResourceDetails res = p.getCodec().treeToValue(oauth2ResNode,
 					ResourceOwnerPasswordResourceDetails.class);
 			oauth2Cred.setOauth2Resource(res);
+			oauth2Cred.setAuthorizationType(AuthorizationType.PASSWORD);
 		} else {
 			throw new InvalidOAuth2ConigurationException("Invalid authorization type " + authorizationType);
 		}
-		oauth2Cred.setAuthorizationType(authorizationType);
 		return oauth2Cred;
 	}
 

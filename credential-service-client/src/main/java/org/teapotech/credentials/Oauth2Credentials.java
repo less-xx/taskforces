@@ -7,19 +7,19 @@ public class Oauth2Credentials extends CredentialsObject {
 	 * 
 	 */
 	private static final long serialVersionUID = -4974649194832665591L;
-	public static final String TYPE_CLIENT_CREDENTIALS = "client_credentials";
-	public static final String TYPE_RESOURCE_OWNER_PASSWORD = "password";
-	public static final String TYPE_AUTHORIZATION_CODE = "authorization_code";
-	public static final String TYPE_IMPLICIT = "implicit";
 
-	private String authorizationType;
+	public static enum AuthorizationType {
+		CLIENT_CREDENTIALS, PASSWORD, AUTHORIZATION_CODE, IMPLICIT
+	}
+
+	private AuthorizationType authorizationType;
 	private BaseOAuth2ProtectedResourceDetails oauth2Resource;
 
-	public String getAuthorizationType() {
+	public AuthorizationType getAuthorizationType() {
 		return authorizationType;
 	}
 
-	public void setAuthorizationType(String authorizationType) {
+	public void setAuthorizationType(AuthorizationType authorizationType) {
 		this.authorizationType = authorizationType;
 	}
 
