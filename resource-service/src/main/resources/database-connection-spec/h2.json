@@ -1,0 +1,73 @@
+{
+	"connection_type": "H2",
+	"access": [
+		{
+			"type": "JDBC_MEMORY",
+			"url_pattern": "jdbc:h2:mem:${dbname}",
+			"parameters": [
+				{
+					"id": "driver_class",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.h2.Driver"
+				},
+				{
+					"id": "dialect",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.hibernate.dialect.H2Dialect"
+				},
+				{
+					"id": "dbname",
+					"type": "STRING",
+					"required": true
+				},
+				{
+					"id": "username",
+					"type": "STRING",
+					"required": true
+				},
+				{
+					"id": "password",
+					"type": "PASSWORD",
+					"required": false,
+					"defaultValue": ""
+				}
+			]
+		},
+		{
+			"type": "JDBC_FILE",
+			"url_pattern": "jdbc:h2:${dbfile}",
+			"parameters": [
+				{
+					"id": "driver_class",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.h2.Driver"
+				},
+				{
+					"id": "dialect",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.hibernate.dialect.H2Dialect"
+				},
+				{
+					"id": "dbfile",
+					"type": "STRING",
+					"required": true
+				},
+				{
+					"id": "username",
+					"type": "STRING",
+					"required": true
+				},
+				{
+					"id": "password",
+					"type": "PASSWORD",
+					"required": false,
+					"defaultValue": ""
+				}
+			]
+		}
+	]
+}

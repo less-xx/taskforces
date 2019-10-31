@@ -1,0 +1,7 @@
+{
+	"id": "databaseConnectionCredential_id",
+	"connectionType": "H2",
+	"accessType": "JDBC_MEMORY",
+	"username": "sa",
+	"dbname": "test"
+}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.resource.sql;
+package org.teapotech.resource.db.sql;
 
 import java.util.ArrayList;
 import java.util.List;

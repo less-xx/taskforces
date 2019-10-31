@@ -1,0 +1,59 @@
+{
+	"connection_type": "PostgreSQL",
+	"access": [
+		{
+			"type": "JDBC",
+			"url_pattern": "jdbc:postgresql://${hostname}:${port}/${dbname}",
+			"parameters": [
+				{
+					"id": "driver_class",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.postgresql.Driver"
+				},
+				{
+					"id": "dialect",
+					"type": "STRING",
+					"required": true,
+					"defaultValue": "org.hibernate.dialect.PostgreSQLDialect"
+				},
+				{
+					"id": "hostname",
+					"type": "FQDN_IP",
+					"required": true
+				},
+				{
+					"id": "port",
+					"type": "PORT",
+					"required": true,
+					"defaultValue": 5432
+				},
+				{
+					"id": "username",
+					"type": "STRING",
+					"required": true
+				},
+				{
+					"id": "password",
+					"type": "PASSWORD",
+					"required": true
+				},
+				{
+					"id": "dbname",
+					"type": "STRING",
+					"required": true
+				}
+			]
+		},
+		{
+			"type": "JNDI",
+			"parameters": [
+				{
+					"id": "jndi_name",
+					"type": "STRING",
+					"required": true
+				}
+			]
+		}
+	]
+}

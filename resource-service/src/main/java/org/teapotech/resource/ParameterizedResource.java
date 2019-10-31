@@ -27,7 +27,6 @@ abstract public class ParameterizedResource implements Resource {
 	private final Map<String, Object> parameterValues = new TreeMap<>();
 	private String name;
 	private String id;
-	private String type;
 
 	public Map<String, Object> getBoundedParametersValues() {
 		Map<String, Object> parameters = new HashMap<>();
@@ -180,14 +179,6 @@ abstract public class ParameterizedResource implements Resource {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	public void configureParameters(JsonNode parametersNode) {
