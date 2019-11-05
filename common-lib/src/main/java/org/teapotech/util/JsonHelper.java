@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -25,8 +26,13 @@ public class JsonHelper {
 	private final SimpleModule module = new SimpleModule();
 	ObjectMapper mapper = null;
 
-	public <T> JsonHelper addDeserializer(Class<T> type, JsonDeserializer<? extends T> deser) {
+	public <T> JsonHelper addDeserializer(Class<T> type, JsonDeserializer<T> deser) {
 		module.addDeserializer(type, deser);
+		return this;
+	}
+
+	public <T> JsonHelper addSerializer(Class<T> type, JsonSerializer<T> ser) {
+		module.addSerializer(type, ser);
 		return this;
 	}
 

@@ -3,53 +3,50 @@
  */
 package org.teapotech.resource;
 
-import org.teapotech.resource.exception.InvalidParameterValueException;
-
 /**
  * @author jiangl
  *
  */
 public class ResourceParameter<T> {
 
-	private String name;
-	private boolean required = true;
-	private Class<T> type;
-
-	public ResourceParameter() {
-	}
+	private final String name;
+	private final boolean required;
+	private final Class<T> type;
+	private final T value;
 
 	public ResourceParameter(String name, Class<T> type) {
 		this(name, type, true);
 	}
 
 	public ResourceParameter(String name, Class<T> type, boolean required) {
+		this(name, type, required, null);
+	}
+
+	public ResourceParameter(String name, Class<T> type, boolean required, T value) {
 		this.name = name;
 		this.type = type;
 		this.required = required;
+		this.value = value;
+	}
+
+	public ResourceParameter(String name, Class<T> type, T value) {
+		this(name, type, true, value);
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Class<T> getType() {
 		return type;
-	}
-
-	public void setType(Class<T> type) {
-		this.type = type;
 	}
 
 	public boolean isRequired() {
 		return required;
 	}
 
-	public void setRequired(boolean required) {
-		this.required = required;
+	public T getValue() {
+		return value;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -79,11 +76,6 @@ public class ResourceParameter<T> {
 	@Override
 	public String toString() {
 		return this.name + " [" + this.type + "]";
-	}
-
-	public Object wrapValue(Object value) throws InvalidParameterValueException {
-		throw new InvalidParameterValueException(
-				"Parameter value should be explicitly converted to type " + type.getName());
 	}
 
 }

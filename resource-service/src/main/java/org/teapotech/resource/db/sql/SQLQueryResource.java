@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.teapotech.resource.CallableResource;
 import org.teapotech.resource.ResourceParameter;
 import org.teapotech.resource.exception.ResourceExecutionException;
 import org.teapotech.util.ObjectValueExtractor;
@@ -18,34 +17,38 @@ import org.teapotech.util.ObjectValueExtractor;
  * @author jiangl
  *
  */
-public class SQLQueryResource extends SQLResource implements CallableResource<List<Map<String, Object>>> {
+public class SQLQueryResource extends SQLResource<List<Map<String, Object>>> {
 
-	public final static ResourceParameter<Integer> PARAM_LIMIT = new ResourceParameter<Integer>("limit", Integer.class,
-			false);
-	public final static ResourceParameter<Integer> PARAM_OFFSET = new ResourceParameter<Integer>("offset",
-			Integer.class, false);
+	public static final ResourceParameter<Integer> PARAM_LIMIT = new ResourceParameter<Integer>("limit", Integer.class,
+			false, 100);
+	public static final ResourceParameter<Integer> PARAM_OFFSET = new ResourceParameter<Integer>("offset",
+			Integer.class, false, 0);
 
-	public final static ResourceParameter<?>[] resourceParameters = { PARAM_SQL, PARAM_LIMIT, PARAM_OFFSET };
-
-	@Override
-	public ResourceParameter<?>[] getResourceParameters() {
-		return resourceParameters;
+	public SQLQueryResource() {
+		super();
+		boundParameters.add(PARAM_LIMIT);
+		boundParameters.add(PARAM_OFFSET);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Map<String, Object>> call(Map<String, Object> parameterValues) throws ResourceExecutionException {
-		List<ResourceParameter<?>> sqlParameters = getSQLNamedParameters();
+	public List<Map<String, Object>> getResource() throws ResourceExecutionException {
 		String sql = getSQLStatement();
-		Integer offset = 0;
-		Integer limit = 100;
-		if (parameterValues != null) {
-			sql = StringSubstitutor.replace(sql, parameterValues);
-			if (parameterValues.containsKey(PARAM_OFFSET.getName())) {
-				offset = (Integer) parameterValues.get(PARAM_OFFSET.getName());
-			}
-			if (parameterValues.containsKey(PARAM_LIMIT.getName())) {
-				limit = (Integer) parameterValues.get(PARAM_LIMIT.getName());
-			}
+		List<ResourceParameter<?>> sqlParameters = getSQLNamedParameters(sql);
+
+		Integer limit = PARAM_LIMIT.getValue();
+		Integer offset = PARAM_OFFSET.getValue();
+		Map<String, Object> userParamValues = getUserParameterValueMap();
+		if (userParamValues != null) {
+			sql = StringSubstitutor.replace(sql, userParamValues);
+		}
+		ResourceParameter<?> rp = findBoundParamter(PARAM_LIMIT).get();
+		if (rp.getValue() != null) {
+			limit = (Integer) rp.getValue();
+		}
+		rp = findBoundParamter(PARAM_OFFSET).get();
+		if (rp.getValue() != null) {
+			offset = (Integer) rp.getValue();
 		}
 		try {
 			beginTransaction();
@@ -54,7 +57,7 @@ public class SQLQueryResource extends SQLResource implements CallableResource<Li
 				query = createQuery(sql);
 				for (int i = 0; i < sqlParameters.size(); i++) {
 					ResourceParameter<?> var = sqlParameters.get(i);
-					Object paramValue = ObjectValueExtractor.getPropertyValue(parameterValues, var.getName());
+					Object paramValue = ObjectValueExtractor.getPropertyValue(userParamValues, var.getName());
 					if (paramValue == null) {
 						throw new ResourceExecutionException("Cannot find value for parameter: " + var);
 					}

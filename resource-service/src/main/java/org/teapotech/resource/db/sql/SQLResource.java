@@ -5,6 +5,8 @@ package org.teapotech.resource.db.sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
@@ -19,15 +21,18 @@ import org.teapotech.util.VariableParser;
  * @author jiangl
  *
  */
-public abstract class SQLResource extends ParameterizedResource {
+public abstract class SQLResource<T> extends ParameterizedResource<T> {
 
-	public final static ResourceParameter<String> PARAM_SQL = new ResourceParameter<String>("sql", String.class, true);
+	public static final ResourceParameter<String> PARAM_SQL = new ResourceParameter<String>("sql", String.class, true);
 
 	protected final static VariableParser varParser = new VariableParser();
 	private SessionFactory sessionFactory;
 	private String NAMED_PARAMETER_SIGN = ":";
 	private String PUNCTUATIONS = "\n .,:;'/()";
-	protected List<ResourceParameter<?>> sqlNamedParameters;
+
+	protected SQLResource() {
+		this.boundParameters.add(PARAM_SQL);
+	}
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -51,14 +56,30 @@ public abstract class SQLResource extends ParameterizedResource {
 	}
 
 	public String getSQLStatement() {
-		return (String) this.getParameterValues().get(PARAM_SQL.getName());
+
+		return (String) findBoundParamter(PARAM_SQL).get().getValue();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setSQLStatement(String sql) {
-		setResourceParameterValue(PARAM_SQL, sql);
+		updateBoundParameterValue(PARAM_SQL.getName(), sql);
+		List<ResourceParameter<?>> sqlParams = getSQLNamedParameters(sql);
+		Set<ResourceParameter<?>> newParams = sqlParams.stream().collect(Collectors.toSet());
+		if (this.userParameters != null) {
+			for (ResourceParameter<?> np : newParams) {
+				Optional<ResourceParameter<?>> oldParam = this.userParameters.stream()
+						.filter(p -> p.getName().equalsIgnoreCase(np.getName())).findFirst();
+				if (oldParam.isPresent()) {
+					ResourceParameter<?> rp = oldParam.get();
+					updateUserParameter(
+							new ResourceParameter(rp.getName(), np.getType(), np.isRequired(), rp.getValue()));
+				}
+			}
+		}
+		setUserParameters(newParams);
 	}
 
-	public List<String> getSQLNamedParameters(String sql) {
+	private List<String> parseSQLNamedParameters(String sql) {
 		char[] chars = sql.toCharArray();
 		List<String> params = new ArrayList<>();
 		StringBuilder paramBuilder = null;
@@ -90,14 +111,9 @@ public abstract class SQLResource extends ParameterizedResource {
 		return params;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public List<ResourceParameter<?>> getSQLNamedParameters() {
-		if (this.sqlNamedParameters != null) {
-			return this.sqlNamedParameters;
-		}
+	protected List<ResourceParameter<?>> getSQLNamedParameters(String sql) {
 
-		String sql = getSQLStatement();
-		return getSQLNamedParameters(sql).stream().map(pname -> new ResourceParameter(pname, String.class))
+		return parseSQLNamedParameters(sql).stream().map(pname -> new ResourceParameter<>(pname, String.class))
 				.collect(Collectors.toList());
 	}
 
