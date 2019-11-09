@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.resource.db.sql;
+package org.teapotech.resource.sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.NativeQuery;
-import org.teapotech.resource.ParameterizedResource;
+import org.teapotech.resource.ResourceConfig;
 import org.teapotech.resource.ResourceParameter;
 import org.teapotech.util.VariableParser;
 
@@ -21,38 +17,16 @@ import org.teapotech.util.VariableParser;
  * @author jiangl
  *
  */
-public abstract class SQLResource<T> extends ParameterizedResource<T> {
+public abstract class SQLResource<T> extends ResourceConfig<T> {
 
 	public static final ResourceParameter<String> PARAM_SQL = new ResourceParameter<String>("sql", String.class, true);
 
 	protected final static VariableParser varParser = new VariableParser();
-	private SessionFactory sessionFactory;
 	private String NAMED_PARAMETER_SIGN = ":";
 	private String PUNCTUATIONS = "\n .,:;'/()";
 
 	protected SQLResource() {
 		this.boundParameters.add(PARAM_SQL);
-	}
-
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	protected Transaction beginTransaction() {
-		return this.sessionFactory.getCurrentSession().beginTransaction();
-	}
-
-	protected void commitTransaction() {
-		this.sessionFactory.getCurrentSession().getTransaction().commit();
-	}
-
-	protected void rollbackTransaction() {
-		this.sessionFactory.getCurrentSession().getTransaction().rollback();
-	}
-
-	protected NativeQuery<?> createQuery(String sql) {
-		Session session = sessionFactory.getCurrentSession();
-		return session.createNativeQuery(sql);
 	}
 
 	public String getSQLStatement() {
@@ -111,7 +85,7 @@ public abstract class SQLResource<T> extends ParameterizedResource<T> {
 		return params;
 	}
 
-	protected List<ResourceParameter<?>> getSQLNamedParameters(String sql) {
+	public List<ResourceParameter<?>> getSQLNamedParameters(String sql) {
 
 		return parseSQLNamedParameters(sql).stream().map(pname -> new ResourceParameter<>(pname, String.class))
 				.collect(Collectors.toList());

@@ -32,7 +32,7 @@ public class SimpleResourceConfig {
 
 	@Column(name = "type")
 	@Enumerated(EnumType.STRING)
-	private ResourceConfig.Type type;
+	private ResourceConfigEntity.Type type;
 
 	@Column(name = "last_updated")
 	@UpdateTimestamp
@@ -57,11 +57,11 @@ public class SimpleResourceConfig {
 		this.name = name;
 	}
 
-	public ResourceConfig.Type getType() {
+	public ResourceConfigEntity.Type getType() {
 		return type;
 	}
 
-	public void setType(ResourceConfig.Type type) {
+	public void setType(ResourceConfigEntity.Type type) {
 		this.type = type;
 	}
 

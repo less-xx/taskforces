@@ -31,9 +31,17 @@ public class ControllerExceptionHandler {
 
 	private final static Logger LOG = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
+	@ExceptionHandler({ IllegalArgumentException.class })
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponse handleBadRequestException(Exception e, HttpServletRequest httpRequest,
+			HttpServletResponse httpResponse) {
+		return respondError(e, httpRequest, httpResponse, false);
+	}
+
 	@ExceptionHandler({ HttpMessageNotReadableException.class, InvalidWorkspaceException.class,
-			TaskforceDataStoreException.class,
-			TaskforceExecutionException.class, CustomResourceLocationException.class })
+			TaskforceDataStoreException.class, TaskforceExecutionException.class,
+			CustomResourceLocationException.class })
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public ErrorResponse handleTaskforceDataStoreException(Exception e, HttpServletRequest httpRequest,
@@ -65,14 +73,12 @@ public class ControllerExceptionHandler {
 		return respondError(e, httpRequest, httpResponse, true);
 	}
 
-	private ErrorResponse respondError(Exception e,
-			HttpServletRequest httpRequest,
-			HttpServletResponse httpResponse, boolean showStackTrace) {
+	private ErrorResponse respondError(Exception e, HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+			boolean showStackTrace) {
 		return respondError(null, e, httpRequest, httpResponse, showStackTrace);
 	}
 
-	private ErrorResponse respondError(String message, Exception e,
-			HttpServletRequest httpRequest,
+	private ErrorResponse respondError(String message, Exception e, HttpServletRequest httpRequest,
 			HttpServletResponse httpResponse, boolean showStackTrace) {
 		if (showStackTrace) {
 			LOG.error(e.getMessage(), e);

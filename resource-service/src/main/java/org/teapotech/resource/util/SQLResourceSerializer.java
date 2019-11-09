@@ -5,7 +5,7 @@ package org.teapotech.resource.util;
 
 import java.io.IOException;
 
-import org.teapotech.resource.db.sql.SQLResource;
+import org.teapotech.resource.sql.SQLResource;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

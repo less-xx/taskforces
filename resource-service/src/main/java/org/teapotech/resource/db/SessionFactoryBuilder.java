@@ -20,6 +20,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.teapotech.credentials.DBConnectionCredentials;
 import org.teapotech.resource.db.DatabaseConnectionSpec.Access;
 import org.teapotech.resource.db.DatabaseConnectionSpec.JDBC_Access;
 import org.teapotech.util.ObjectValueExtractor;
@@ -47,21 +48,21 @@ public class SessionFactoryBuilder {
 	 * @param credentials
 	 * @return
 	 */
-	public static SessionFactory getSessionFactory(DatabaseConnectionConfig connectionConfig) {
+	public static SessionFactory getSessionFactory(DBConnectionCredentials connectionCred) {
 
-		SessionFactory fac = sessionFactoryCache.getIfPresent(getIdentifier(connectionConfig));
+		SessionFactory fac = sessionFactoryCache.getIfPresent(getIdentifier(connectionCred));
 		if (fac != null) {
 			return fac;
 		}
 
-		DatabaseConnectionSpec spec = allDatabaseConnectionSpecs.get(connectionConfig.getConnectionType());
+		DatabaseConnectionSpec spec = allDatabaseConnectionSpecs.get(connectionCred.getConnectionType());
 		if (spec == null) {
 			throw new EntityNotFoundException(
-					"Cannot find database connection spec by connection type " + connectionConfig.getConnectionType());
+					"Cannot find database connection spec by connection type " + connectionCred.getConnectionType());
 		}
 
-		fac = buildSessionFactory(connectionConfig, spec);
-		sessionFactoryCache.put(getIdentifier(connectionConfig), fac);
+		fac = buildSessionFactory(connectionCred, spec);
+		sessionFactoryCache.put(getIdentifier(connectionCred), fac);
 		return fac;
 	}
 
@@ -76,13 +77,13 @@ public class SessionFactoryBuilder {
 	 * @param spec
 	 * @return
 	 */
-	public static SessionFactory buildSessionFactory(final DatabaseConnectionConfig connConfig,
+	public static SessionFactory buildSessionFactory(final DBConnectionCredentials connectionCred,
 			final DatabaseConnectionSpec spec) {
 
 		Optional<Access> opAccess = spec.getAccess().stream()
-				.filter(a -> a.getType().equals(connConfig.getAccessType().toString())).findFirst();
+				.filter(a -> a.getType().equals(connectionCred.getAccessType().toString())).findFirst();
 		if (!opAccess.isPresent()) {
-			throw new HibernateException("Cannot find access by type " + connConfig.getAccessType());
+			throw new HibernateException("Cannot find access by type " + connectionCred.getAccessType());
 		}
 		if (!ClassUtils.isAssignable(opAccess.get().getClass(), JDBC_Access.class)) {
 			throw new HibernateException("Only JDBC_ACCESS type is supported.");
@@ -91,7 +92,7 @@ public class SessionFactoryBuilder {
 		JDBC_Access jdbcAccess = (JDBC_Access) opAccess.get();
 		Map<String, Object> settingValues;
 		try {
-			settingValues = ObjectValueExtractor.toMap(connConfig);
+			settingValues = ObjectValueExtractor.toMap(connectionCred);
 		} catch (Exception e) {
 			throw new HibernateException("Invalid connection settings.", e);
 		}
@@ -124,9 +125,9 @@ public class SessionFactoryBuilder {
 		configuration.setProperty("hibernate.show_sql", "true");
 		configuration.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
-		if (connConfig.getAccessType() == DatabaseConnectionConfig.AccessType.JDBC
-				|| connConfig.getAccessType() == DatabaseConnectionConfig.AccessType.JDBC_MEMORY
-				|| connConfig.getAccessType() == DatabaseConnectionConfig.AccessType.JDBC_FILE) {
+		if (connectionCred.getAccessType() == DBConnectionCredentials.AccessType.JDBC
+				|| connectionCred.getAccessType() == DBConnectionCredentials.AccessType.JDBC_MEMORY
+				|| connectionCred.getAccessType() == DBConnectionCredentials.AccessType.JDBC_FILE) {
 			configuration.setProperty("hibernate.connection.url",
 					getJdbcUrl(mergeSettingValues, jdbcAccess.getUrlPattern()));
 			String username = (String) mergeSettingValues.get(JDBC_Access.PARAM_USERNAME);
@@ -138,22 +139,22 @@ public class SessionFactoryBuilder {
 				configuration.setProperty("hibernate.connection.password", password);
 			}
 			return configuration.buildSessionFactory();
-		} else if (connConfig.getAccessType() == DatabaseConnectionConfig.AccessType.JNDI) {
+		} else if (connectionCred.getAccessType() == DBConnectionCredentials.AccessType.JNDI) {
 			configuration.setProperty("hibernate.connection.datasource",
 					(String) mergeSettingValues.get(JDBC_Access.PARAM_JNDI_NAME));
 			return configuration.buildSessionFactory();
 		}
-		throw new HibernateException("Unsupported access type " + connConfig.getAccessType());
+		throw new HibernateException("Unsupported access type " + connectionCred.getAccessType());
 	}
 
 	protected static String getJdbcUrl(Map<String, Object> valueMap, String urlPattern) {
 		return StringSubstitutor.replace(urlPattern, valueMap);
 	}
 
-	private static String getIdentifier(DatabaseConnectionConfig dcConf) {
-		String input = StringUtils.join(new String[] { dcConf.getAccessType().name(), dcConf.getConnectionType(),
-				dcConf.getDbname(), dcConf.getHostname(), String.valueOf(dcConf.getPort()), dcConf.getUsername(),
-				dcConf.getPassword() }, "||");
+	private static String getIdentifier(DBConnectionCredentials connCred) {
+		String input = StringUtils.join(new String[] { connCred.getAccessType().name(), connCred.getConnectionType(),
+				connCred.getDbname(), connCred.getHostname(), String.valueOf(connCred.getPort()),
+				connCred.getUsername(), connCred.getPassword() }, "||");
 		return Hashing.sha256().hashString(input, Charset.defaultCharset()).toString();
 	}
 }

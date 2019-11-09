@@ -25,8 +25,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "credentials")
 public class Credentials implements Cloneable {
 
-	public static enum AuthenticationMethod {
-		USERNAME_PASSWORD, API_KEY, SSH_KEY, OAUTH
+	public static enum CredentialType {
+		USERNAME_PASSWORD, API_KEY, SSH_KEY, OAUTH, DB_CONNECTION
 	}
 
 	@Id
@@ -40,7 +40,7 @@ public class Credentials implements Cloneable {
 
 	@Column(name = "auth_method", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private AuthenticationMethod authenticationMethod = AuthenticationMethod.USERNAME_PASSWORD;
+	private CredentialType type = CredentialType.USERNAME_PASSWORD;
 
 	@Column(name = "credentials", columnDefinition = "TEXT", nullable = false)
 	private String credentials;
@@ -72,12 +72,12 @@ public class Credentials implements Cloneable {
 		this.name = name;
 	}
 
-	public AuthenticationMethod getAuthenticationMethod() {
-		return authenticationMethod;
+	public CredentialType getType() {
+		return type;
 	}
 
-	public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-		this.authenticationMethod = authenticationMethod;
+	public void setType(CredentialType type) {
+		this.type = type;
 	}
 
 	public String getCredentials() {
@@ -119,7 +119,6 @@ public class Credentials implements Cloneable {
 
 	@Override
 	public String toString() {
-		return "{\n\tID: " + this.id + ",\n\tName: " + this.name + ",\n\tAuthMethod: " + this.authenticationMethod
-				+ "\n}";
+		return "{\n\tID: " + this.id + ",\n\tName: " + this.name + ",\n\tType: " + this.type + "\n}";
 	}
 }

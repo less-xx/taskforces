@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.common.AuthenticationScheme;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.teapotech.credentials.DBConnectionCredentials.AccessType;
 import org.teapotech.credentials.Oauth2Credentials.AuthorizationType;
 import org.teapotech.credentials.entity.Credentials;
 import org.teapotech.credentials.service.impl.CredentialsServiceImpl;
@@ -81,6 +82,33 @@ public class TestCredentialsService {
 		assertNotNull(cred.getCredentials());
 		System.out.println(cred.getCredentials());
 		cred.setName("Test OAuth2 Credentials");
+		cred = credentialsService.saveCredentials(cred);
+		assertNotNull(cred.getId());
+		System.out.println(cred.getCredentials());
+
+		Credentials c1 = credentialsService.getCredentialsById(cred.getId());
+		assertNotNull(c1);
+		Credentials c2 = credentialsService.getDecryptedCredentialsById(cred.getId());
+		assertNotNull(c2);
+		System.out.println(c2.getCredentials());
+		assertTrue(c2.getCredentials().indexOf("{") == 0);
+
+	}
+
+	@Test
+	public void testCreateDBConnCredentials_01() throws Exception {
+		DBConnectionCredentials c = new DBConnectionCredentials();
+		c.setAccessType(AccessType.JDBC);
+		c.setConnectionType("PostgreSQL");
+		c.setDbname("testDB");
+		c.setHostname("localhost");
+		c.setPort(5432);
+		c.setUsername("db_user");
+		c.setPassword("db_pass");
+		Credentials cred = credentialsService.createDBConnectionCredentials(c);
+		assertNotNull(cred.getCredentials());
+		System.out.println(cred.getCredentials());
+		cred.setName("Test DB Connection Credentials");
 		cred = credentialsService.saveCredentials(cred);
 		assertNotNull(cred.getId());
 		System.out.println(cred.getCredentials());

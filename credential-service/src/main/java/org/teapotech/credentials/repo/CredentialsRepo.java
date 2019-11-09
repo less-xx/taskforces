@@ -16,12 +16,14 @@ import org.teapotech.credentials.entity.Credentials;
  * @author jiangl
  *
  */
-public interface CredentialsRepo
-		extends JpaRepository<Credentials, String>, JpaSpecificationExecutor<Credentials> {
+public interface CredentialsRepo extends JpaRepository<Credentials, String>, JpaSpecificationExecutor<Credentials> {
 
 	List<Credentials> findByIdIn(Collection<String> ids);
 
 	@Modifying
 	@Query(nativeQuery = true, value = "INSERT into {h-schema}credentials ()")
 	Credentials saveCredentials(Credentials cred, String pgCred);
+
+	Credentials findOneByName(String name);
+
 }

@@ -6,9 +6,6 @@ package org.teapotech.taskforce.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.teapotech.taskforce.credential.Oauth2Credentials;
-import org.teapotech.taskforce.credential.oauth2.OAuth2CredentialDeserializer;
-
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,14 +23,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class JSONUtils {
 
 	private final static SimpleModule module = new SimpleModule();
-	static {
-		module.addDeserializer(Oauth2Credentials.class, new OAuth2CredentialDeserializer());
-	}
 	public final static ObjectMapper mapper = new ObjectMapper()
-			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-					false)
-			.setSerializationInclusion(Include.NON_NULL)
-			.registerModule(module);
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.setSerializationInclusion(Include.NON_NULL).registerModule(module);
 
 	public static String getJSON(Object o) throws JsonProcessingException {
 		if (o == null) {
@@ -42,16 +34,14 @@ public class JSONUtils {
 		return mapper.writeValueAsString(o);
 	}
 
-	public static <T> T getObject(String json, Class<T> clazz)
-			throws IOException {
+	public static <T> T getObject(String json, Class<T> clazz) throws IOException {
 		if (json == null) {
 			return null;
 		}
 		return mapper.readValue(json, clazz);
 	}
 
-	public static <T> T getObject(InputStream in, Class<T> clazz)
-			throws IOException {
+	public static <T> T getObject(InputStream in, Class<T> clazz) throws IOException {
 		if (in == null) {
 			return null;
 		}
@@ -66,8 +56,7 @@ public class JSONUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T> T getObject(InputStream in, TypeReference valueTypeRef)
-			throws IOException {
+	public static <T> T getObject(InputStream in, TypeReference valueTypeRef) throws IOException {
 		if (in == null) {
 			return null;
 		}
@@ -75,8 +64,7 @@ public class JSONUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T> T getObject(String json, TypeReference valueTypeRef)
-			throws IOException {
+	public static <T> T getObject(String json, TypeReference valueTypeRef) throws IOException {
 		if (json == null) {
 			return null;
 		}

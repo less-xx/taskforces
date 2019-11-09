@@ -13,7 +13,7 @@ import org.teapotech.resource.exception.InvalidParameterException;
 import org.teapotech.resource.exception.MissingParameterValueException;
 import org.teapotech.util.VariableParser;
 
-abstract public class ParameterizedResource<T> implements Resource<T> {
+abstract public class ResourceConfig<T> {
 
 	private static Comparator<ResourceParameter<?>> comparator = new Comparator<ResourceParameter<?>>() {
 
@@ -54,19 +54,19 @@ abstract public class ParameterizedResource<T> implements Resource<T> {
 		this.userParameters.add(userParameter);
 	}
 
-	protected void setUserParameters(Set<ResourceParameter<?>> userParameters) {
+	public void setUserParameters(Set<ResourceParameter<?>> userParameters) {
 		this.userParameters = userParameters;
 	}
 
-	protected Optional<ResourceParameter<?>> findBoundParamter(ResourceParameter<?> param) {
+	public Optional<ResourceParameter<?>> findBoundParamter(ResourceParameter<?> param) {
 		return this.boundParameters.stream().filter(p -> p.getName().equalsIgnoreCase(param.getName())).findAny();
 	}
 
-	protected Optional<ResourceParameter<?>> findUserParameterByName(String paramName) {
+	public Optional<ResourceParameter<?>> findUserParameterByName(String paramName) {
 		return this.userParameters.stream().filter(p -> p.getName().equalsIgnoreCase(paramName)).findFirst();
 	}
 
-	protected void validateParameters() throws MissingParameterValueException, InvalidParameterException {
+	public void validateParameters() throws MissingParameterValueException, InvalidParameterException {
 		for (ResourceParameter<?> param : this.boundParameters) {
 			validateParamter(param);
 		}
@@ -82,7 +82,7 @@ abstract public class ParameterizedResource<T> implements Resource<T> {
 		}
 	}
 
-	protected Map<String, Object> getUserParameterValueMap() {
+	public Map<String, Object> getUserParameterValueMap() {
 		if (userParameters != null) {
 			return this.userParameters.stream()
 					.collect(Collectors.toMap(ResourceParameter::getName, ResourceParameter::getValue));

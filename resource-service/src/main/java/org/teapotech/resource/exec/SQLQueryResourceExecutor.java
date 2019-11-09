@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.resource.db.sql;
+package org.teapotech.resource.exec;
 
 import java.util.List;
 import java.util.Map;
@@ -11,42 +11,35 @@ import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.teapotech.resource.ResourceParameter;
 import org.teapotech.resource.exception.ResourceExecutionException;
+import org.teapotech.resource.sql.SQLQueryResource;
 import org.teapotech.util.ObjectValueExtractor;
 
 /**
- * @author jiangl
+ * @author lessdev
  *
  */
-public class SQLQueryResource extends SQLResource<List<Map<String, Object>>> {
+public class SQLQueryResourceExecutor extends SQLResourceExecutor<List<Map<String, Object>>, SQLQueryResource> {
 
-	public static final ResourceParameter<Integer> PARAM_LIMIT = new ResourceParameter<Integer>("limit", Integer.class,
-			false, 100);
-	public static final ResourceParameter<Integer> PARAM_OFFSET = new ResourceParameter<Integer>("offset",
-			Integer.class, false, 0);
-
-	public SQLQueryResource() {
-		super();
-		boundParameters.add(PARAM_LIMIT);
-		boundParameters.add(PARAM_OFFSET);
+	public SQLQueryResourceExecutor(SQLQueryResource resource) {
+		super(resource);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> getResource() throws ResourceExecutionException {
-		String sql = getSQLStatement();
-		List<ResourceParameter<?>> sqlParameters = getSQLNamedParameters(sql);
+		String sql = resource.getSQLStatement();
+		List<ResourceParameter<?>> sqlParameters = resource.getSQLNamedParameters(sql);
 
-		Integer limit = PARAM_LIMIT.getValue();
-		Integer offset = PARAM_OFFSET.getValue();
-		Map<String, Object> userParamValues = getUserParameterValueMap();
+		Integer limit = SQLQueryResource.PARAM_LIMIT.getValue();
+		Integer offset = SQLQueryResource.PARAM_OFFSET.getValue();
+		Map<String, Object> userParamValues = resource.getUserParameterValueMap();
 		if (userParamValues != null) {
 			sql = StringSubstitutor.replace(sql, userParamValues);
 		}
-		ResourceParameter<?> rp = findBoundParamter(PARAM_LIMIT).get();
+		ResourceParameter<?> rp = resource.findBoundParamter(SQLQueryResource.PARAM_LIMIT).get();
 		if (rp.getValue() != null) {
 			limit = (Integer) rp.getValue();
 		}
-		rp = findBoundParamter(PARAM_OFFSET).get();
+		rp = resource.findBoundParamter(SQLQueryResource.PARAM_OFFSET).get();
 		if (rp.getValue() != null) {
 			offset = (Integer) rp.getValue();
 		}

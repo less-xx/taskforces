@@ -1,6 +1,8 @@
 package org.teapotech.credentials.service.impl;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
@@ -9,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teapotech.credentials.CredentialsObject;
+import org.teapotech.credentials.DBConnectionCredentials;
 import org.teapotech.credentials.Oauth2Credentials;
 import org.teapotech.credentials.UsernamePasswordCredentials;
 import org.teapotech.credentials.entity.Credentials;
-import org.teapotech.credentials.entity.Credentials.AuthenticationMethod;
+import org.teapotech.credentials.entity.Credentials.CredentialType;
 import org.teapotech.credentials.repo.CredentialsRepo;
 import org.teapotech.credentials.service.CredentialsService;
 import org.teapotech.credentials.service.exception.CredentialsNotFoundException;
@@ -50,6 +53,12 @@ public class CredentialsServiceImpl implements CredentialsService {
 		return clone;
 	}
 
+	@Override
+	@Transactional
+	public List<Credentials> getCredentialsByIds(Collection<String> ids) {
+		return credRepo.findByIdIn(ids);
+	}
+
 	@Transactional
 	public Credentials saveCredentials(Credentials cred) throws CipherException {
 		Credentials c = encryptCredentials(cred);
@@ -73,7 +82,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 			throws JsonProcessingException {
 		String credStr = jsonHelper.getJSON(cred);
 		Credentials c = new Credentials();
-		c.setAuthenticationMethod(AuthenticationMethod.USERNAME_PASSWORD);
+		c.setType(CredentialType.USERNAME_PASSWORD);
 		c.setCredentials(credStr);
 		return c;
 	}
@@ -81,24 +90,40 @@ public class CredentialsServiceImpl implements CredentialsService {
 	public Credentials createOauth2Credentials(Oauth2Credentials cred) throws JsonProcessingException {
 		String credStr = jsonHelper.getJSON(cred);
 		Credentials c = new Credentials();
-		c.setAuthenticationMethod(AuthenticationMethod.OAUTH);
+		c.setType(CredentialType.OAUTH);
 		c.setCredentials(credStr);
 		return c;
 	}
 
-	private <T extends CredentialsObject> T getCredentialObject(Credentials entity, Class<T> objectType)
+	public Credentials createDBConnectionCredentials(DBConnectionCredentials cred) throws JsonProcessingException {
+		String credStr = jsonHelper.getJSON(cred);
+		Credentials c = new Credentials();
+		c.setType(CredentialType.DB_CONNECTION);
+		c.setCredentials(credStr);
+		return c;
+	}
+
+	private <T extends CredentialsObject> T createCredentialsObject(Credentials entity, Class<T> objectType)
 			throws Exception {
 		T t = jsonHelper.getObject(entity.getCredentials(), objectType);
 		return t;
 	}
 
-	public CredentialsObject getDataSourceCredentials(Credentials entity) throws Exception {
+	@Override
+	public CredentialsObject createCredentialsObject(Credentials entity) throws Exception {
 
-		if (entity.getAuthenticationMethod() == AuthenticationMethod.USERNAME_PASSWORD) {
-			return getCredentialObject(entity, UsernamePasswordCredentials.class);
+		if (entity.getType() == CredentialType.USERNAME_PASSWORD) {
+			return createCredentialsObject(entity, UsernamePasswordCredentials.class);
 		}
 
-		throw new IllegalArgumentException("Unsupported credential catalog " + entity.getAuthenticationMethod());
+		if (entity.getType() == CredentialType.DB_CONNECTION) {
+			return createCredentialsObject(entity, DBConnectionCredentials.class);
+		}
+
+		throw new IllegalArgumentException("Unsupported credential type " + entity.getType());
 	}
 
+	public Credentials findByName(String name) {
+		return credRepo.findOneByName(name);
+	}
 }

@@ -22,7 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "resource_config")
-public class ResourceConfig {
+public class ResourceConfigEntity {
 
 	public static enum Type {
 		STATIC_OBJECT, STATIC_LIST, STATIC_MAP, STATIC_JSON, HTTP_RESOURCE, SQL_QUERY, SQL_UPDATE, CUSTOM

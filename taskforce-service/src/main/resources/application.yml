@@ -17,7 +17,7 @@ spring:
     open-in-view: false
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
     properties:
       hibernate.default_schema: ${APP_DB_SCHEMA:taskforce}
       hibernate.temp.use_jdbc_metadata_defaults: false
@@ -70,3 +70,14 @@ application.user:
 
 taskforce.event.rabbitmq:
   exchange: taskforce.block.event
+  
+  
+credentials-service:
+   encryptCredentials: ${APP_ENCRYPT_CREDENTIALS:true}
+   homeDir: ${APP_HOME_DIR:/tmp/taskforce}
+   
+cipher:
+  keystore:
+    type: JCEKS
+    path: ${CIPHER_KEYSTORE_FILE:/tmp/taskforce/keystore}
+    password: ${CIPHER_KEYSTORE_PASSWORD:changeIt!}

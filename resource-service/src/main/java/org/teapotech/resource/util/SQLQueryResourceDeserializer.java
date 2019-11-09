@@ -6,7 +6,7 @@ package org.teapotech.resource.util;
 import java.io.IOException;
 
 import org.teapotech.resource.ResourceParameter;
-import org.teapotech.resource.db.sql.SQLQueryResource;
+import org.teapotech.resource.sql.SQLQueryResource;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
