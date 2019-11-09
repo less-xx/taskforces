@@ -4,10 +4,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.teapotech.credentials.CredentialsObject;
@@ -16,9 +20,9 @@ import org.teapotech.credentials.Oauth2Credentials;
 import org.teapotech.credentials.UsernamePasswordCredentials;
 import org.teapotech.credentials.entity.Credentials;
 import org.teapotech.credentials.entity.Credentials.CredentialType;
+import org.teapotech.credentials.repo.CredentialsQuerySpecs;
 import org.teapotech.credentials.repo.CredentialsRepo;
 import org.teapotech.credentials.service.CredentialsService;
-import org.teapotech.credentials.service.exception.CredentialsNotFoundException;
 import org.teapotech.security.cipher.ICipher;
 import org.teapotech.security.cipher.exception.CipherException;
 import org.teapotech.util.JsonHelper;
@@ -29,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class CredentialsServiceImpl implements CredentialsService {
 
 	private static Logger LOG = LoggerFactory.getLogger(CredentialsServiceImpl.class);
+	public final static String MASKED_PASSWORD_VALUES = "************";
 
 	@Autowired
 	CredentialsRepo credRepo;
@@ -59,6 +64,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 		return credRepo.findByIdIn(ids);
 	}
 
+	@Override
 	@Transactional
 	public Credentials saveCredentials(Credentials cred) throws CipherException {
 		Credentials c = encryptCredentials(cred);
@@ -66,14 +72,17 @@ public class CredentialsServiceImpl implements CredentialsService {
 		return credRepo.save(c);
 	}
 
+	@Override
+	@Transactional
 	public Credentials getCredentialsById(String id) {
 		return credRepo.findById(id).orElse(null);
 	}
 
+	@Transactional
 	public Credentials getDecryptedCredentialsById(String id) throws CipherException {
 		Credentials cred = credRepo.findById(id).orElse(null);
 		if (cred == null) {
-			throw new CredentialsNotFoundException("Cannot find credentials by id.");
+			throw new EntityNotFoundException("Cannot find credentials by id.");
 		}
 		return decryptCredentials(cred);
 	}
@@ -105,7 +114,8 @@ public class CredentialsServiceImpl implements CredentialsService {
 
 	private <T extends CredentialsObject> T createCredentialsObject(Credentials entity, Class<T> objectType)
 			throws Exception {
-		T t = jsonHelper.getObject(entity.getCredentials(), objectType);
+		Credentials dc = decryptCredentials(entity);
+		T t = jsonHelper.getObject(dc.getCredentials(), objectType);
 		return t;
 	}
 
@@ -123,7 +133,25 @@ public class CredentialsServiceImpl implements CredentialsService {
 		throw new IllegalArgumentException("Unsupported credential type " + entity.getType());
 	}
 
+	public CredentialsObject maskPassword(CredentialsObject cobj) {
+		if (cobj instanceof UsernamePasswordCredentials) {
+			((UsernamePasswordCredentials) cobj).setPassword(MASKED_PASSWORD_VALUES);
+		} else if (cobj instanceof DBConnectionCredentials) {
+			((DBConnectionCredentials) cobj).setPassword(MASKED_PASSWORD_VALUES);
+		}
+		return cobj;
+	}
+
+	@Override
 	public Credentials findByName(String name) {
 		return credRepo.findOneByName(name);
+	}
+
+	@Override
+	@Transactional
+	public Page<Credentials> query(String id, CredentialType type, Boolean enabled, Date lastUpdatedTime,
+			String updatedBy, Pageable pageable) {
+		return credRepo.findAll(CredentialsQuerySpecs.queryCredentials(id, type, enabled, lastUpdatedTime, updatedBy),
+				pageable);
 	}
 }
