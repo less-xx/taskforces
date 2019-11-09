@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.teapotech.credentials.CredentialsObject;
+import org.teapotech.credentials.DBConnectionCredentials;
 import org.teapotech.credentials.UsernamePasswordCredentials;
 import org.teapotech.credentials.entity.Credentials;
 import org.teapotech.credentials.entity.Credentials.CredentialType;
@@ -81,22 +82,26 @@ public class CredentialsController extends LogonUserController {
 		if (cred != null) {
 			throw new IllegalArgumentException("Credentials already exists.");
 		}
+		String config = null;
 		if (request.getType() == CredentialType.USERNAME_PASSWORD) {
 			UsernamePasswordCredentials co = jsonHelper.getObject(request.getConfiguration(),
 					UsernamePasswordCredentials.class);
-
-			String conf = jsonHelper.getJSON(co);
-
-			cred = new Credentials();
-			cred.setCredentials(conf);
-			cred.setName(request.getName());
-			cred.setType(request.getType());
-			cred.setUpdatedBy(getLogonUser(httpRequest).getName());
-			cred.setLastUpdatedTime(new Date());
-			cred = credentialsService.saveCredentials(cred);
-			return new RestResponse<SimpleCredentialsResponse>(new SimpleCredentialsResponse(cred));
+			config = jsonHelper.getJSON(co);
+		} else if (request.getType() == CredentialType.DB_CONNECTION) {
+			DBConnectionCredentials co = jsonHelper.getObject(request.getConfiguration(),
+					DBConnectionCredentials.class);
+			config = jsonHelper.getJSON(co);
+		} else {
+			throw new IllegalArgumentException("Invalid request type [" + request.getType() + "]");
 		}
 
-		throw new IllegalArgumentException("Invalid request type [" + request.getType() + "]");
+		cred = new Credentials();
+		cred.setCredentials(config);
+		cred.setName(request.getName());
+		cred.setType(request.getType());
+		cred.setUpdatedBy(getLogonUser(httpRequest).getName());
+		cred.setLastUpdatedTime(new Date());
+		cred = credentialsService.saveCredentials(cred);
+		return new RestResponse<SimpleCredentialsResponse>(new SimpleCredentialsResponse(cred));
 	}
 }
