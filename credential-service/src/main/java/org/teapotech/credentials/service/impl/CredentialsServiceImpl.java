@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,9 @@ public class CredentialsServiceImpl implements CredentialsService {
 	@Override
 	@Transactional
 	public Credentials getCredentialsById(String id) {
+		if (StringUtils.isBlank(id)) {
+			return null;
+		}
 		return credRepo.findById(id).orElse(null);
 	}
 
@@ -133,6 +137,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 		throw new IllegalArgumentException("Unsupported credential type " + entity.getType());
 	}
 
+	@Override
 	public CredentialsObject maskPassword(CredentialsObject cobj) {
 		if (cobj instanceof UsernamePasswordCredentials) {
 			((UsernamePasswordCredentials) cobj).setPassword(MASKED_PASSWORD_VALUES);

@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -21,7 +22,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  *
  */
 @Entity
-@Table(name = "resource_config")
+@Table(name = "resource_config", indexes = { @Index(columnList = "name"), @Index(columnList = "type") })
 public class ResourceConfigEntity {
 
 	public static enum Type {

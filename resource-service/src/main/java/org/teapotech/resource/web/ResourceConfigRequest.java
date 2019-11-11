@@ -5,6 +5,8 @@ package org.teapotech.resource.web;
 
 import java.util.Map;
 
+import org.teapotech.resource.entity.ResourceConfigEntity;
+
 /**
  * @author lessdev
  *
@@ -13,6 +15,7 @@ public abstract class ResourceConfigRequest {
 
 	protected String name;
 	private String credentialsId;
+	private ResourceConfigEntity.Type type;
 	private Map<String, Object> boundParamteres;
 	private Map<String, Object> userParamteres;
 
@@ -46,6 +49,14 @@ public abstract class ResourceConfigRequest {
 
 	public void setUserParamteres(Map<String, Object> userParamteres) {
 		this.userParamteres = userParamteres;
+	}
+
+	public ResourceConfigEntity.Type getType() {
+		return type;
+	}
+
+	public void setType(ResourceConfigEntity.Type type) {
+		this.type = type;
 	}
 
 }

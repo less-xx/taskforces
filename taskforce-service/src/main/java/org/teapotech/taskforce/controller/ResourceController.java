@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.resource.entity.ResourceConfigEntity;
 import org.teapotech.resource.exception.CreateResourceException;
 import org.teapotech.resource.service.ResourceService;
 import org.teapotech.resource.web.ResourceConfigRequest;
@@ -30,6 +31,11 @@ public class ResourceController extends LogonUserController {
 	@ResponseBody
 	public RestResponse<ResourceConfigResponse> createResource(@RequestBody ResourceConfigRequest request,
 			HttpServletRequest httpRequest) throws CreateResourceException {
+		ResourceConfigEntity rce = resourceService.findByNameAndType(request.getName(), request.getType());
+		if (rce != null) {
+			throw new IllegalArgumentException("Resource with the same name and type is already existed.");
+		}
 		return null;
 	}
+
 }

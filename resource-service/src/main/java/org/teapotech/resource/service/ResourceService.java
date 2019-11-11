@@ -86,4 +86,9 @@ public class ResourceService {
 		return resConfigRepo.save(resConfig);
 	}
 
+	@Transactional
+	public ResourceConfigEntity findByNameAndType(String name, ResourceConfigEntity.Type type) {
+		return resConfigRepo.findOneByNameAndType(name, type);
+	}
+
 }
