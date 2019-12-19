@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.base.controller.LogonUserController;
 import org.teapotech.block.model.Workspace;
 import org.teapotech.taskforce.dto.BlockDefinitionDTO;
 import org.teapotech.taskforce.service.BlockRegistryService;

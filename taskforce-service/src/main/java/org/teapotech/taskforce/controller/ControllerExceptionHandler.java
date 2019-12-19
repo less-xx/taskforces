@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.teapotech.base.exception.UserNotLogonException;
 import org.teapotech.block.exception.InvalidWorkspaceException;
 import org.teapotech.taskforce.exception.CustomResourceLocationException;
 import org.teapotech.taskforce.exception.TaskforceDataStoreException;
 import org.teapotech.taskforce.exception.TaskforceExecutionException;
 import org.teapotech.taskforce.web.ErrorResponse;
-import org.teapotech.user.exception.UserNotLogonException;
 
 /**
  * @author jiangl

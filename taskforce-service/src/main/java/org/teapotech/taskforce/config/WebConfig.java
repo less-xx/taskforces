@@ -13,8 +13,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.teapotech.base.interceptor.UserLogonInterceptor;
 import org.teapotech.taskforce.task.config.TaskforceExecutionProperties;
-import org.teapotech.user.interceptor.UserLogonInterceptor;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

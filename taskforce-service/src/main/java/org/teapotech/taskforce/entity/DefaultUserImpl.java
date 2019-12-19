@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.teapotech.user.User;
+import org.teapotech.base.service.user.User;
 
 @Entity
 @Table(name = "tf_user")

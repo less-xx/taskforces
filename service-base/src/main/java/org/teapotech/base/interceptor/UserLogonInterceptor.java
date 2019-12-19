@@ -1,20 +1,21 @@
 /**
  * 
  */
-package org.teapotech.user.interceptor;
+package org.teapotech.base.interceptor;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.teapotech.taskforce.entity.DefaultUserImpl;
-import org.teapotech.user.User;
-import org.teapotech.user.UserService;
-import org.teapotech.user.exception.UserNotLogonException;
+import org.teapotech.base.exception.UserNotLogonException;
+import org.teapotech.base.service.user.User;
+import org.teapotech.base.service.user.UserService;
 
 /**
  * @author jiangl
@@ -22,7 +23,7 @@ import org.teapotech.user.exception.UserNotLogonException;
  */
 @Component
 public class UserLogonInterceptor implements HandlerInterceptor {
-
+	protected Logger LOG = LoggerFactory.getLogger(getClass());
 	public final static String SESSION_CURRENT_LOGON_USER = "CURRENT_LOGON_USER";
 
 	@Value("${application.user.logon-required}")
@@ -41,10 +42,19 @@ public class UserLogonInterceptor implements HandlerInterceptor {
 
 	@PostConstruct
 	void init() {
-		DefaultUserImpl du = new DefaultUserImpl();
-		du.setId(defaultUserId);
-		du.setName(defaultUserName);
-		this.defaultUser = du;
+		this.defaultUser = new User() {
+
+			@Override
+			public String getName() {
+				return defaultUserId;
+			}
+
+			@Override
+			public String getId() {
+				return defaultUserName;
+			}
+		};
+		LOG.info("Default user initiated, id: {}, name: {}", this.defaultUser.getId(), this.defaultUser.getName());
 	}
 
 	@Override

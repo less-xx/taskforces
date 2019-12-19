@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.base.controller.LogonUserController;
 import org.teapotech.taskforce.entity.FileSystemPath;
 import org.teapotech.taskforce.exception.CustomResourceLocationException;
 import org.teapotech.taskforce.service.CustomResourcePathServiceImpl;
@@ -65,7 +66,7 @@ public class CustomResourceLocationController extends LogonUserController {
 		fpath.setName(request.getName());
 		fpath.setDescription(request.getDescription());
 		fpath.setPath(request.getPath());
-		fpath.setUpdatedBy(getLogonUser(httpRequest).getName());
+		fpath.setUpdatedBy(getLogonUser().getName());
 		fpath.setLastUpdatedTime(new Date());
 		fpath = custResourcePathService.saveFileSystemPath(fpath);
 		return RestResponse.ok(fpath);
@@ -89,7 +90,7 @@ public class CustomResourceLocationController extends LogonUserController {
 		fpath.setName(request.getName());
 		fpath.setDescription(request.getDescription());
 		fpath.setPath(request.getPath());
-		fpath.setUpdatedBy(getLogonUser(httpRequest).getName());
+		fpath.setUpdatedBy(getLogonUser().getName());
 		fpath.setLastUpdatedTime(new Date());
 		fpath = custResourcePathService.saveFileSystemPath(fpath);
 		return RestResponse.ok(fpath);

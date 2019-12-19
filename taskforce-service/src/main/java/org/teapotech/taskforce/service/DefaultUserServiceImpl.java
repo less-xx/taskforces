@@ -5,9 +5,9 @@ package org.teapotech.taskforce.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.teapotech.base.service.user.User;
+import org.teapotech.base.service.user.UserService;
 import org.teapotech.taskforce.repo.UserRepo;
-import org.teapotech.user.User;
-import org.teapotech.user.UserService;
 
 /**
  * @author jiangl

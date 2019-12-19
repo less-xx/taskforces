@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.taskforce.controller;
+package org.teapotech.credentials.controller;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.base.controller.LogonUserController;
+import org.teapotech.base.web.RestResponse;
 import org.teapotech.credentials.CredentialsObject;
 import org.teapotech.credentials.DBConnectionCredentials;
 import org.teapotech.credentials.UsernamePasswordCredentials;
@@ -29,7 +31,6 @@ import org.teapotech.credentials.entity.Credentials.CredentialType;
 import org.teapotech.credentials.service.CredentialsService;
 import org.teapotech.credentials.web.CredentialsRequest;
 import org.teapotech.credentials.web.SimpleCredentialsResponse;
-import org.teapotech.taskforce.web.RestResponse;
 import org.teapotech.util.JsonHelper;
 
 /**
@@ -99,7 +100,7 @@ public class CredentialsController extends LogonUserController {
 		cred.setCredentials(config);
 		cred.setName(request.getName());
 		cred.setType(request.getType());
-		cred.setUpdatedBy(getLogonUser(httpRequest).getName());
+		cred.setUpdatedBy(getLogonUser().getName());
 		cred.setLastUpdatedTime(new Date());
 		cred = credentialsService.saveCredentials(cred);
 		return new RestResponse<SimpleCredentialsResponse>(new SimpleCredentialsResponse(cred));

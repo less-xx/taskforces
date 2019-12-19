@@ -22,7 +22,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 		"org.teapotech.resource.entity" })
 @EnableJpaRepositories(basePackages = { "org.teapotech.taskforce.repo", "org.teapotech.credentials.repo",
 		"org.teapotech.resource.repo" })
-@ComponentScan(basePackages = { "org.teapotech.taskforce", "org.teapotech.user", "org.teapotech.credentials",
+@ComponentScan(basePackages = { "org.teapotech.taskforce", "org.teapotech.base", "org.teapotech.credentials",
 		"org.teapotech.resource" })
 public class TaskforceServiceLoader {
 

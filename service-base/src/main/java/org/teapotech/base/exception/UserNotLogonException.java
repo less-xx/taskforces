@@ -1,4 +1,4 @@
-package org.teapotech.user.exception;
+package org.teapotech.base.exception;
 
 public class UserNotLogonException extends RuntimeException {
 

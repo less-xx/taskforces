@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.teapotech.user;
+package org.teapotech.base.service.user;
 
 /**
  * @author jiangl

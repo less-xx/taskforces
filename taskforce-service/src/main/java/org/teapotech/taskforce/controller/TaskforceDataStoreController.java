@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.teapotech.base.controller.LogonUserController;
 import org.teapotech.taskforce.entity.SimpleTaskforceEntity;
 import org.teapotech.taskforce.entity.SimpleTaskforceGroup;
 import org.teapotech.taskforce.entity.TaskforceEntity;
@@ -65,7 +66,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		group.setName(request.getName());
 		group.setDescription(request.getDescription());
 		group.setLastUpdatedTime(new Date());
-		group.setUpdatedBy(getLogonUser(httpRequest).getName());
+		group.setUpdatedBy(getLogonUser().getName());
 		group = tfDataStoreService.saveTaskforceGroup(group);
 		return new RestResponse<SimpleTaskforceGroup>(group.toSimple());
 
@@ -88,7 +89,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		group.setName(request.getName());
 		group.setDescription(request.getDescription());
 		group.setLastUpdatedTime(new Date());
-		group.setUpdatedBy(getLogonUser(httpRequest).getName());
+		group.setUpdatedBy(getLogonUser().getName());
 		group = tfDataStoreService.saveTaskforceGroup(group);
 		return new RestResponse<SimpleTaskforceGroup>(group.toSimple());
 
@@ -125,7 +126,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		t.setName(request.getName());
 		t.setGroup(group);
 		t.setLastUpdatedTime(new Date());
-		t.setUpdatedBy(getLogonUser(httpRequest).getName());
+		t.setUpdatedBy(getLogonUser().getName());
 		t = tfDataStoreService.saveTaskforceEntity(t);
 		return new RestResponse<SimpleTaskforceEntity>(t.toSimple());
 	}
@@ -168,7 +169,7 @@ public class TaskforceDataStoreController extends LogonUserController {
 		}
 
 		existedTaskfoce.setLastUpdatedTime(new Date());
-		existedTaskfoce.setUpdatedBy(getLogonUser(httpRequest).getName());
+		existedTaskfoce.setUpdatedBy(getLogonUser().getName());
 		existedTaskfoce = tfDataStoreService.saveTaskforceEntity(existedTaskfoce);
 		return new RestResponse<SimpleTaskforceEntity>(existedTaskfoce.toSimple());
 	}
