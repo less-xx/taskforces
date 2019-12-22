@@ -41,7 +41,7 @@ public class CustomResourcePath {
 	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
-	@Column(name = "description", nullable = true)
+	@Column(name = "description", columnDefinition = "TEXT", nullable = true)
 	private String description;
 
 	@Column(name = "last_updated")

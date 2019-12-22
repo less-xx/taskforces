@@ -2,7 +2,7 @@ import TaskforceGroups from './components/TaskforceGroups';
 import Taskforces from './components/Taskforces';
 import TaskforceBuilder from './components/TaskforceBuilder';
 import Content from './Content';
-import UserDefinedFilePaths from './components/UserDefinedFilePaths';
+import UserDefinedFilePaths from './components/res-mnt/UserDefinedFilePaths';
 
 export const routes = [
     {

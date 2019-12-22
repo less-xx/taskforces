@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { DrawerOpenWidth } from '../themes/Default';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { DrawerOpenWidth } from '../../themes/Default';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
-import FilePathService from '../resources/FilePathService';
-import { openResourceDialog, ResourceDialogTypes } from '../actions/ResourceActions'
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import UserDefinedFilePathCard from './UserDefinedFilePathCard';
 import EditUserDefinedFilePathDialog from './EditUserDefinedFilePathDialog';
-import ListToolbar from './ListToolbar';
+import ListToolbar from '../ListToolbar';
+import FilePathService from '../../resources/FilePathService';
+import { openResourceDialog, ResourceDialogTypes } from '../../actions/ResourceActions';
 
 const useStyles = makeStyles(theme => ({
 

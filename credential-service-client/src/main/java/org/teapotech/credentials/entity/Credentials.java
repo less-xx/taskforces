@@ -38,6 +38,9 @@ public class Credentials implements Cloneable {
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@Column(name = "description", columnDefinition = "TEXT", nullable = true)
+	private String description;
+
 	@Column(name = "auth_method", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private CredentialType type = CredentialType.USERNAME_PASSWORD;
@@ -110,6 +113,14 @@ public class Credentials implements Cloneable {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override

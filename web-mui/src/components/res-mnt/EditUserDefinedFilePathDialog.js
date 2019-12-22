@@ -7,10 +7,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import { Formik } from 'formik';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { ResourceDialogTypes, openResourceDialog } from '../actions/ResourceActions'
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
-import FilePathService from '../resources/FilePathService';
+import FilePathService from '../../resources/FilePathService';
+import { ResourceDialogTypes, openResourceDialog } from '../../actions/ResourceActions'
 
 const useStyles = makeStyles(theme => ({
     form: {
